@@ -1,147 +1,234 @@
 #include "minishell.h"
 
-void sig_handler(int var)
+void signals_hnd(int num)
 {
-    if(var == SIGINT)
-    {
-        write(1, "minishell$> \n", 13);
-        return;
-    }
+	if(num == SIGINT)
+        write(1,"\nmyshell$> ", 11);
+		return;
 }
 
-
-int is_charachter(char c)
+t_env	**get_adress(void)
 {
-    if(c == '\\' || c == '&' || c == ')' || c == '('  || c == ';' || c == '+' || c == '-' || c == '*') 
-        return(1);
-    return(0);   
+	static t_env	*new = NULL;
+
+	return (&new);
 }
 
-void syntax_error(void)
+t_tokens *get_tokens(void)
 {
-    write(2, "minishell: syntax error\n", 25);
-    return;
+    t_tokens *tokens = NULL;
+    return (tokens);
 }
 
-int is_valid(char c)
+//function that will check if the command is a built in or not
+int check_built_in(char *str)
 {
-    if(c == '|' || c == '<' || c == '>')
-        return 1;
-    else if(c == '<<' || c == '>>')
-        return 2;
-    return 0;
+    if(ft_strncmp(str, "echo", 4) == 0)
+        return (1);
+    else if(ft_strncmp(str, "cd", 2) == 0)
+        return (1);
+    else if(ft_strncmp(str, "pwd", 3) == 0)
+        return (1);
+    else if(ft_strncmp(str, "export", 6) == 0)
+        return (1);
+    else if(ft_strncmp(str, "unset", 5) == 0)
+        return (1);
+    else if(ft_strncmp(str, "env", 3) == 0)
+        return (1);
+    else if(ft_strncmp(str, "exit", 4) == 0)
+        return (1);
+    else if(ft_strncmp(str, "<<", 2) == 0)
+        return (1);
+    return (0);
 }
 
-int is_blank(char c)
-{
-    if(c == ' ' || c == '\t')
-        return 1;
-    return 0;
-}
-
-int is_redir_in(char *str, int *i)
-{
-    int start = *i;
-
-    while (ft_isdeghit(str[*i]))
-        *i++;
-    if(str[i] == '<')
-    {
-        *i++;
-        return(1);
-    }
-    *i = start;
-    return(0); 
-    
-}
-
-t_type type(t_global *global, int *i)
-{
-
-    if(global->line[*i] == '|')
-    {
-        *i++;
-        return(PIPE);
-    }
-    else if(is_redir_in(global->line[*i], &i))
-        return(REDIR_IN);
-
-    else if(global->line[*i] == )
-    {
-        *i++;
-        return(REDIR_OUT);
-    }
-    else if(global->line[*i] == '\'')
-    {
-        *i++;
-        return(S_QUOTE);
-    }
-    else if(global->line[*i] == '"')
-    {
-        *i++;
-        return(D_QUOTE);
-    }
-    else if(global->line[*i] == )
-
-
-
-}
-
-t_tokens *add_token(t_global *global, int *i)
-{
-    int len = 0;
-
-    skip_blank(global, i);
-    len = is_squote(global, i);
-    len = is_dquote(global, i);
-    len = is_pipe(global, i);
-    len = is_heredoc(global, i);
-    len = is_redir_in(global, i);
-    len = is_redir_out(global, i);
-    len = is_append(global, i);
-    len = is_flag
-    len = is_cmd(global);
-    
-}
-
-void tokenization(t_global *global)
+int check_characters(char *str)
 {
     int i = 0;
-    t_tokens *current; 
 
-    global->tokens = add_token(global, &i);
-    current = global->tokens;
-    while(current)
+    while(str[i])
     {
-        current = current->next;
-        current = add_token(global, &i);
+        if (str[i] == '&' || str[i] == ';' || str[i] == '(' || str[i] == ')' || str[i] == '\\')
+        {
+            printf("minishell: syntax error near unexpected token `%c'\n", str[i]);
+            return(1);
+        }
+        i++;
     }
-}
-
-void init_global(t_global *global)
-{
-    global->line = NULL;
-    global->cmd_status = 0;
-}
-
-int main(int ac, char **av)
-{
-    t_global global;
-
-    init_global(&global);
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, sig);
-
-    while (1)
-    {
-        global->line = readline("minishell$> ");
-        add_history(global->line);
-        tokenization(global);
-    }
-    free(global->line);
-    global = global->next;
-    
-
     return(0);
 }
 
+int  check_syntax(char *str)
+{
+	int	i;
+	int	dif;
+    t_type    quote;
+
+	i = 0;
+	dif = 0;
+    quote = check_quotes(str);
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '|')
+			dif = 1;
+		if (str[i] == '|')
+		{
+			if (dif == 0)
+				return (1);
+			dif = 0;
+			if(str[i + 1] == '\0' && dif == 0)
+				return (1);
+		}
+        // printf("%d\n", check_built_in(str));
+        if((check_built_in(str) == 0))
+            return (1);
+        if(check_characters(str) == 1 || quote != NON)
+        {
+            write(2, "minishell : missing quote\n", 26);
+            return (1);
+        }
+		i++;
+	}
+	return (0);
+}
+
+int stock_env(char **env)
+{
+
+	t_env	**env_list;
+	int		i;
+
+	env_list = get_adress();
+	i = 0;
+	while (env[i])
+		i++;
+	if (i == 0)
+		if (init_env(env_list) == 42)
+			return (42);
+	i--;
+	while (i >= 0)
+	{
+		if (push(env[i], env_list, 0) == 42)
+		{
+			ft_clean_envlist(env_list);
+			return (42);
+		}
+		i--;
+	}
+	return (0);
+}
+
+char *arg_double_quote(char *str)
+{
+    int i;
+    int j;
+    char *new;
+
+    i = 0;
+    j = 0;
+    new = malloc(sizeof(char) * (ft_strlen(str) + 1));
+    while(str[i])
+    {
+        if(str[i] == '\"')
+        {
+            i++;
+            while(str[i] != '\"')
+            {
+                new[j] = str[i];
+                i++;
+                j++;
+            }
+        }
+        i++;
+    }
+    new[j] = '\0';
+    return (new);
+}
+void ft_print_env(void)
+{
+	t_env	*env_list;
+
+	env_list = *get_adress();
+	while (env_list)
+	{
+		ft_putstr_fd(env_list->str, 1);
+		ft_putchar_fd('\n', 1);
+		if (!env_list->next)
+			break;
+		env_list = env_list->next;
+	}
+}
+void ft_print_token(t_tokens *tokens)
+{
+    while(tokens)
+    {
+        printf("%s\n", tokens->command);
+        tokens = tokens->next;
+    }
+}
+
+// function that split line with special charactere and return a list of tokens
+t_tokens *ft_split_line(char *line)
+{
+    t_tokens *tokens;
+    t_tokens *tmp;
+    char **tab;
+    int i;
+
+    i = 0;
+    tokens = NULL;
+    tab = ft_split(line, '|');
+    while(tab[i])
+    {
+        if(tokens == NULL)
+        {
+            tokens = malloc(sizeof(t_tokens));
+            tokens->command = ft_strdup(tab[i]);
+            tokens->next = NULL;
+            tmp = tokens;
+        }
+        else
+        {
+            tmp->next = malloc(sizeof(t_tokens));
+            tmp = tmp->next;
+            tmp->command = ft_strdup(tab[i]);
+            tmp->next = NULL;
+        }
+        i++;
+    }
+    return (tokens);
+}
+
+int main(int ac, char **av, char **env)
+{
+    
+    t_global *global;
+
+    stock_env(env);
+    // ft_print_env();
+    if(!ac && !av)
+		return(0);
+    signal(SIGINT, signals_hnd);
+	signal(SIGQUIT, SIG_IGN);
+    while(1)
+    {
+        global->line = readline("minishell$> ");
+        add_history(global->line);
+        if(global->line == NULL)
+        {
+            write(1, "exit\n", 6);
+            exit(1);
+        }
+        // if (check_syntax(global->line))
+        // {
+        //     // printf("%d\n", check_syntax(global->line));
+        //     printf("syntax error: near unexpected token '%s' or unvalide commande \n", global->line);
+        // }
+        global->tokens = ft_split_tokens(global->line);
+        // global->tokens = ft_split_line(global->line);
+        ft_print_token(global->tokens);
+        free(global->line);
+        global->next = NULL;
+    }
+    return(0);
+}

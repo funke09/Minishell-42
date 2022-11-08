@@ -1,14 +1,14 @@
 NAME = minishell
 
-SRC = main.c env.c is_valid.c parssing.c
+SRC = main.c 
 
 OBJ = $(SRC:.c=.o)
 
-HEADER = minishell.h
+HEADER = myshell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -Wall -Wextra -Werror #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 all :$(NAME) 
 

@@ -1,14 +1,14 @@
 NAME = minishell
 
-SRC = main.c 
+SRC = test.c env.c is_valid.c tokenization.c
 
 OBJ = $(SRC:.c=.o)
 
-HEADER = myshell.h
+HEADER = minishell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -Wall -Wextra -Werror -fsanitize=address
+FLAGS = -Wall -Wextra -Werror #-fsanitize=address
 
 all :$(NAME) 
 
