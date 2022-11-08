@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = test.c env.c is_valid.c tokenization.c
+SRC = main.c env.c is_valid.c parssing.c
 
 OBJ = $(SRC:.c=.o)
 

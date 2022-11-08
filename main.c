@@ -162,7 +162,7 @@ void ft_print_token(t_tokens *tokens)
 {
     while(tokens)
     {
-        printf("%s\n", tokens->command);
+        printf("%s\n", tokens->token);
         tokens = tokens->next;
     }
 }
@@ -183,7 +183,7 @@ t_tokens *ft_split_line(char *line)
         if(tokens == NULL)
         {
             tokens = malloc(sizeof(t_tokens));
-            tokens->command = ft_strdup(tab[i]);
+            tokens->token = ft_strdup(tab[i]);
             tokens->next = NULL;
             tmp = tokens;
         }
@@ -191,7 +191,7 @@ t_tokens *ft_split_line(char *line)
         {
             tmp->next = malloc(sizeof(t_tokens));
             tmp = tmp->next;
-            tmp->command = ft_strdup(tab[i]);
+            tmp->token = ft_strdup(tab[i]);
             tmp->next = NULL;
         }
         i++;
@@ -204,8 +204,9 @@ int main(int ac, char **av, char **env)
     
     t_global *global;
 
+    global = malloc(sizeof(t_global));
     stock_env(env);
-    // ft_print_env();
+    ft_print_env();
     if(!ac && !av)
 		return(0);
     signal(SIGINT, signals_hnd);
@@ -227,8 +228,7 @@ int main(int ac, char **av, char **env)
         global->tokens = ft_split_tokens(global->line);
         // global->tokens = ft_split_line(global->line);
         ft_print_token(global->tokens);
-        free(global->line);
-        global->next = NULL;
+        // free(global->line);
     }
     return(0);
 }

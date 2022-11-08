@@ -14,7 +14,7 @@ void sig_handler(int var)
 {
     if(var == SIGINT)
     {
-        write(1, "minishell$> \n", 13);
+        write(1, "\nminishell$> ", 13);
         return;
     }
 }
@@ -132,6 +132,16 @@ int	check_quotes(t_global *global, int *i)
 
 t_type type(t_global *global, int *i)
 {
+    //loop over the line 
+
+    if(ft_isalpha(global->line[*i]))
+    {
+        while(ft_isalpha(global->line[*i]) && global->line[*i] != ' ')
+            (*i)++;
+        
+        return(COMMAND);
+    }
+
     if(global->line[*i] == '|')
     {
         (*i)++;
@@ -173,9 +183,13 @@ t_tokens *add_token(t_global *global, int *i)
     // skip_blank(global, i);
     start = *i;
     new = (t_tokens *)malloc(sizeof(t_tokens));
+    // if(!new)
+    //     return(NULL);
     new->type = type(global, i);
     len = *i - start;
     new->token = ft_substr(global->line, start, len);
+    if(!new->token)
+        return(NULL);
     new->next = NULL;
     return(new);
 }
@@ -187,10 +201,13 @@ void tokenization(t_global *global)
 
     global->tokens = add_token(global, &i);
     current = global->tokens;
-    while(current)
+    while(current->next)
     {
+        write(1, "tokenization\n", 13);
         current = current->next;
         current = add_token(global, &i);
+        // if(current->next == NULL)
+        //     break;
     }
 }
 
@@ -201,13 +218,14 @@ void print_tokens(t_global *global)
     token = global->tokens;
     while(token)
     {
-        printf("token: %s, type: %d, ", token->token, token->type);
+        printf("token: %s, type: %d\n, ", token->token, token->type);
         token = token->next;
     }
 }
 
 void init_global(t_global *global)
 {
+    global = (t_global *)malloc(sizeof(t_global));
     global->line = NULL;
     global->cmd_status = 0;
     global->tokens = NULL;
@@ -219,16 +237,23 @@ int main(int ac, char **av)
     t_global global;
 
     init_global(&global);
-    signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, sig_handler);
+    signal(SIGINT, SIG_IGN);
     while (1)
     {
         global.line = readline("minishell$> ");
         add_history(global.line);
+        signal(SIGQUIT, SIG_IGN);
+        signal(SIGINT, sig_handler);
+        if(global.line == NULL)
+        {
+            write(1, "exit\n", 6);
+            exit(1);
+        }
         tokenization(&global);
         print_tokens(&global);
     }
-    free(global.line);
+    // free(global.line);
     return(0);
 }
 
