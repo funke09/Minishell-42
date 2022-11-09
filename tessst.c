@@ -22,7 +22,7 @@ void sig_handler(int var)
 
 int is_charachter(char c)
 {
-    if(c == '\\' || c == '&' || c == ')' || c == '('  || c == ';' || c == '+' || c == '-' || c == '*') 
+    if(c == '\\' || c == '&' || c == ')' || c == '('  || c == ';' || c == '+' || c == '*') 
         return(1);
     return(0);   
 }
@@ -85,66 +85,126 @@ int is_heredoc_key(t_global *global, int *i)
             (*i)++;
             return(1);
         }
-
     }
-    start = *i;
+    *i = start;
    return 0;
 }
 
 int is_flag(t_global *global, int *i)
 {
     int start = *i;
-    if(global->line[*i] == '-' && ft_isalpha(global->line[*i + 1]))
+    if(global->line[*i] == '-'  && !is_blank(global->line[*i + 1]) && ft_isalpha(global->line[*i + 1]))
     {
         (*i)++;
+        while (ft_isalpha(global->line[*i]))
+            (*i)++;
         return(1);
     }
+    *i = start;
+    return(0);
+}
+int is_quote(t_global *global, int *i)
+{
+    int start = *i;
+    if(global->line[*i] == '\'')
+    {
+        (*i)++;
+        while (global->line[*i] && global->line[*i] != '\'')
+            (*i)++;
+        if(global->line[*i] == '\'')
+        {
+            (*i)++;
+            return(1);
+        }
+    }
+    *i = start;
+    if(global->line[*i] == '\"')
+    {
+    printf("is_quote\n");
+        (*i)++;
+        while (global->line[*i] && global->line[*i] != '\"')
+            (*i)++;
+        if(global->line[*i] == '\"')
+        {
+            (*i)++;
+            return(2);
+        }
+    }
+    *i = start;
     return(0);
 }
 
-int	check_quotes(t_global *global, int *i)
+// int	check_quotes(t_global *global, int *i)
+// {
+//     int start = *i;
+// 	t_type	quote;
+
+// 	quote = NON;
+// 	while (global->line[*i])
+// 	{
+// 		if (global->line[*i] == '"')
+// 		{
+// 			if (quote == NON)
+// 				quote = D_QUOTE;
+// 			else if (quote == D_QUOTE)
+// 				return (D_QUOTE);
+// 		}
+// 		if (global->line[*i] == '\'')
+// 		{
+// 			if (quote == NON)
+// 				quote = S_QUOTE;
+// 			else if (quote == S_QUOTE)
+// 				return(S_QUOTE);
+// 		}
+// 		(*i)++;
+// 	}
+//     *i = start;
+// 	return (quote);
+// }
+int is_command(t_global *global, int *i)
 {
     int start = *i;
-	t_type	quote;
+    while(global->cmd_status == 0 && ft_isalnum(global->line[*i]))
+    {
+        (*i)++;
+        if(is_blank(global->line[*i]) || global->line[*i] == '\0')
+        {
+            global->cmd_status = 1;
+            return(1);
+        }
+    }
+    *i = start;
+    return(0);
+}
 
-	quote = NON;
-	while (global->line[*i])
-	{
-		if (global->line[*i] == '"')
-		{
-			if (quote == NON)
-				quote = D_QUOTE;
-			else if (quote == D_QUOTE)
-				quote = NON;
-		}
-		if (global->line[*i] == '\'')
-		{
-			if (quote == NON)
-				quote = S_QUOTE;
-			else if (quote == S_QUOTE)
-				quote = NON;
-		}
-		(*i)++;
-	}
-    start = *i;
-	return (quote);
+int is_param(t_global *global, int *i)
+{
+    int start = *i;
+    while (global->cmd_status && !is_blank(global->line[*i]) && global->line[*i] != '\0')
+    {
+        (*i)++;
+        if(is_blank(global->line[*i]) || !global->line[*i] || !is_charachter(global->line[*i]))
+            return(1);
+    }
+    *i = start;
+    return(0);
 }
 
 t_type type(t_global *global, int *i)
 {
-    //loop over the line 
-
-    if(ft_isalpha(global->line[*i]))
+    if(is_quote(global, i))
     {
-        while(ft_isalpha(global->line[*i]) && global->line[*i] != ' ')
-            (*i)++;
-        
-        return(COMMAND);
+        if(is_quote(global, i) == 1)
+            return(S_QUOTE);
+        else if(is_quote(global, i) == 2)
+            return(D_QUOTE);
     }
-
-    if(global->line[*i] == '|')
+    else if(is_quote(global, i) == 2)
+        return(D_QUOTE);
+    else if(global->line[*i] == '|')
     {
         (*i)++;
+        global->cmd_status = 0;
         return(PIPE);
     }
     else if(is_heredoc_or_append(global, i, '>'))
@@ -162,10 +222,10 @@ t_type type(t_global *global, int *i)
         return(FLAG);
     else if(is_redir(global, i, '>'))
         return(REDIR_OUT);
-    else if(check_quotes(global, i) == S_QUOTE)
-        return(S_QUOTE);
-    else if(check_quotes(global, i) == D_QUOTE)
-        return(D_QUOTE);
+    else if(is_command(global, i))
+        return(COMMAND);
+    else if(is_param(global, i))
+        return(PARAM);
     return(NON);
 }
 void skip_blanks(t_global *global, int *i)
@@ -174,23 +234,57 @@ void skip_blanks(t_global *global, int *i)
         (*i)++;
 }
 
+void    print_type(t_type type)
+{
+    if(type == PIPE)
+        printf("PIPE\n");
+    else if(type == APPEND)
+        printf("APPEND\n");
+    else if(type == HEREDOC)
+        printf("HEREDOC\n");
+    else if(type == HERDOC_KEY)
+        printf("HERDOC_KEY\n");
+    else if(type == REDIR_IN)
+        printf("REDIR_IN\n");
+    else if(type == REDIR_OUT)
+        printf("REDIR_OUT\n");
+    else if(type == FLAG)
+        printf("FLAG\n");
+    else if(type == S_QUOTE)
+        printf("S_QUOTE\n");
+    else if(type == D_QUOTE)
+        printf("D_QUOTE\n");
+    else if (type == COMMAND)
+        printf("COMMAND\n");
+    else if(type == PARAM)
+        printf("PARAM\n");
+    else if(type == NON)
+        printf("NON\n");
+}
+
 t_tokens *add_token(t_global *global, int *i)
 {
     int len = 0;
     int start = 0;
     t_tokens *new;
 
-    // skip_blank(global, i);
+    skip_blanks(global, i);
     start = *i;
     new = (t_tokens *)malloc(sizeof(t_tokens));
     // if(!new)
     //     return(NULL);
     new->type = type(global, i);
+    if(new->type == NON)
+    {
+        free(new);
+        return(NULL);
+    }
     len = *i - start;
     new->token = ft_substr(global->line, start, len);
     if(!new->token)
         return(NULL);
     new->next = NULL;
+    print_type(new->type);
     return(new);
 }
 
@@ -201,13 +295,11 @@ void tokenization(t_global *global)
 
     global->tokens = add_token(global, &i);
     current = global->tokens;
-    while(current->next)
+    while(current)
     {
         write(1, "tokenization\n", 13);
         current = current->next;
         current = add_token(global, &i);
-        // if(current->next == NULL)
-        //     break;
     }
 }
 
@@ -218,7 +310,7 @@ void print_tokens(t_global *global)
     token = global->tokens;
     while(token)
     {
-        printf("token: %s, type: %d\n, ", token->token, token->type);
+        printf("token: %s, type: %d\n ", token->token, token->type);
         token = token->next;
     }
 }
@@ -239,6 +331,8 @@ int main(int ac, char **av)
     init_global(&global);
     signal(SIGQUIT, sig_handler);
     signal(SIGINT, SIG_IGN);
+    if(!ac && !av)
+		return(0);
     while (1)
     {
         global.line = readline("minishell$> ");

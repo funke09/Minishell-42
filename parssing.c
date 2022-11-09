@@ -30,5 +30,3 @@ t_tokens *ft_split_tokens(char *str)
     return (head);
 }
 
-
-
