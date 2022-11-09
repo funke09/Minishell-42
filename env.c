@@ -95,3 +95,36 @@ int init_env(t_env **env_list)
     }
     return (0);
 }
+
+t_env	**get_adress(void)
+{
+	static t_env	*new = NULL;
+
+	return (&new);
+}
+
+int stock_env(char **env)
+{
+
+	t_env	**env_list;
+	int		i;
+
+	env_list = get_adress();
+	i = 0;
+	while (env[i])
+		i++;
+	if (i == 0)
+		if (init_env(env_list) == 42)
+			return (42);
+	i--;
+	while (i >= 0)
+	{
+		if (push(env[i], env_list, 0) == 42)
+		{
+			ft_clean_envlist(env_list);
+			return (42);
+		}
+		i--;
+	}
+	return (0);
+}

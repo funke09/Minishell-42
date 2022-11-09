@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = tessst.c env.c  
+SRC = main.c env.c  
 
 OBJ = $(SRC:.c=.o)
 

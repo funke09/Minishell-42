@@ -62,11 +62,7 @@ typedef struct s_global
     t_tokens *tokens;
 }   t_global;
 
-// int	push(char *env, t_env **begin_lst, int var);
-// int init_env(t_env **env_list);
-// void	ft_clean_envlist(t_env **env);
-// int	check_quotes(char	*str);
-// int parssing(char *str);
-// t_tokens *ft_split_tokens(char *str);
+int stock_env(char **env);
+t_env	**get_adress(void);
 
 #endif
