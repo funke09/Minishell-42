@@ -75,14 +75,13 @@ int is_heredoc_or_append(t_global *global, int *i, char c)
 int is_heredoc_key(t_global *global, int *i)
 {
     int start = *i;
-    if(is_heredoc_or_append(global, i, '<'))
-    {
-        if(is_blank(global->line[*i]))
-            *i += 1;
-         
-        else if(global->line[*i] && !is_blank(global->line[*i]))
-        {   
+
+    while(global->line[*i] && global->heredoc_activ == 1)
+    {  
             (*i)++;
+        if(is_blank(global->line[*i]) || !global->line[*i])
+        {
+            global->heredoc_activ = 0;
             return(1);
         }
     }
@@ -103,31 +102,18 @@ int is_flag(t_global *global, int *i)
     *i = start;
     return(0);
 }
-int is_quote(t_global *global, int *i)
+int is_quote(t_global *global, int *i, char c)
 {
     int start = *i;
-    if(global->line[*i] == '\'')
+    if(global->line[*i] == c)
     {
         (*i)++;
-        while (global->line[*i] && global->line[*i] != '\'')
+        while (global->line[*i] && global->line[*i] != c)
             (*i)++;
-        if(global->line[*i] == '\'')
+        if(global->line[*i] == c)
         {
             (*i)++;
             return(1);
-        }
-    }
-    *i = start;
-    if(global->line[*i] == '\"')
-    {
-    printf("is_quote\n");
-        (*i)++;
-        while (global->line[*i] && global->line[*i] != '\"')
-            (*i)++;
-        if(global->line[*i] == '\"')
-        {
-            (*i)++;
-            return(2);
         }
     }
     *i = start;
@@ -180,10 +166,10 @@ int is_command(t_global *global, int *i)
 int is_param(t_global *global, int *i)
 {
     int start = *i;
-    while (global->cmd_status && !is_blank(global->line[*i]) && global->line[*i] != '\0')
+    while (global->cmd_status == 1 && !is_blank(global->line[*i]) && global->line[*i])
     {
         (*i)++;
-        if(is_blank(global->line[*i]) || !global->line[*i] || !is_charachter(global->line[*i]))
+        if(is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))
             return(1);
     }
     *i = start;
@@ -192,14 +178,11 @@ int is_param(t_global *global, int *i)
 
 t_type type(t_global *global, int *i)
 {
-    if(is_quote(global, i))
-    {
-        if(is_quote(global, i) == 1)
+   if(is_heredoc_key(global, i))
+        return(HERDOC_KEY);
+    else if(is_quote(global, i, '\''))
             return(S_QUOTE);
-        else if(is_quote(global, i) == 2)
-            return(D_QUOTE);
-    }
-    else if(is_quote(global, i) == 2)
+    else if(is_quote(global, i, '\"'))
         return(D_QUOTE);
     else if(global->line[*i] == '|')
     {
@@ -211,11 +194,6 @@ t_type type(t_global *global, int *i)
         return(APPEND);
     else if(is_heredoc_or_append(global, i, '<'))
         return(HEREDOC);
-    else if(global->heredoc_activ == 1 && is_heredoc_key(global, i))
-    {
-        global->heredoc_activ = 0;
-        return(HERDOC_KEY);
-    }
     else if(is_redir(global, i, '<'))
         return(REDIR_IN);
     else if(is_flag(global, i))
@@ -262,6 +240,14 @@ void    print_type(t_type type)
         printf("NON\n");
 }
 
+void print_global(t_global *global)
+{
+    printf("line :%s\n", global->line);
+    printf("cmd status :%d\n", global->cmd_status);
+    printf("heredoc :%d\n", global->heredoc_activ);
+}
+
+
 t_tokens *add_token(t_global *global, int *i)
 {
     int len = 0;
@@ -271,12 +257,11 @@ t_tokens *add_token(t_global *global, int *i)
     skip_blanks(global, i);
     start = *i;
     new = (t_tokens *)malloc(sizeof(t_tokens));
-    // if(!new)
-    //     return(NULL);
     new->type = type(global, i);
     if(new->type == NON)
     {
         free(new);
+        global->cmd_status = 0;
         return(NULL);
     }
     len = *i - start;
@@ -284,25 +269,10 @@ t_tokens *add_token(t_global *global, int *i)
     if(!new->token)
         return(NULL);
     new->next = NULL;
+    // print_global(global);
     print_type(new->type);
     return(new);
 }
-
-void tokenization(t_global *global)
-{
-    int i = 0;
-    t_tokens *current; 
-
-    global->tokens = add_token(global, &i);
-    current = global->tokens;
-    while(current)
-    {
-        write(1, "tokenization\n", 13);
-        current = current->next;
-        current = add_token(global, &i);
-    }
-}
-
 void print_tokens(t_global *global)
 {
     t_tokens *token;
@@ -315,9 +285,26 @@ void print_tokens(t_global *global)
     }
 }
 
+void tokenization(t_global *global)
+{
+    int i = 0;
+    t_tokens *current; 
+
+    global->tokens = add_token(global, &i);
+    current = global->tokens;
+    while(current)
+    {
+        // write(1, "tokenization\n", 13);
+        // printf("%s\n", current->token);
+        // print_tokens(global);
+        current->next = add_token(global, &i);
+        current = current->next;
+    }
+}
+
+
 void init_global(t_global *global)
 {
-    global = (t_global *)malloc(sizeof(t_global));
     global->line = NULL;
     global->cmd_status = 0;
     global->tokens = NULL;
