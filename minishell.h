@@ -8,11 +8,20 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+ #include <errno.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
 
+typedef enum s_error
+{
+    SUCSSES,
+    ERROR_QUOTE,
+    ERROR_PIPE,
 
+    
+
+}   t_error;
 
 typedef enum s_type
 {
@@ -37,6 +46,7 @@ typedef struct s_tokens
     t_type type;
     struct s_tokens *next;
 }   t_tokens; 
+
 typedef struct s_ast
 {
     t_type type;
@@ -60,6 +70,7 @@ typedef struct s_global
     int cmd_status;
     int heredoc_activ;
     t_tokens *tokens;
+    t_error errnum;
 }   t_global;
 
 int stock_env(char **env);

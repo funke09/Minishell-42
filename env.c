@@ -96,7 +96,7 @@ int init_env(t_env **env_list)
     return (0);
 }
 
-t_env	**get_adress(void)
+t_env	**get_adress(void)// get_tenv
 {
 	static t_env	*new = NULL;
 

@@ -22,7 +22,7 @@ void sig_handler(int var)
 
 int is_charachter(char c)
 {
-    if(c == '\\' || c == '&' || c == ')' || c == '('  || c == ';' || c == '+' || c == '*') 
+    if(c == '<' || c == '|' || c == '>' || c == ';' || c == '+' || c == '*' || c == '\'' || c == '"') 
         return(1);
     return(0);   
 }
@@ -46,13 +46,9 @@ int is_redir(t_global *global, int *i, char c)
 {
     int start = *i;
 
-    while (ft_isdigit(global->line[*i]))
-        (*i)++;
     if(global->line[*i] == c)
     {
         (*i)++;
-        while (ft_isdigit(global->line[*i]))
-            (*i)++;
         return(1);
     }
     *i = start;
@@ -79,7 +75,7 @@ int is_heredoc_key(t_global *global, int *i)
     while(global->line[*i] && global->heredoc_activ == 1)
     {  
             (*i)++;
-        if(is_blank(global->line[*i]) || !global->line[*i])
+        if(is_blank(global->line[*i]) || !global->line[*i]  || is_charachter(global->line[*i]))
         {
             global->heredoc_activ = 0;
             return(1);
@@ -102,8 +98,10 @@ int is_flag(t_global *global, int *i)
     *i = start;
     return(0);
 }
+
 int is_quote(t_global *global, int *i, char c)
 {
+
     int start = *i;
     if(global->line[*i] == c)
     {
@@ -115,7 +113,13 @@ int is_quote(t_global *global, int *i, char c)
             (*i)++;
             return(1);
         }
+        else if(global->line[*i] == '\0')
+        {
+            global->errnum = ERROR_QUOTE;
+            printferror(global);
+        }
     }
+    //else if 
     *i = start;
     return(0);
 }
@@ -153,7 +157,7 @@ int is_command(t_global *global, int *i)
     while(global->cmd_status == 0 && ft_isalnum(global->line[*i]))
     {
         (*i)++;
-        if(is_blank(global->line[*i]) || global->line[*i] == '\0')
+        if(is_blank(global->line[*i]) || global->line[*i] == '\0'  || is_charachter(global->line[*i]))
         {
             global->cmd_status = 1;
             return(1);
@@ -169,7 +173,7 @@ int is_param(t_global *global, int *i)
     while (global->cmd_status == 1 && !is_blank(global->line[*i]) && global->line[*i])
     {
         (*i)++;
-        if(is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))
+        if(is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))//iscaracter ??
             return(1);
     }
     *i = start;
@@ -256,18 +260,18 @@ t_tokens *add_token(t_global *global, int *i)
 
     skip_blanks(global, i);
     start = *i;
-    new = (t_tokens *)malloc(sizeof(t_tokens));
+    new = (t_tokens *)malloc(sizeof(t_tokens));//!malloc
+
     new->type = type(global, i);
     if(new->type == NON)
     {
         free(new);
         global->cmd_status = 0;
+        global->heredoc_activ = 0;
         return(NULL);
     }
     len = *i - start;
     new->token = ft_substr(global->line, start, len);
-    if(!new->token)
-        return(NULL);
     new->next = NULL;
     // print_global(global);
     print_type(new->type);
@@ -332,10 +336,10 @@ int main(int ac, char **av, char **env)
     t_global global;
     
     stock_env(env);
-    // ft_print_env();
+    ft_print_env();
     init_global(&global);
-    signal(SIGQUIT, sig_handler);
-    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGINT, sig_handler);
     if(!ac && !av)
 		return(0);
     while (1)
