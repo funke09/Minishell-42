@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = main.c env.c  
+SRC = main.c env.c printferror.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -8,7 +8,7 @@ HEADER = minishell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -Wall -Wextra -Werror #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 all :$(NAME) 
 

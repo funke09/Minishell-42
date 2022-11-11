@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
- #include <errno.h>
+#include <errno.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
@@ -18,9 +18,11 @@ typedef enum s_error
     SUCSSES,
     ERROR_QUOTE,
     ERROR_PIPE,
-
-    
-
+    ERROR_COMMAND,
+    ERROR_REDIR,
+    ERROR_HEREDOC,
+    ERROR_APPEND,
+    ERROR_PARAM,
 }   t_error;
 
 typedef enum s_type
@@ -75,5 +77,7 @@ typedef struct s_global
 
 int stock_env(char **env);
 t_env	**get_adress(void);
+void printferror(t_global *global);
+int check_tokens(t_global *global);
 
 #endif

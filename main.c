@@ -72,10 +72,10 @@ int is_heredoc_key(t_global *global, int *i)
 {
     int start = *i;
 
-    while(global->line[*i] && global->heredoc_activ == 1)
+    while(global->line[*i] && global->heredoc_activ == 1 && !is_charachter(global->line[*i]))
     {  
             (*i)++;
-        if(is_blank(global->line[*i]) || !global->line[*i]  || is_charachter(global->line[*i]))
+        if(is_blank(global->line[*i]) || !global->line[*i])
         {
             global->heredoc_activ = 0;
             return(1);
@@ -354,6 +354,10 @@ int main(int ac, char **av, char **env)
             exit(1);
         }
         tokenization(&global);
+        if(!check_tokens(&global))
+        {
+            write(1, "error\n", 7);
+        }
         print_tokens(&global);
     }
     // free(global.line);
