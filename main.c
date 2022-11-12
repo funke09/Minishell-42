@@ -124,33 +124,6 @@ int is_quote(t_global *global, int *i, char c)
     return(0);
 }
 
-// int	check_quotes(t_global *global, int *i)
-// {
-//     int start = *i;
-// 	t_type	quote;
-
-// 	quote = NON;
-// 	while (global->line[*i])
-// 	{
-// 		if (global->line[*i] == '"')
-// 		{
-// 			if (quote == NON)
-// 				quote = D_QUOTE;
-// 			else if (quote == D_QUOTE)
-// 				return (D_QUOTE);
-// 		}
-// 		if (global->line[*i] == '\'')
-// 		{
-// 			if (quote == NON)
-// 				quote = S_QUOTE;
-// 			else if (quote == S_QUOTE)
-// 				return(S_QUOTE);
-// 		}
-// 		(*i)++;
-// 	}
-//     *i = start;
-// 	return (quote);
-// }
 int is_command(t_global *global, int *i)
 {
     int start = *i;
