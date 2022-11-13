@@ -304,6 +304,16 @@ void ft_print_env(void)
 	}
 }
 
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
+}
+
 int main(int ac, char **av, char **env)
 {
     t_global global;
@@ -326,6 +336,18 @@ int main(int ac, char **av, char **env)
             write(1, "exit\n", 6);
             exit(1);
         }
+        if( ft_strcmp(global.line, "exit") == 0)
+        {
+            write(1, "exit\n", 6);
+            free(global.line);
+            //+free it all
+            exit(1);
+        }
+        if(ft_strcmp(global.line, "\n") == 0)
+        {
+            free(global.line);
+            continue;
+        }
         tokenization(&global);
         if(!check_tokens(&global))
         {
@@ -336,4 +358,3 @@ int main(int ac, char **av, char **env)
     // free(global.line);
     return(0);
 }
-

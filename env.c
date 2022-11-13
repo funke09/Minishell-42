@@ -37,7 +37,7 @@ char	*ft_add(char *env)
 	y = 0;
 	len = len_key(env) - 1;
 	if (env[len_key(env) - 1] != '+')
-		return (ft_strdup(env));
+		return (ft_strdup(env));//a whydfeg
 	s = malloc(sizeof(char) * ft_strlen(env));
 	if (s == NULL)
 		return (NULL);
@@ -114,8 +114,10 @@ int stock_env(char **env)
 	while (env[i])
 		i++;
 	if (i == 0)
+	{	
 		if (init_env(env_list) == 42)
 			return (42);
+	}
 	i--;
 	while (i >= 0)
 	{
