@@ -346,7 +346,7 @@ int main(int ac, char **av, char **env)
         }
         if(ft_strcmp(global.line, "\n") == 0)
         {
-            free(global.line);
+            // free(global.line);
             continue;
         }
         tokenization(&global);
