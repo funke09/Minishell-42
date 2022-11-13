@@ -317,9 +317,10 @@ int	ft_strcmp(char *s1, char *s2)
 int main(int ac, char **av, char **env)
 {
     t_global global;
+    t_ast *astr;
     
     stock_env(env);
-    ft_print_env();
+    // ft_print_env();
     init_global(&global);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, sig_handler);
@@ -353,6 +354,8 @@ int main(int ac, char **av, char **env)
         {
             write(1, "error\n", 7);
         }
+        astr = ast(&global);
+        print_ast(astr);
         print_tokens(&global);
     }
     // free(global.line);

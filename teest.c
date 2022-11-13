@@ -24,13 +24,13 @@ char *ft_strtrim_quotes(char *str)
     return (new_str);
 }
 
-t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token his childs its just test im not sure 
+t_ast *ast(t_global *tokens) // trying to aplemen the tree and give each token his childs its just test im not sure 
 {
     t_ast *ast;
     t_tokens *tmp;
 
     ast = NULL;
-    tmp = tokens;
+    tmp = tokens->tokens;
     while (tmp)
     {
         if (tmp->type == COMMAND)
@@ -57,7 +57,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
                 ast = ast->next;
             }
         }
-        if (tmp->type == PIPE)
+       else  if (tmp->type == PIPE)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = PIPE;
@@ -68,7 +68,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if (tmp->type == REDIR_IN)
+        else if (tmp->type == REDIR_IN)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = REDIR_IN;
@@ -79,7 +79,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if (tmp->type == REDIR_OUT)
+        else if (tmp->type == REDIR_OUT)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = REDIR_OUT;
@@ -90,7 +90,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if (tmp->type == APPEND)
+        else if (tmp->type == APPEND)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = APPEND;
@@ -101,7 +101,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if (tmp->type == FLAG)
+        else if (tmp->type == FLAG)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = FLAG;
@@ -112,7 +112,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if (tmp->type == PARAM)
+        else if (tmp->type == PARAM)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = PARAM;
@@ -123,7 +123,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if(tmp->type == D_QUOTE)
+        else if(tmp->type == D_QUOTE)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = D_QUOTE;
@@ -134,7 +134,7 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
             ast->next->next = NULL;
             ast = ast->next;
         }
-        if(tmp->type == S_QUOTE)
+        else if(tmp->type == S_QUOTE)
         {
             ast->next = (t_ast *)malloc(sizeof(t_ast));
             ast->next->type = S_QUOTE;
@@ -149,4 +149,58 @@ t_ast *ast(t_tokens *tokens) // trying to aplemen the tree and give each token h
     }
     return (ast);
 }
+// function that print the struct ast
+void print_ast(t_ast *ast)
+{
+    while (ast)
+    {
+        if (ast->type == COMMAND)
+       {     
+            printf("COMMAND: %s\n", ast->cmd);
+            // return;
+       }
+        else if (ast->type == PIPE)
+        {    
+            printf("PIPE: %s\n", ast->opperator);
+            // return;
+        }
+        else if (ast->type == REDIR_IN)
+        {
+                printf("REDIR_IN: %s\n", ast->opperator);
+                // return;
+        }
+        else if (ast->type == REDIR_OUT)
+            {
+                printf("REDIR_OUT: %s\n", ast->opperator);
+                // return;
+            }
+        else if (ast->type == APPEND)
+        {
+                printf("APPEND: %s\n", ast->opperator);
+                // return;
+        }
+        else if (ast->type == FLAG)
+        {
+                printf("FLAG: %s\n", ast->flag);
+                // return;
+        }
+        else if (ast->type == PARAM)
+        {
+                printf("PARAM: %s\n", ast->arg);
+                // return;
+        }
+        else if (ast->type == D_QUOTE)
+        {
+                printf("D_QUOTE: %s\n", ast->arg);
+                // return;
+        }
+        else if (ast->type == S_QUOTE)
+        {
+                printf("S_QUOTE: %s\n", ast->arg);
+                // return;
+        }
+    ast = ast->next;
+    }
+}
+
 

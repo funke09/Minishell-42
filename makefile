@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = main.c env.c printferror.c
+SRC = main.c env.c printferror.c teest.c
 
 OBJ = $(SRC:.c=.o)
 

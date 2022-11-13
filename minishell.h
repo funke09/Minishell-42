@@ -79,5 +79,8 @@ int stock_env(char **env);
 t_env	**get_adress(void);
 void printferror(t_global *global);
 int check_tokens(t_global *global);
+void print_ast(t_ast *ast);
+char *ft_strtrim_quotes(char *str);
+t_ast *ast(t_global *tokens);
 
 #endif

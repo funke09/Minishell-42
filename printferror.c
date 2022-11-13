@@ -63,11 +63,11 @@ void printferror(t_global *global)
     
 
 //free if there is something to be freed// not sure if it's the right place// sometimes it's not working exactly when we have a quote in our line but not closed (heap use after free)
-    if(global->tokens)
-    {
-        free_tokens(global->tokens);
-        global->tokens = NULL;
-    }   
+    // if(global->tokens)
+    // {
+    //     free_tokens(global->tokens);
+    //     global->tokens = NULL;
+    // }   
 }
 
 // function that check tokens and return if there is an error
@@ -158,3 +158,4 @@ int check_tokens(t_global *global)
     }
     return(1);
 }
+// function that print syntax error and free wha must be freed and return 0
