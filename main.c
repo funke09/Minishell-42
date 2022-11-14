@@ -250,6 +250,7 @@ t_tokens *add_token(t_global *global, int *i)
     print_type(new->type);
     return(new);
 }
+
 void print_tokens(t_global *global)
 {
     t_tokens *token;
@@ -314,10 +315,23 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
+int line_is_empty(char *line)
+{
+    int i = -1;
+
+    while (line[++i])
+    {
+        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+            return (0);
+    }
+    return (1);
+}
+
 int main(int ac, char **av, char **env)
 {
     t_global global;
     t_ast *astr;
+    int check = 0;
     
     stock_env(env);
     // ft_print_env();
@@ -329,7 +343,6 @@ int main(int ac, char **av, char **env)
     while (1)
     {
         global.line = readline("minishell$> ");
-        add_history(global.line);
         signal(SIGQUIT, SIG_IGN);
         signal(SIGINT, sig_handler);
         if(global.line == NULL)
@@ -350,10 +363,14 @@ int main(int ac, char **av, char **env)
             continue;
         }
         tokenization(&global);
-        if(!check_tokens(&global))
+        if(!check_tokens(&global)) //return 
         {
             write(1, "error\n", 7);
+            check = 1;
+            // free
         }
+        if (!line_is_empty(global.line) && !check)
+            add_history(global.line);
         astr = ast(&global);
         print_ast(astr);
         print_tokens(&global);

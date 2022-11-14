@@ -75,15 +75,20 @@ int check_tokens(t_global *global)
 {
     t_tokens *tmp;
     tmp = global->tokens;
+    int start = 1;
     // printf("tmp = %d, token = %d", tmp->type , global->tokens->type);
     while(tmp)
     {
-        // write(1, "hello\n", 6);
         if(tmp->type == PIPE)
         {
-            if(tmp->next == NULL)
+            // if(tmp->next == NULL)
+            // {
+            //     global->errnum = ERROR_PIPE;
+            //     printferror(global);
+            //     return(0);
+            // }
+            if (start == 1)
             {
-                global->errnum = ERROR_PIPE;
                 printferror(global);
                 return(0);
             }
@@ -155,7 +160,8 @@ int check_tokens(t_global *global)
             }
         }
         tmp = tmp->next;
+        start = 0;
     }
     return(1);
 }
-// function that print syntax error and free wha must be freed and return 0
+// function that print syntax error and free what must be freed and return 0
