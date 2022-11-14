@@ -92,7 +92,7 @@ int check_tokens(t_global *global)
                 printferror(global);
                 return(0);
             }
-            if(tmp->next->type == PIPE || tmp->next->type == HEREDOC || tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT || tmp->next->type == APPEND)
+            if(!tmp->next || tmp->next->type == PIPE || tmp->next->type == HEREDOC || tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT || tmp->next->type == APPEND)
             {
                 global->errnum = ERROR_PIPE;
                 printferror(global);

@@ -330,7 +330,7 @@ int line_is_empty(char *line)
 int main(int ac, char **av, char **env)
 {
     t_global global;
-    t_ast *astr;
+    // t_ast *astr;
     int check = 0;
     
     stock_env(env);
@@ -371,8 +371,8 @@ int main(int ac, char **av, char **env)
         }
         if (!line_is_empty(global.line) && !check)
             add_history(global.line);
-        astr = ast(&global);
-        print_ast(astr);
+        // astr = ast(&global);
+        // print_ast(astr);
         print_tokens(&global);
     }
     // free(global.line);
