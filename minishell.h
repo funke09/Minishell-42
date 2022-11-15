@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
+/*   Updated: 2022/11/16 00:18:28 by zcherrad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
@@ -39,6 +51,7 @@ typedef enum s_type
     FLAG,
     PARAM,
     HERDOC_KEY,
+    NEWLINE,
 } t_type;
 
 
@@ -73,6 +86,7 @@ typedef struct s_global
     int heredoc_activ;
     t_tokens *tokens;
     t_error errnum;
+    t_env **env;
 }   t_global;
 
 int stock_env(char **env);

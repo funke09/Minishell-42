@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printferror.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
+/*   Updated: 2022/11/16 00:18:15 by zcherrad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 // function that check status quote
@@ -63,11 +75,11 @@ void printferror(t_global *global)
     
 
 //free if there is something to be freed// not sure if it's the right place// sometimes it's not working exactly when we have a quote in our line but not closed (heap use after free)
-    // if(global->tokens)
-    // {
-    //     free_tokens(global->tokens);
-    //     global->tokens = NULL;
-    // }   
+    if(global->tokens)
+    {
+        free_tokens(global->tokens);
+        global->tokens = NULL;
+    }   
 }
 
 // function that check tokens and return if there is an error
@@ -81,18 +93,7 @@ int check_tokens(t_global *global)
     {
         if(tmp->type == PIPE)
         {
-            // if(tmp->next == NULL)
-            // {
-            //     global->errnum = ERROR_PIPE;
-            //     printferror(global);
-            //     return(0);
-            // }
-            if (start == 1)
-            {
-                printferror(global);
-                return(0);
-            }
-            if(!tmp->next || tmp->next->type == PIPE || tmp->next->type == HEREDOC || tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT || tmp->next->type == APPEND)
+            if(start == 1 || !tmp->next || tmp->next->type == PIPE)
             {
                 global->errnum = ERROR_PIPE;
                 printferror(global);
@@ -119,13 +120,7 @@ int check_tokens(t_global *global)
         }
         else if(tmp->type == REDIR_OUT)
         {
-            if(!tmp->next || tmp->next->type == REDIR_OUT || tmp->next->type == HEREDOC || tmp->next->type == APPEND || tmp->next->type == REDIR_IN)// redir out if the next is pipe and filename its working normally but if the next is just pipe schould be a syntax error 
-            {
-                global->errnum = ERROR_REDIR;
-                printferror(global);
-                return(0);
-            }
-            if(tmp->next->type == PIPE && !tmp->next->next) // handel case if theres not a next after pipe opperator
+            if(!tmp->next || tmp->next->type == REDIR_OUT || tmp->next->type == HEREDOC || tmp->next->type == APPEND || tmp->next->type == REDIR_IN || tmp->next->type == PIPE)// redir out if the next is pipe and filename its working normally but if the next is just pipe schould be a syntax error 
             {
                 global->errnum = ERROR_REDIR;
                 printferror(global);
