@@ -470,8 +470,11 @@ int main(int ac, char **av, char **env)
             check = 1;
             // free
         }
-        if (!line_is_empty(global.line) && !check)
-            add_history(global.line);
+        else 
+        {
+            if (!line_is_empty(global.line) && !check)
+                add_history(global.line);
+        }
         // astr = ast(&global);
         // print_ast(astr);
         print_tokens(&global);
