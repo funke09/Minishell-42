@@ -6,10 +6,10 @@
 /*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 00:18:23 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:54:25 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// qoutes check and error handling
+// handel dolar sign and search in env varibels and replace it

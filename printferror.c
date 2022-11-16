@@ -6,36 +6,42 @@
 /*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 00:18:15 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:50:10 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// function that check status quote
-int check_quote_status(t_global *global)
+t_type	check_quote(t_global *global)
 {
-    int i;
-    int quote;
-    int dquote;
+	int		i;
+	t_type	quote;
+    char	*str;
 
-    i = 0;
-    quote = 0;
-    dquote = 0;
-    while (global->line[i])
-    {
-        if (global->line[i] == '\'')
-            quote++;
-        if (global->line[i] == '\"')
-            dquote++;
-        i++;
-    }
-    if (quote % 2 != 0)
-        return (1);
-    if (dquote % 2 != 0)
-        return (1);
-    return (0);
+	i = 0;
+    str = global->tokens->token;
+	quote = NON;
+	while (str[i])
+	{
+		if (str[i] == '"')
+		{
+			if (quote == NON)
+				quote = D_QUOTE;
+			else if (quote == D_QUOTE)
+				quote = NON;
+		}
+		if (str[i] == '\'')
+		{
+			if (quote == NON)
+				quote = S_QUOTE;
+			else if (quote == S_QUOTE)
+				quote = NON;
+		}
+		i++;
+	}
+	return (quote);
 }
+
 
 //free_tokens
 void free_tokens(t_tokens *tokens)
@@ -147,7 +153,7 @@ int check_tokens(t_global *global)
         }
         else if(tmp->type == S_QUOTE || tmp->type == D_QUOTE)
         {
-            if(check_quote_status(global))
+            if(check_quote(global) != NON)
             {
                 global->errnum = ERROR_QUOTE;
                 printferror(global);

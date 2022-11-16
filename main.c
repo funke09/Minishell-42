@@ -6,7 +6,7 @@
 /*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 00:18:34 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/16 17:12:28 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ char *check_dolar(t_global *global, char **env)
 
 int is_charachter(char c)
 {
-    if(c == '<' || c == '|' || c == '>' || c == ';' || c == '+' || c == '*' || c == '\'' || c == '"') 
+    if(c == '<' || c == '|' || c == '>' || c == ';' || c == '+' || c == '$' || c == '\'' || c == '"') 
         return(1);
     return(0);   
 }
@@ -237,6 +237,12 @@ int is_command(t_global *global, int *i)
     *i = start;
     return(0);
 }
+int is_upper(char c)
+{
+    if(c >= 'A' && c <= 'Z')
+        return(1);
+    return(0);
+}
 
 int is_param(t_global *global, int *i)
 {
@@ -246,6 +252,18 @@ int is_param(t_global *global, int *i)
         (*i)++;
         if(is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))//iscaracter ??
             return(1);
+    }
+    *i = start;
+    return(0);
+}
+int is_dolar(t_global *global, int *i)
+{
+    int start = *i;
+    while(global->line[*i] && global->line[*i] == '$' && !is_blank(global->line[*i + 1]) && global->line[*i + 1] != '\0' && ft_isalpha(global->line[*i + 1]))
+    {
+        (*i)++;
+        if(!is_upper(global->line[*i]) || !global->line[*i])
+            return(1);    
     }
     *i = start;
     return(0);
@@ -265,6 +283,8 @@ t_type type(t_global *global, int *i)
         global->cmd_status = 0;
         return(PIPE);
     }
+    else if(is_dolar(global, i))
+        return(ENV_VAR);
     else if(is_heredoc_or_append(global, i, '>'))
         return(APPEND);
     else if(is_heredoc_or_append(global, i, '<'))
@@ -430,8 +450,7 @@ int line_is_empty(char *line)
 int main(int ac, char **av, char **env)
 {
     t_global global;
-    // t_ast *astr;
-    int check = 0;
+    // int check = 0;
     
     stock_env(env);
     // ft_print_env();
@@ -443,6 +462,7 @@ int main(int ac, char **av, char **env)
     while (1)
     {
         global.line = readline("minishell$> ");
+        add_history(global.line);
         signal(SIGQUIT, SIG_IGN);
         signal(SIGINT, sig_handler);
         if(global.line == NULL)
@@ -457,26 +477,24 @@ int main(int ac, char **av, char **env)
             //+free it all
             exit(1);
         }
-        if(ft_strcmp(global.line, "\n") == 0)
-        {
-            // free(global.line);
-            continue;
-        }
+        // if(ft_strcmp(global.line, "\n") == 0)// no need too cz we shouldnt handel pipeing
+        // {
+        //     // free(global.line);
+        //     continue;
+        // }
         // global.line = check_dolar(&global, global.env);
         tokenization(&global);
         if(!check_tokens(&global)) //return 
         {
             write(1, "error\n", 7);
-            check = 1;
+            // check = 1;
             // free
         }
-        else 
-        {
-            if (!line_is_empty(global.line) && !check)
-                add_history(global.line);
-        }
-        // astr = ast(&global);
-        // print_ast(astr);
+        // else 
+        // {
+        //     if (!line_is_empty(global.line) && !check)// no need to handel this cz if we have just spaces or tabs in our line those not mean the line is empty (try bash)
+        //         add_history(global.line);
+        // }
         print_tokens(&global);
     }
     // free(global.line);

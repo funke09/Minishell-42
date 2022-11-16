@@ -6,7 +6,7 @@
 /*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 00:18:28 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/16 17:08:22 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef enum s_type
     FLAG,
     PARAM,
     HERDOC_KEY,
-    NEWLINE,
+    ENV_VAR,
 } t_type;
 
 
