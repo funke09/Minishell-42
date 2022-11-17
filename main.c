@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 22:10:21 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 23:20:57 by funke            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,18 +206,14 @@ int is_quote(t_global *global, int *i, char c)
         (*i)++;
         while (global->line[*i] && global->line[*i] != c)
             (*i)++;
+        if(global->line[*i] == '\0')
+            global->errnum = ERROR_QUOTE;
         if(global->line[*i] == c)
         {
             (*i)++;
             return(1);
         }
-        // else if(global->line[*i] == '\0')
-        // {
-        //     global->errnum = ERROR_QUOTE;
-        //     printferror(global);
-        // }
-    }
-    //else if 
+    } 
     *i = start;
     return(0);
 }
@@ -407,6 +403,7 @@ void init_global(t_global *global)
     global->fd[1] = -1;
     global->tokens = NULL;
     global->heredoc_activ = 0;
+    global->errnum = 0;
 }
 
 
@@ -492,19 +489,17 @@ int main(int ac, char **av, char **env)
         // }
         // global.line = check_dolar(&global, global.env);
         tokenization(&global);
-        if(!check_tokens(&global)) //return 
-        {
-            write(1, "error\n", 7);
-            // check = 1;
-            // free
-        }
+        check_tokens(&global);
+        if(global.errnum != 0)
+            printferror(&global);
         // else 
         // {
         //     if (!line_is_empty(global.line) && !check)// no need to handel this cz if we have just spaces or tabs in our line those not mean the line is empty (try bash)
         //         add_history(global.line);
         // }
         print_tokens(&global);
+        free(global.line);
+        global.line = NULL;
     }
-    // free(global.line);
     return(0);
 }

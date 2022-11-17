@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 22:00:05 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 23:23:02 by funke            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,11 @@ typedef struct s_global
 int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);
-int check_tokens(t_global *global);
+void check_tokens(t_global *global);
 void print_ast(t_ast *ast);
 char *ft_strtrim_quotes(char *str);
 t_ast *ast(t_global *tokens);
 int	len_key(char *env);
 int expantion(t_global *global, char *token);
-
+int
 #endif

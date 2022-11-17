@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 21:37:17 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 23:21:10 by funke            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,12 @@ void printferror(t_global *global)
     {
         free_tokens(global->tokens);
         global->tokens = NULL;
-    }   
+    } 
+    global->errnum = 0;
 }
 
 // function that check tokens and return if there is an error
-int check_tokens(t_global *global)
+void check_tokens(t_global *global)
 {
     t_tokens *tmp;
     tmp = global->tokens;
@@ -130,87 +131,40 @@ int check_tokens(t_global *global)
         if(tmp->type == PIPE)
         {
             if(start == 1 || !tmp->next || tmp->next->type == PIPE)
-            {
                 global->errnum = ERROR_PIPE;
-                printferror(global);
-                return(0);
-            }
-        }
-        else if(tmp->type == COMMAND)
-        {
-            if(tmp->next && tmp->next->type == COMMAND)
-            {
-                global->errnum = ERROR_COMMAND;
-                printferror(global);
-                return(0);
-            }
         }
         else if(tmp->type == REDIR_IN)
         {
             if(!tmp->next || tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT || tmp->next->type == APPEND || tmp->next->type == HEREDOC || tmp->next->type == PIPE)
-            {
                 global->errnum = ERROR_REDIR;
-                printferror(global);
-                return(0);
-            }
         }
         else if(tmp->type == REDIR_OUT)
         {
             if(!tmp->next || tmp->next->type == REDIR_OUT || tmp->next->type == HEREDOC || tmp->next->type == APPEND || tmp->next->type == REDIR_IN || tmp->next->type == PIPE)// redir out if the next is pipe and filename its working normally but if the next is just pipe schould be a syntax error 
-            {
                 global->errnum = ERROR_REDIR;
-                printferror(global);
-                return(0);
-            }
         }
         else if(tmp->type == APPEND)
         {
             if(!tmp->next || tmp->next->type == APPEND || tmp->next->type == REDIR_OUT || tmp->next->type == REDIR_IN || tmp->next->type == PIPE || tmp->next->type == HEREDOC)
-            {
                 global->errnum = ERROR_APPEND;
-                printferror(global);
-                return(0);
-            }
         }
         else if(tmp->type == HEREDOC)
         {
             if(!tmp->next || tmp->next->type == HEREDOC || tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT || tmp->next->type == APPEND || tmp->next->type == PIPE) // problem in quote (missunderstanding the problem check bash)
-            {
                 global->errnum = ERROR_HEREDOC;
-                printferror(global);
-                return(0);
-            }
             else if(tmp->next->type == HERDOC_KEY)
             {
                 if(go_to_herdoc(global, tmp->next) == 42)
-                {
                         global->errnum = ERROR_HEREDOC;
-                        printferror(global);
-                        return(0);
-                    }
-            }
-        }
-        else if(tmp->type == S_QUOTE || tmp->type == D_QUOTE)
-        {
-            if(check_quote(tmp) != NON)
-            {
-                global->errnum = ERROR_QUOTE;
-                printferror(global);
-                return(0);
             }
         }
         else if(tmp->type == ENV_VAR)
         {
             if (expantion(global, tmp->token) == 42)
-            {
                 global->errnum = ENV_NOT_FOUND;
-                printferror(global);
-                return(0);
-            }
         }
         tmp = tmp->next;
         start = 0;
     }
-    return(1);
 }
 // function that print syntax error and free what must be freed and return 0
