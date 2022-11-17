@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 18:22:32 by funke            ###   ########.fr       */
+/*   Updated: 2022/11/17 22:00:05 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef enum s_error
     ERROR_HEREDOC,
     ERROR_APPEND,
     ERROR_PARAM,
+    ENV_NOT_FOUND,
 }   t_error;
 
 typedef enum s_type
@@ -90,12 +91,14 @@ typedef struct s_global
     int fd[2];
 }   t_global;
 
-int stock_env(char **env);
+int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);
 int check_tokens(t_global *global);
 void print_ast(t_ast *ast);
 char *ft_strtrim_quotes(char *str);
 t_ast *ast(t_global *tokens);
+int	len_key(char *env);
+int expantion(t_global *global, char *token);
 
 #endif

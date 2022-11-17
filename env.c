@@ -6,7 +6,7 @@
 /*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:37 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 00:18:38 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 22:12:41 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,27 +115,25 @@ t_env	**get_adress(void)// get_tenv
 	return (&new);
 }
 
-int stock_env(char **env)
+int stock_env(char **env, t_global *global)
 {
 
-	t_env	**env_list;
 	int		i;
-
-	env_list = get_adress();
+	global->env = get_adress();
 	i = 0;
 	while (env[i])
 		i++;
 	if (i == 0)
 	{	
-		if (init_env(env_list) == 42)
+		if (init_env(global->env) == 42)
 			return (42);
 	}
 	i--;
 	while (i >= 0)
 	{
-		if (push(env[i], env_list, 0) == 42)
+		if (push(env[i], global->env, 0) == 42)
 		{
-			ft_clean_envlist(env_list);
+			ft_clean_envlist(global->env);
 			return (42);
 		}
 		i--;

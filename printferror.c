@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 19:18:20 by funke            ###   ########.fr       */
+/*   Updated: 2022/11/17 21:37:17 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ void printferror(t_global *global)
         printf("ERROR_PARAM\n");
     if(error == ERROR_COMMAND)
         printf("ERROR_COMMAND\n");
+    if(error == ENV_NOT_FOUND)
+        printf("ENV_NOT_FOUND\n");
     
 
 //free if there is something to be freed// not sure if it's the right place// sometimes it's not working exactly when we have a quote in our line but not closed (heap use after free)
@@ -199,7 +201,12 @@ int check_tokens(t_global *global)
         }
         else if(tmp->type == ENV_VAR)
         {
-            
+            if (expantion(global, tmp->token) == 42)
+            {
+                global->errnum = ENV_NOT_FOUND;
+                printferror(global);
+                return(0);
+            }
         }
         tmp = tmp->next;
         start = 0;

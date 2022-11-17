@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 19:09:24 by funke            ###   ########.fr       */
+/*   Updated: 2022/11/17 22:10:21 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -452,8 +452,9 @@ int main(int ac, char **av, char **env)
     t_global global;
     // int check = 0;
     
-    stock_env(env);
-    ft_print_env();
+    stock_env(env,  &global);
+    // ft_print_env();
+    
     init_global(&global);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, sig_handler);
@@ -476,6 +477,13 @@ int main(int ac, char **av, char **env)
             free(global.line);
             //+free it all
             exit(1);
+        }
+        if( ft_strcmp(global.line, "env") == 0)
+        {
+            ft_print_env();
+            free(global.line);
+            continue;
+    
         }
         // if(ft_strcmp(global.line, "\n") == 0)// no need too cz we shouldnt handel pipeing
         // {
