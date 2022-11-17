@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 17:12:28 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 19:09:24 by funke            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,12 +237,7 @@ int is_command(t_global *global, int *i)
     *i = start;
     return(0);
 }
-int is_upper(char c)
-{
-    if(c >= 'A' && c <= 'Z')
-        return(1);
-    return(0);
-}
+
 
 int is_param(t_global *global, int *i)
 {
@@ -259,11 +254,12 @@ int is_param(t_global *global, int *i)
 int is_dolar(t_global *global, int *i)
 {
     int start = *i;
-    while(global->line[*i] && global->line[*i] == '$' && !is_blank(global->line[*i + 1]) && global->line[*i + 1] != '\0' && ft_isalpha(global->line[*i + 1]))
+    if(global->line[*i] && global->line[*i] == '$')
     {
         (*i)++;
-        if(!is_upper(global->line[*i]) || !global->line[*i])
-            return(1);    
+        while(global->line[*i] && !is_blank(global->line[*i]) && !is_charachter(global->line[*i]))
+            (*i)++;
+        return(1);    
     }
     *i = start;
     return(0);
@@ -333,6 +329,8 @@ void    print_type(t_type type)
         printf("PARAM\n");
     else if(type == NON)
         printf("NON\n");
+    else if(type == ENV_VAR)
+        printf("ENV_VAR\n");
 }
 
 void print_global(t_global *global)
@@ -405,6 +403,8 @@ void init_global(t_global *global)
 {
     global->line = NULL;
     global->cmd_status = 0;
+    global->fd[0] = -1;
+    global->fd[1] = -1;
     global->tokens = NULL;
     global->heredoc_activ = 0;
 }
@@ -453,7 +453,7 @@ int main(int ac, char **av, char **env)
     // int check = 0;
     
     stock_env(env);
-    // ft_print_env();
+    ft_print_env();
     init_global(&global);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, sig_handler);

@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   teest.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 16:54:25 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 16:26:35 by funke            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// handel dolar sign and search in env varibels and replace it
+// function that print new promt

@@ -3,23 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/16 16:50:10 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/17 19:11:38 by funke            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_type	check_quote(t_global *global)
+int  go_to_herdoc(t_global *global, t_tokens *tokens)
+{
+    char *str;
+    char txt[100];
+    
+    if(global->fd[0] != -1)
+        close(global->fd[0]);
+    
+    
+    if(pipe(global->fd) < 0)
+        return(42);
+    while(1)
+    {
+        str = readline("> ");
+        if(!str || !ft_strcmp(str, tokens->token))
+            break;
+        write(global->fd[1], str, ft_strlen(str));
+        free(str);
+    }
+    close(global->fd[1]);
+    int n;
+    if((n = read(global->fd[0], txt ,10)) < 0)
+        return(42);
+    txt[n] = 0;
+    printf("%s\n", txt);
+    return(0);
+}
+
+t_type	check_quote(t_tokens *tokens)
 {
 	int		i;
 	t_type	quote;
     char	*str;
 
 	i = 0;
-    str = global->tokens->token;
+    str = tokens->token;
 	quote = NON;
 	while (str[i])
 	{
@@ -150,15 +178,28 @@ int check_tokens(t_global *global)
                 printferror(global);
                 return(0);
             }
+            else if(tmp->next->type == HERDOC_KEY)
+            {
+                if(go_to_herdoc(global, tmp->next) == 42)
+                {
+                        global->errnum = ERROR_HEREDOC;
+                        printferror(global);
+                        return(0);
+                    }
+            }
         }
         else if(tmp->type == S_QUOTE || tmp->type == D_QUOTE)
         {
-            if(check_quote(global) != NON)
+            if(check_quote(tmp) != NON)
             {
                 global->errnum = ERROR_QUOTE;
                 printferror(global);
                 return(0);
             }
+        }
+        else if(tmp->type == ENV_VAR)
+        {
+            
         }
         tmp = tmp->next;
         start = 0;
