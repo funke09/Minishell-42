@@ -401,7 +401,9 @@ int main(int ac, char **av, char **env)
         // }
         // global.line = check_dolar(&global, global.env);
         tokenization(&global);
+        printf("tokenz\n");
         check_tokens(&global);
+        printf("check tokenz\n");
         if(global.errnum != 0)
             printferror(&global);
         // else 

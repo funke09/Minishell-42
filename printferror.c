@@ -185,7 +185,16 @@ void check_tokens(t_global *global)
     // printf("tmp = %d, token = %d", tmp->type , global->tokens->type);
     while(tmp)
     {
-        if(tmp->type == PIPE)
+        if(tmp->type == ENV_VAR)
+        {
+            temp = tmp->token;
+            tmp->token = expantion(global, tmp->token);
+            if (!tmp->token)
+                global->errnum = ENV_NOT_FOUND;
+            printf("tmp->token = %s\n", tmp->token);
+            free(temp);
+        }
+        else if(tmp->type == PIPE)
         {
             if(start == 1 || !tmp->next || tmp->next->type == PIPE)
                 global->errnum = ERROR_PIPE;
@@ -222,11 +231,7 @@ void check_tokens(t_global *global)
             printf("tmp->token = %s\n", tmp->token);
             free(temp);
         }
-        else if(tmp->type == ENV_VAR)
-        {
-            if (expantion(global, tmp->token) == 0)
-                global->errnum = ENV_NOT_FOUND;
-        }
+ 
         tmp = tmp->next;
         start = 0;
     }
