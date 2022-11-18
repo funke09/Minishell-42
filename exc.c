@@ -10,6 +10,7 @@ int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
 
     if (!cmd)
         return (1);
+    /////////ls
     if (len == 3 && !ft_strncmp(cmd, "pwd", len))
         return (0);
     else if (len == 6 && !ft_strncmp(cmd, "export", len))
@@ -51,17 +52,67 @@ int e_echo(char *str)
     return (0);
 }
 
-void r_red_out(char *str)
+void r_red_out(char *file_name)
 {
-
+    struct stat buf;
+    int file;
+    
+    if (stat(file_name, &buf) == -1)
+        perror("");
+    else
+    {  
+    file = open("txt.txt", O_WRONLY ); //O_APPEND//////////////////>>
+    dup2(file, STDOUT_FILENO);
+    close (file);
+    }
 }
 
-int l_ls(void)
+void a_append(char *file_name)
 {
+    struct stat buf;
+    int file;
+    
+    if (stat(file_name, &buf) == -1)
+        perror("");
+    else
+    {  
+    file = open("txt.txt", O_WRONLY | O_APPEND); 
+    close (file);
+    }
+}
+
+// void ft_print_env(void)
+// {
+// 	t_env	*env_list;
+
+// 	env_list = *get_adress();
+// 	while (env_list)
+// 	{
+// 		ft_putstr_fd(env_list->str, 1);
+// 		ft_putchar_fd('\n', 1);
+// 		if (!env_list->next)
+// 			break;
+// 		env_list = env_list->next;
+// 	}
+
+// }
+
+// init env if empty
+
+
+
+
+
+
+int l_ls(char **args)
+{
+//   char *args[] = {"ls", "-la", "/home/fzara/Desktop/mmmmmmmmm", NULL};
+
     int fd[2];
     int pid;
+    t_env	*env_list;
 
-
+	env_list = *get_adress();
     pid = fork();
     if (pid == -1)
     {
@@ -70,7 +121,7 @@ int l_ls(void)
     }
     if (pid == 0)
     {
-
+        execve(args[0], args, env_list);
     }
     else
     {
@@ -103,11 +154,18 @@ char *ft_getenv(char *str)
     return (NULL);
 }
 
+
 char *get_path(char *cmd)
 {
     char *path;
+    char **splt;
+    int l;
 
-    path = ft_getenv(cmd);//not sure
+    path = ft_getenv(cmd);
+
+
+    splt = ft_split;
+
     return (path);
 }
 
