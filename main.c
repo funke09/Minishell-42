@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 23:20:57 by funke            ###   ########.fr       */
+/*   Updated: 2022/11/18 00:55:36 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,95 +27,8 @@ void sig_handler(int var)
     if(var == SIGINT)
     {
         write(1, "\nminishell$> ", 13);
-        return;
+    
     }
-}
-// ft_strreplace
-char *ft_strreplace(t_global *global, char *old, char *new)
-{
-    char *ret;
-    char *tmp;
-    int i;
-    int j;
-    int k;
-    int len;
-
-    i = 0;
-    j = 0;
-    k = 0;
-    len = ft_strlen(global->line);
-    ret = (char *)malloc(sizeof(char) * (len + 1));
-    while (global->line[i])
-    {
-        if (global->line[i] == old[j])
-        {
-            j++;
-            if (old[j] == '\0')
-            {
-                tmp = ft_strjoin(ret, new);
-                free(ret);
-                ret = tmp;
-                i++;
-                j = 0;
-            }
-        }
-        else
-        {
-            ret[k] = global->line[i];
-            i++;
-            k++;
-        }
-    }
-    ret[k] = '\0';
-    return (ret);
-}
-
-// function that check if thers a dolar sing in thr line aand serch for the env
-char *check_dolar(t_global *global, char **env)
-{
-    int i;
-    int j;
-    int k;
-    char *tmp;
-    char *tmp2;
-    char *tmp3;
-
-    i = 0;
-    j = 0;
-    k = 0;
-    tmp = NULL;
-    tmp2 = NULL;
-    tmp3 = NULL;
-    while (global->line[i])
-    {
-        if (global->line[i] == '$')
-        {
-            j = i + 1;
-            while (global->line[j] && global->line[j] != ' ')
-                j++;
-            tmp = ft_substr(global->line, i, j - i);
-            tmp2 = ft_strjoin(tmp, "=");
-            while (env[k])
-            {
-                if (ft_strncmp(env[k], tmp2, ft_strlen(tmp2)) == 0)
-                {
-                    tmp3 = ft_substr(env[k], ft_strlen(tmp2), ft_strlen(env[k]) - ft_strlen(tmp2));
-                    global->line = ft_strreplace(global, tmp, tmp3);
-                    free(tmp);
-                    free(tmp2);
-                    free(tmp3);
-                    return (global->line);
-                }
-                k++;
-            }
-            free(tmp);
-            free(tmp2);
-            free(tmp3);
-            return (global->line);
-        }
-        i++;
-    }
-    return (global->line);
 }
 
 int is_charachter(char c)
@@ -451,7 +364,6 @@ int main(int ac, char **av, char **env)
     
     stock_env(env,  &global);
     // ft_print_env();
-    
     init_global(&global);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, sig_handler);

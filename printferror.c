@@ -3,14 +3,70 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: funke <funke@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 23:21:10 by funke            ###   ########.fr       */
+/*   Updated: 2022/11/18 02:05:13 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+size_t	ft_strlen_char(const char *s, char c)
+{
+    size_t	i;
+
+    i = 0;
+    if(!s)
+        return(0);
+    while (s[i] && s[i] != c)
+        i++;
+    return (i);
+}
+
+
+char *generate_dolar(t_global *global, char *tokens)
+{
+    int  i = 0;
+    int  j = 0;
+    char *str;
+    char res[4096] = {0};
+    char *tmp;
+    char *val;
+    
+    int len;
+    
+    str = tokens;
+    if(str[0] == '\"')
+        i++;
+    // res = malloc(sizeof(char) * 4096);
+    while (str[i])
+    {
+        if (str[i] == '\"')
+            break ;
+        if(str[i] == '$')
+        {
+            len = ft_strlen_char(str + i + 1, ' ');
+            val = expantion(global, str + i);
+            printf("val = %s\n", val);
+            tmp = ft_strjoin(res, val);
+            printf("tmp = %s\n", tmp);
+            if(!tmp)
+                return (NULL);
+            i += len;
+            printf("len = %d\n", len);
+            j = 0;
+            
+        }
+        else
+            res[j++] = str[i];
+        i++;
+    }
+    res[j] = '\0';
+    printf("res = %s\n", res);
+    return(tmp);
+    
+}
 
 int  go_to_herdoc(t_global *global, t_tokens *tokens)
 {
@@ -123,6 +179,7 @@ void printferror(t_global *global)
 void check_tokens(t_global *global)
 {
     t_tokens *tmp;
+    char *temp;
     tmp = global->tokens;
     int start = 1;
     // printf("tmp = %d, token = %d", tmp->type , global->tokens->type);
@@ -158,9 +215,16 @@ void check_tokens(t_global *global)
                         global->errnum = ERROR_HEREDOC;
             }
         }
+        else if(tmp->type == D_QUOTE)
+        {
+            temp = tmp->token;
+            tmp->token = generate_dolar(global, tmp->token);
+            printf("tmp->token = %s\n", tmp->token);
+            free(temp);
+        }
         else if(tmp->type == ENV_VAR)
         {
-            if (expantion(global, tmp->token) == 42)
+            if (expantion(global, tmp->token) == 0)
                 global->errnum = ENV_NOT_FOUND;
         }
         tmp = tmp->next;

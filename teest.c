@@ -6,7 +6,7 @@
 /*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 22:23:09 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/18 01:34:06 by zcherrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char *ft_getenv(t_env *env, char *str)
     return(NULL);
 }
 
-int expantion(t_global *global, char *token)
+char *expantion(t_global *global, char *token)
 {
     char  *str;
     char  *var;
@@ -40,7 +40,7 @@ int expantion(t_global *global, char *token)
 
     if(str[1] == '?')
     {
-        // exit status
+       return NULL;
         
     }
     else
@@ -49,11 +49,12 @@ int expantion(t_global *global, char *token)
         // printf("var = %s\n" , var);
         tmp = ft_getenv(*(global->env), var);
         // printf("tmp = %s\n" , tmp);
+        free(var);
         if(!tmp)
-            return(42);  
+            return(NULL);  
         tmp = ft_strchr(tmp, '=') + 1;
         tmp = ft_substr(tmp, 0, ft_strlen(tmp));
-        printf("tmp = %s\n", tmp);
+        // printf("tmp = %s\n", tmp);
     }
-    return(0);
+    return(tmp);
 }
