@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/18 00:55:36 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/19 16:17:52 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void sig_handler(int var)
 {
     if(var == SIGINT)
     {
+        signal(SIGQUIT, SIG_IGN);
         write(1, "\nminishell$> ", 13);
     
     }
@@ -163,7 +164,7 @@ int is_param(t_global *global, int *i)
 int is_dolar(t_global *global, int *i)
 {
     int start = *i;
-    if(global->line[*i] && global->line[*i] == '$')
+    if(global->line[*i] && global->line[*i] == '$' && global->line[*i + 1] && global->line[*i + 1])
     {
         (*i)++;
         while(global->line[*i] && !is_blank(global->line[*i]) && !is_charachter(global->line[*i]))
@@ -373,8 +374,8 @@ int main(int ac, char **av, char **env)
     {
         global.line = readline("minishell$> ");
         add_history(global.line);
-        signal(SIGQUIT, SIG_IGN);
-        signal(SIGINT, sig_handler);
+        // signal(SIGQUIT, SIG_IGN);
+        // signal(SIGINT, sig_handler);
         if(global.line == NULL)
         {
             write(1, "exit\n", 6);
@@ -401,9 +402,9 @@ int main(int ac, char **av, char **env)
         // }
         // global.line = check_dolar(&global, global.env);
         tokenization(&global);
-        printf("tokenz\n");
+        // printf("tokenz\n");
         check_tokens(&global);
-        printf("check tokenz\n");
+        // printf("check tokenz\n");
         if(global.errnum != 0)
             printferror(&global);
         // else 
@@ -413,6 +414,7 @@ int main(int ac, char **av, char **env)
         // }
         print_tokens(&global);
         free(global.line);
+        free_tokens(global.tokens);
         global.line = NULL;
     }
     return(0);

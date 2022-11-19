@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:37 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/17 22:12:41 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/19 16:11:38 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	*ft_add(char *env)
 	return (s);
 }
 
-int	push(char *env, t_env **begin_lst, int var)
+int	push(char *env, t_env **begin_lst)
 {
 	t_env	*env_new;
 
@@ -73,7 +73,6 @@ int	push(char *env, t_env **begin_lst, int var)
 	if (env_new == NULL)
 		return (42);
 	env_new->str = ft_add(env);
-	env_new->var = var;
 	if (env_new->str == NULL)
 		return (42);
 	env_new->next = *begin_lst;
@@ -88,19 +87,19 @@ int init_env(t_env **env_list)
     s = ft_strjoin("PWD=", getcwd(NULL, 0));
     if(s == NULL)
         return (42);
-    if(push("SHLVL=1", env_list, 1) == 42)
+    if(push("SHLVL=1", env_list) == 42)
     {
         ft_clean_envlist(env_list);
         return (42);
     }
-    if(push(s, env_list, 1) == 42)
+    if(push(s, env_list) == 42)
     {
         free(s);
         ft_clean_envlist(env_list);
         return (42);
     }
     free(s);
-    if(push("OLDPWD", env_list, 1) == 42)
+    if(push("OLDPWD", env_list) == 42)
     {
         ft_clean_envlist(env_list);
         return (42);
@@ -131,7 +130,7 @@ int stock_env(char **env, t_global *global)
 	i--;
 	while (i >= 0)
 	{
-		if (push(env[i], global->env, 0) == 42)
+		if (push(env[i], global->env) == 42)
 		{
 			ft_clean_envlist(global->env);
 			return (42);

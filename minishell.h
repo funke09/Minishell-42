@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/18 01:34:34 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/19 16:10:24 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,6 @@ typedef struct s_tokens
     struct s_tokens *next;
 }   t_tokens; 
 
-typedef struct s_ast
-{
-    t_type type;
-    char *opperator;
-    char *flag;
-    char *cmd;
-    char *arg;
-    struct s_ast *next;
-}   t_ast;
-
 typedef struct s_env
 {
     char *str;
@@ -95,11 +85,12 @@ int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);
 void check_tokens(t_global *global);
-void print_ast(t_ast *ast);
 char *ft_strtrim_quotes(char *str);
-t_ast *ast(t_global *tokens);
 int	len_key(char *env);
-char *expantion(t_global *global, char *token);
+char *expantion(char *token);
 void sig_handler(int var);
+char *ft_getenv(char *str);
+size_t	ft_strlen_char(const char *s);
+void free_tokens(t_tokens *tokens);
 
 #endif

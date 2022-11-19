@@ -3,27 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zcherrad <zcherrad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/18 02:05:13 by zcherrad         ###   ########.fr       */
+/*   Updated: 2022/11/19 15:54:58 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-size_t	ft_strlen_char(const char *s, char c)
+size_t	ft_strlen_char(const char *s)
 {
     size_t	i;
 
     i = 0;
     if(!s)
         return(0);
-    while (s[i] && s[i] != c)
+    while (s[i] && s[i] != '$' && s[i] != ' ' && s[i] != '\"')
         i++;
     return (i);
 }
-
 
 char *generate_dolar(t_global *global, char *tokens)
 {
@@ -31,8 +30,9 @@ char *generate_dolar(t_global *global, char *tokens)
     int  j = 0;
     char *str;
     char res[4096] = {0};
-    char *tmp;
+    // char *tmp;
     char *val;
+    (void)global;
     
     int len;
     
@@ -44,19 +44,16 @@ char *generate_dolar(t_global *global, char *tokens)
     {
         if (str[i] == '\"')
             break ;
-        if(str[i] == '$')
+        if(str[i] == '$' && str[i + 1] != ' ' && str[i + 1])
         {
-            len = ft_strlen_char(str + i + 1, ' ');
-            val = expantion(global, str + i);
+            len = ft_strlen_char(str + i + 1);
+            if (!(val = expantion(str + i)))
+                    val = "";
             printf("val = %s\n", val);
-            tmp = ft_strjoin(res, val);
-            printf("tmp = %s\n", tmp);
-            if(!tmp)
-                return (NULL);
+            ft_strncpy(res + j, val, ft_strlen(val));
             i += len;
-            printf("len = %d\n", len);
-            j = 0;
-            
+            j += ft_strlen(val);
+            // printf("len = %d\n", len);
         }
         else
             res[j++] = str[i];
@@ -64,7 +61,7 @@ char *generate_dolar(t_global *global, char *tokens)
     }
     res[j] = '\0';
     printf("res = %s\n", res);
-    return(tmp);
+    return(ft_strdup(res));
     
 }
 
@@ -72,6 +69,8 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
 {
     char *str;
     char txt[100];
+    // int len = 0;
+    char    *tmp;
     
     if(global->fd[0] != -1)
         close(global->fd[0]);
@@ -84,12 +83,17 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
         str = readline("> ");
         if(!str || !ft_strcmp(str, tokens->token))
             break;
+        tmp = str;
+        str = generate_dolar(global, str);
+        printf("str = %s\n", str);
+        free(tmp);
         write(global->fd[1], str, ft_strlen(str));
         free(str);
     }
     close(global->fd[1]);
+    //***********************test:need to del
     int n;
-    if((n = read(global->fd[0], txt ,10)) < 0)
+    if((n = read(global->fd[0], txt ,100)) < 0)
         return(42);
     txt[n] = 0;
     printf("%s\n", txt);
@@ -107,7 +111,7 @@ t_type	check_quote(t_tokens *tokens)
 	quote = NON;
 	while (str[i])
 	{
-		if (str[i] == '"')
+		if (str[i] == '\"')
 		{
 			if (quote == NON)
 				quote = D_QUOTE;
@@ -188,7 +192,7 @@ void check_tokens(t_global *global)
         if(tmp->type == ENV_VAR)
         {
             temp = tmp->token;
-            tmp->token = expantion(global, tmp->token);
+            tmp->token = generate_dolar(global, tmp->token);
             if (!tmp->token)
                 global->errnum = ENV_NOT_FOUND;
             printf("tmp->token = %s\n", tmp->token);
@@ -228,10 +232,11 @@ void check_tokens(t_global *global)
         {
             temp = tmp->token;
             tmp->token = generate_dolar(global, tmp->token);
+            // if(!tmp->token)
+            //     tmp->token = temp;
             printf("tmp->token = %s\n", tmp->token);
             free(temp);
         }
- 
         tmp = tmp->next;
         start = 0;
     }
