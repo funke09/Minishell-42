@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:37 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 16:11:38 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/19 20:37:41 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,32 +38,33 @@ int	len_key(char *env)
 	return (i);
 }
 
-// char	*ft_add(char *env)
-// {
-// 	int		len;
-// 	char	*s;
-// 	int		i;
-// 	int		y;
+char	*ft_add(char *env)
+{
+	int		len;
+	char	*s;
+	int		i;
+	int		y;
 
-// 	i = 0;
-// 	y = 0;
-// 	len = len_key(env) - 1;
-// 	if (env[len_key(env) - 1] != '+')
-// 		return (ft_strdup(env));//a whydfeg
-// 	s = malloc(sizeof(char) * ft_strlen(env));
-// 	if (s == NULL)
-// 		return (NULL);
-// 	while (env[y])
-// 	{
-// 		s[i] = env[y];
-// 		i++;
-// 		y++;
-// 		if (y == len)
-// 			y++;
-// 	}
-// 	s[i] = '\0';
-// 	return (s);
-// } no need
+	i = 0;
+	y = 0;
+	len = len_key(env) - 1;
+	if (env[len_key(env) - 1] != '+')
+		return (ft_strdup(env));//a whydfeg
+	s = malloc(sizeof(char) * ft_strlen(env));
+	if (s == NULL)
+		return (NULL);
+	while (env[y])
+	{
+		s[i] = env[y];
+		i++;
+		y++;
+		if (y == len)
+			y++;
+	}
+	s[i] = '\0';
+	return (s);
+} 
+
 
 int	push(char *env, t_env **begin_lst)
 {
@@ -72,8 +73,7 @@ int	push(char *env, t_env **begin_lst)
 	env_new = malloc(sizeof(t_env));
 	if (env_new == NULL)
 		return (42);
-	env_new->str = ft_strdup(env);
-	
+	env_new->str = ft_add(env);
 	if (env_new->str == NULL)
 		return (42);
 	env_new->next = *begin_lst;
