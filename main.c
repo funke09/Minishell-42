@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 17:08:20 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/19 17:36:29 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@
 
 void sig_handler(int var)
 {
+    signal(SIGQUIT, SIG_IGN);
     if(var == SIGINT)
     {
-        signal(SIGQUIT, SIG_IGN);
-        write(1, "\nminishell$> ", 13);
+        ft_putstr_fd("\n\e[1;35mminishell$> \e[0m", 1);
     
     }
 }
@@ -164,7 +164,7 @@ int is_param(t_global *global, int *i)
 int is_dolar(t_global *global, int *i)
 {
     int start = *i;
-    if(global->line[*i] && global->line[*i] == '$' && global->line[*i + 1] && global->line[*i + 1])
+    if(global->line[*i] && global->line[*i] == '$' && global->line[*i + 1])
     {
         (*i)++;
         while(global->line[*i] && !is_blank(global->line[*i]) && !is_charachter(global->line[*i]))
@@ -372,11 +372,11 @@ int main(int ac, char **av, char **env)
 		return(0);
     while (1)
     {
+        // signal(SIGINT, sig_handler);
         global.line = readline("\e[1;35mminishell$> \e[0m");
     
         add_history(global.line);
         // signal(SIGQUIT, SIG_IGN);
-        // signal(SIGINT, sig_handler);
         if(global.line == NULL)
         {
             write(1, "exit\n", 6);
