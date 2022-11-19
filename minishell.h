@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 16:10:24 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/19 16:40:46 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ typedef struct s_tokens
 typedef struct s_env
 {
     char *str;
-    int var;
     struct s_env *next;
 }   t_env;
 
