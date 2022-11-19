@@ -24,6 +24,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 typedef enum s_error
 {

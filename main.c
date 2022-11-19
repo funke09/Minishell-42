@@ -282,9 +282,9 @@ void print_tokens(t_global *global)
     t_tokens *token;
 
     token = global->tokens;
-    if(!token)
+    if (!token)
         return;
-    while(token)
+    while (token)
     {
         printf("token: %s, type: %d\n ", token->token, token->type);
         token = token->next;
