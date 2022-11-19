@@ -28,29 +28,29 @@ int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
     return (1);
 }
 
-// ignore the flags if not valid
 
 
-// int is_valid_cmd(char *cmd)
-// {
-//     return(1);
-// }
+//if flag not valid invalid option
+
+
+int is_valid_cmd(char *cmd)
+{
+    struct stat buf;
+    if (stat(cmd, &buf) == -1)
+        return (1);
+
+    return(0);
+}
 
 int p_pwd(void)
 {
-    char *tmp;
 
-    tmp = getcwd(NULL, 0);
-    ft_putendl_fd(tmp, 1);
-    free(tmp);
+    printf("%s\n", getcwd(NULL, 0));
+
     return (0);
 }
 
-int e_echo(char *str)
-{
-    ft_putendl_fd(str, 1);
-    return (0);
-}
+
 
 void r_red_out(char *file_name)
 {
@@ -81,6 +81,49 @@ void a_append(char *file_name)
     }
 }
 
+void ft_unset(t_env **env, void *var_name)
+{
+    int l;
+    t_env *curr;
+    t_env *tmp;
+
+    l = ft_strlen (var_name);
+    if (!env || !*env)
+        return;
+    while (*env && !ft_strncmp(var_name, (*env)->str, l))
+    {
+        tmp = (*env)->next;
+        free(*env);
+        *env = tmp;
+    }
+    curr = *env;
+    while (curr && curr->next)
+    {
+        if (!ft_strncmp(var_name, curr->next->str, l))
+        {
+            tmp = curr->next;
+            curr->next = curr->next->next;
+            free(tmp);
+        }
+        else 
+            curr = curr->next;
+    }
+}
+
+void ft_execute()
+{
+    
+}
+void ft_export(char *var)
+{
+    //push
+}
+
+void c_cd(char *path)
+{
+    chdir(path);
+}
+
 // void ft_print_env(void)
 // {
 // 	t_env	*env_list;
@@ -97,18 +140,22 @@ void a_append(char *file_name)
 
 // }
 
-// init env if empty
+
+
+void ft_free(char **splt, int i)
+{
+    while (i >= 0)
+        free(splt[i--]);
+    free(splt);
+}
 
 
 
-
-
-
-int l_ls(char **args)
+int do_cmd(char **args)
 {
 //   char *args[] = {"ls", "-la", "/home/fzara/Desktop/mmmmmmmmm", NULL};
 
-    int fd[2];
+    int ret;
     int pid;
     t_env	*env_list;
 
@@ -121,7 +168,9 @@ int l_ls(char **args)
     }
     if (pid == 0)
     {
-        execve(args[0], args, env_list);
+        ret = execve(args[0], args, NULL);
+        if (ret == -1)
+            perror();
     }
     else
     {
@@ -130,6 +179,7 @@ int l_ls(char **args)
         int statuscode = WEXITSTATUS(wstatus);
         return (statuscode);
     }
+    
 }
 
 char *ft_getenv(char *str)
@@ -159,25 +209,24 @@ char *get_path(char *cmd)
 {
     char *path;
     char **splt;
-    int l;
+    int l, i = -1;
+    char *tmp ;
+    struct stat buf;
 
     path = ft_getenv(cmd);
 
 
-    splt = ft_split;
-
-    return (path);
-}
-
-// int p_pipe()
-// {
-//     int pid;
-//     int fd[2];
-
-//     pid = fork();
-// }
-
-int main()
-{
-
+    splt = ft_split(path, ':');
+    while (splt[++i])
+    {
+        splt[i] = ft_strjoin(splt[i],"/");
+        tmp = ft_strjoin(splt[i], cmd);
+        if (stat(tmp, &buf) != -1)
+        {
+            // ft_free
+            return(tmp);
+        }
+    }
+    // ft_free(splt)
+    return (NULL);
 }
