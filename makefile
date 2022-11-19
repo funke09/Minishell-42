@@ -6,7 +6,7 @@
 #    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/11/19 15:53:56 by macos            ###   ########.fr        #
+#    Updated: 2022/11/19 16:52:30 by macos            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ fclean : clean
 	@echo "\nDeleting minishell objects..."
 	@rm -f $(NAME)
 	@echo "\nDeleting libft objects..."
-	@make -C libft/ clean
+	@make -C libft/ fclean
 	@echo "\nDeleting executable..."
 	@echo "\033[0m"
 re : fclean all
