@@ -6,11 +6,23 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/18 22:46:51 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/19 22:40:03 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static size_t	ft_strlen_character(const char *s, char c)
+{
+    size_t	i;
+
+    i = 0;
+    if(!s)
+        return(0);
+    while (s[i] && s[i] != c)
+        i++;
+    return (i);
+}
 
 char *ft_getenv(char *str)
 {
@@ -21,7 +33,8 @@ char *ft_getenv(char *str)
 	env_list = *get_adress();
 	while (env_list)
 	{
-        len = ft_strlen(str);
+        len = ft_strlen_character(env_list->str, '=');
+        printf("len %zu\n", len);
         if (!ft_strncmp(str, env_list->str, len))
         {
             path = ft_substr(env_list->str, len, ft_strlen(env_list->str) - len);
