@@ -38,34 +38,6 @@ int	len_key(char *env)
 	return (i);
 }
 
-char	*ft_add(char *env)
-{
-	int		len;
-	char	*s;
-	int		i;
-	int		y;
-
-	i = 0;
-	y = 0;
-	len = len_key(env) - 1;
-	if (env[len_key(env) - 1] != '+')
-		return (ft_strdup(env));//a whydfeg
-	s = malloc(sizeof(char) * ft_strlen(env));
-	if (s == NULL)
-		return (NULL);
-	while (env[y])
-	{
-		s[i] = env[y];
-		i++;
-		y++;
-		if (y == len)
-			y++;
-	}
-	s[i] = '\0';
-	return (s);
-} 
-
-
 int	push(char *env, t_env **begin_lst)
 {
 	t_env	*env_new;
@@ -73,7 +45,7 @@ int	push(char *env, t_env **begin_lst)
 	env_new = malloc(sizeof(t_env));
 	if (env_new == NULL)
 		return (42);
-	env_new->str = ft_add(env);
+	env_new->str = ft_strdup(env);
 	if (env_new->str == NULL)
 		return (42);
 	env_new->next = *begin_lst;

@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 20:24:53 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 04:24:56 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,40 @@ void sig_handler(int var)
     if(var == SIGINT)
     {
         ft_putstr_fd("\n\e[1;35mminishell$> \e[0m", 1);
-    
     }
+}
+
+void print_tokens(t_global *global)
+{
+    t_tokens *token;
+
+    token = global->tokens;
+    if (!token)
+        return;
+    while (token)
+    {
+        printf("token: %s, type: %d\n ", token->token, token->type);
+        token = token->next;
+    }
+}
+
+t_type get_last_type(t_global *global)
+{
+    t_tokens *token;
+
+    if (!global || !global->tokens)
+        return (NON);
+    token = global->tokens;
+    while (token)
+    {
+        if (token->next == NULL)
+            break;
+        token = token->next;
+    }
+    if (token)
+        return(token->type);
+    return(NON);
+    
 }
 
 int is_charachter(char c)
@@ -38,14 +70,6 @@ int is_charachter(char c)
         return(1);
     return(0);   
 }
-
-void syntax_error(void)
-{
-    write(2, "minishell: syntax error\n", 25);
-    return;
-}
-
-
 
 int is_blank(char c)
 {
@@ -61,6 +85,7 @@ int is_redir(t_global *global, int *i, char c)
     if(global->line[*i] == c)
     {
         (*i)++;
+        global->is_redir = 1;
         return(1);
     }
     *i = start;
@@ -73,6 +98,8 @@ int is_heredoc_or_append(t_global *global, int *i, char c)
     {
         if(c == '<')
             global->heredoc_activ = 1;
+        if(c == '>')
+            global->is_redir = 1;
         *i += 2;
         return(1);
     }
@@ -132,10 +159,12 @@ int is_quote(t_global *global, int *i, char c)
     return(0);
 }
 
+
 int is_command(t_global *global, int *i)
 {
     int start = *i;
-    while(global->cmd_status == 0 && ft_isalnum(global->line[*i]))
+    
+    while(global->is_redir == 0 &&global->cmd_status == 0 && !is_blank(global->line[*i]))
     {
         (*i)++;
         if(is_blank(global->line[*i]) || global->line[*i] == '\0'  || is_charachter(global->line[*i]))
@@ -152,11 +181,14 @@ int is_command(t_global *global, int *i)
 int is_param(t_global *global, int *i)
 {
     int start = *i;
-    while (global->cmd_status == 1 && !is_blank(global->line[*i]) && global->line[*i])
+    while ((global->cmd_status == 1 || global->is_redir == 1) && !is_blank(global->line[*i]) && global->line[*i])
     {
         (*i)++;
-        if(is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))//iscaracter ??
+        if(is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))
+        {
+            global->is_redir = 0;
             return(1);
+        }//iscaracter ??
     }
     *i = start;
     return(0);
@@ -267,6 +299,7 @@ t_tokens *add_token(t_global *global, int *i)
         free(new);
         global->cmd_status = 0;
         global->heredoc_activ = 0;
+        global->is_redir = 0;
         return(NULL);
     }
     len = *i - start;
@@ -275,20 +308,6 @@ t_tokens *add_token(t_global *global, int *i)
     // print_global(global);
     print_type(new->type);
     return(new);
-}
-
-void print_tokens(t_global *global)
-{
-    t_tokens *token;
-
-    token = global->tokens;
-    if (!token)
-        return;
-    while (token)
-    {
-        printf("token: %s, type: %d\n ", token->token, token->type);
-        token = token->next;
-    }
 }
 
 void tokenization(t_global *global)
@@ -318,6 +337,7 @@ void init_global(t_global *global)
     global->tokens = NULL;
     global->heredoc_activ = 0;
     global->errnum = 0;
+    global->is_redir = 0;
 }
 
 
@@ -346,17 +366,6 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-int line_is_empty(char *line)
-{
-    int i = -1;
-
-    while (line[++i])
-    {
-        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-            return (0);
-    }
-    return (1);
-}
 
 int main(int ac, char **av, char **env)
 {
@@ -379,6 +388,7 @@ int main(int ac, char **av, char **env)
         // signal(SIGQUIT, SIG_IGN);
         if(global.line == NULL)
         {
+            signal(SIGQUIT, SIG_IGN);
             write(1, "exit\n", 6);
             exit(1);
         }
@@ -408,11 +418,6 @@ int main(int ac, char **av, char **env)
         // printf("check tokenz\n");
         if(global.errnum != 0)
             printferror(&global);
-        // else 
-        // {
-        //     if (!line_is_empty(global.line) && !check)// no need to handel this cz if we have just spaces or tabs in our line those not mean the line is empty (try bash)
-        //         add_history(global.line);
-        // }
         print_tokens(&global);
         free(global.line);
         free_tokens(global.tokens);

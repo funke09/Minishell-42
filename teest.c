@@ -12,29 +12,18 @@
 
 #include "minishell.h"
 
-static size_t	ft_strlen_character(const char *s, char c)
-{
-    size_t	i;
 
-    i = 0;
-    if(!s)
-        return(0);
-    while (s[i] && s[i] != c)
-        i++;
-    return (i);
-}
-
-char *ft_getenv(char *str)
+char *ft_getenv(char *str, int len)
 {
 	t_env	*env_list;
     char    *path;
-    size_t     len;
+    // size_t     len;
 
 	env_list = *get_adress();
 	while (env_list)
 	{
-        len = ft_strlen_character(env_list->str, '=');
-        printf("len %zu\n", len);
+        // len = ft_strlen_character(env_list->str, '=');
+        printf("len %i\n", len);
         if (!ft_strncmp(str, env_list->str, len))
         {
             path = ft_substr(env_list->str, len, ft_strlen(env_list->str) - len);
@@ -70,8 +59,8 @@ char *expantion(char *token)
     {
         var = ft_substr(str,  1, len);
         
-        // printf("var = %s len = %d\n" , var, len);
-        tmp = ft_getenv(var);
+        printf("var = %s len = %d\n" , var, len);
+        tmp = ft_getenv(var, len);
         // printf("tmp = %s\n" , tmp);
         free(var);
         if(!tmp)

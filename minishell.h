@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 17:08:10 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 02:27:37 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include "libft/libft.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include<stdbool.h>
 
 typedef enum s_error
 {
@@ -71,6 +72,7 @@ typedef struct s_env
     struct s_env *next;
 }   t_env;
 
+
 typedef struct s_global
 {
     char *line;
@@ -80,6 +82,7 @@ typedef struct s_global
     t_error errnum;
     t_env **env;
     int fd[2];
+    bool is_redir;
 }   t_global;
 
 int stock_env(char **env, t_global *global);
@@ -90,7 +93,7 @@ char *ft_strtrim_quotes(char *str);
 int	len_key(char *env);
 char *expantion(char *token);
 void sig_handler(int var);
-char *ft_getenv(char *str);
+char *ft_getenv(char *str, int len);
 size_t	ft_strlen_char(const char *s);
 void free_tokens(t_tokens *tokens);
 
