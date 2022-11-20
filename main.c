@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 17:04:49 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 17:17:01 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void sig_handler(int var)
     signal(SIGQUIT, SIG_IGN);
     if(var == SIGINT)
     {
+        g_var = 1;
         ft_putstr_fd("\n\e[1;35mminishell$> \e[0m", 1);
     }
 }
@@ -373,6 +374,7 @@ int main(int ac, char **av, char **env)
 {
     t_global global;
     // int check = 0;
+    g_var = 0;
     
     stock_env(env,  &global);
     // ft_print_env();
@@ -390,7 +392,7 @@ int main(int ac, char **av, char **env)
         // signal(SIGQUIT, SIG_IGN);
         if(global.line == NULL)
         {
-            signal(SIGQUIT, SIG_IGN);
+            // signal(SIGQUIT, SIG_IGN);
             write(1, "exit\n", 6);
             exit(1);
         }

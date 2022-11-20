@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 16:32:39 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 17:29:51 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,11 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
     while(1)
     {
         str = readline("> ");
+        if(g_var)
+        {
+            g_var = 0;
+            break;
+        }
         if(!str || !ft_strcmp(str, tokens->token) || global->herdoc_stat)
             break;
         tmp = str;
@@ -88,7 +93,7 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
         printf("str = %s\n", str);
         free(tmp);
         write(global->fd[1], str, ft_strlen(str));
-        add_history(str);
+        // add_history(str);
         free(str);
     }
     close(global->fd[1]);
