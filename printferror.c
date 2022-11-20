@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
+/*   By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 17:29:51 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 20:34:04 by oelazzou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,37 +106,6 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
     return(0);
 }
 
-t_type	check_quote(t_tokens *tokens)
-{
-	int		i;
-	t_type	quote;
-    char	*str;
-
-	i = 0;
-    str = tokens->token;
-	quote = NON;
-	while (str[i])
-	{
-		if (str[i] == '\"')
-		{
-			if (quote == NON)
-				quote = D_QUOTE;
-			else if (quote == D_QUOTE)
-				quote = NON;
-		}
-		if (str[i] == '\'')
-		{
-			if (quote == NON)
-				quote = S_QUOTE;
-			else if (quote == S_QUOTE)
-				quote = NON;
-		}
-		i++;
-	}
-	return (quote);
-}
-
-
 //free_tokens
 void free_tokens(t_tokens *tokens)
 {
@@ -149,6 +118,25 @@ void free_tokens(t_tokens *tokens)
         free(tmp->token);
         free(tmp);
     }
+}
+char *inside_quote(char *tokens)
+{
+    int i;
+    int j = 0;
+    char *token = tokens;
+    char *str;
+    i = 0;
+    str = (char *)malloc(sizeof(char) * ft_strlen(tokens));
+    if(token[0] == '\'')
+        i++;
+    while (token[i])
+    {
+        if(token[i] == '\'')
+            break;
+        str[j++] = token[i++];
+    }
+    str[j] = '\0';
+    return(str);
 }
 
 void printferror(t_global *global)
@@ -216,8 +204,6 @@ void check_tokens(t_global *global)
         }
         else if(tmp->type == REDIR_OUT)
         {
-            if (!tmp->next)
-                printf("@@@@@");
             if(!tmp->next || tmp->next->type == REDIR_OUT || tmp->next->type == HEREDOC || tmp->next->type == APPEND || tmp->next->type == REDIR_IN || tmp->next->type == PIPE)// redir out if the next is pipe and filename its working normally but if the next is just pipe schould be a syntax error 
                 global->errnum = ERROR_REDIR;
         }
@@ -242,6 +228,12 @@ void check_tokens(t_global *global)
             tmp->token = generate_dolar(global, tmp->token);
             // if(!tmp->token)
             //     tmp->token = temp;
+            free(temp);
+        }
+        else if(tmp->type == S_QUOTE)
+        {
+            temp = tmp->token;
+            tmp->token = inside_quote(tmp->token);
             printf("tmp->token = %s\n", tmp->token);
             free(temp);
         }

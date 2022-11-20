@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
+/*   By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 17:16:21 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 20:41:52 by oelazzou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ typedef struct s_env
 typedef struct s_global
 {
     char *line;
-    int cmd_status;
-    int heredoc_activ;
+    bool cmd_status;
+    bool heredoc_activ;
     t_tokens *tokens;
     t_error errnum;
     t_env **env;

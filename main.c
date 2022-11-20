@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
+/*   By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 17:17:01 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 20:46:20 by oelazzou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -422,6 +422,7 @@ int main(int ac, char **av, char **env)
         // printf("check tokenz\n");
         if(global.errnum != 0)
             printferror(&global);
+        // execution(&global);
         print_tokens(&global);
         free(global.line);
         free_tokens(global.tokens);
