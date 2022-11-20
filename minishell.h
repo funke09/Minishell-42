@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 02:27:37 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 04:45:43 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct s_global
     t_env **env;
     int fd[2];
     bool is_redir;
+    bool herdoc_stat;
 }   t_global;
 
 int stock_env(char **env, t_global *global);

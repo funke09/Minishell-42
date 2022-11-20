@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 04:24:56 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/20 17:04:49 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 void sig_handler(int var)
 {
+    
     signal(SIGQUIT, SIG_IGN);
     if(var == SIGINT)
     {
@@ -164,7 +165,7 @@ int is_command(t_global *global, int *i)
 {
     int start = *i;
     
-    while(global->is_redir == 0 &&global->cmd_status == 0 && !is_blank(global->line[*i]))
+    while(global->line[*i] && global->is_redir == 0 && global->cmd_status == 0 && !is_blank(global->line[*i]))
     {
         (*i)++;
         if(is_blank(global->line[*i]) || global->line[*i] == '\0'  || is_charachter(global->line[*i]))
@@ -338,6 +339,7 @@ void init_global(t_global *global)
     global->heredoc_activ = 0;
     global->errnum = 0;
     global->is_redir = 0;
+    global->herdoc_stat = 0;
 }
 
 
