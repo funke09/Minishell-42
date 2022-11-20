@@ -10,7 +10,6 @@ int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
 
     if (!cmd)
         return (1);
-    /////////ls
     if (len == 3 && !ft_strncmp(cmd, "pwd", len))
         return (0);
     else if (len == 6 && !ft_strncmp(cmd, "export", len))
@@ -28,7 +27,15 @@ int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
     return (1);
 }
 
+void    exec_builtin()
+{
+    if ()
+    {
+        printf("%s\n", getcwd(NULL, 0));
+        return ;
+    }
 
+}
 
 //if flag not valid invalid option
 
@@ -50,7 +57,20 @@ int p_pwd(void)
     return (0);
 }
 
-
+void r_red_in(char *file_name)
+{
+    struct stat buf;
+    int file;
+    
+    if (stat(file_name, &buf) == -1)
+        perror("");
+    else
+    {  
+    file = open(file_name, O_WRONLY | O_CREAT); //O_APPEND//////////////////>>
+    dup2(file, STDIN_FILENO);
+    close (file);
+    }
+}
 
 void r_red_out(char *file_name)
 {
@@ -61,7 +81,7 @@ void r_red_out(char *file_name)
         perror("");
     else
     {  
-    file = open("txt.txt", O_WRONLY | O_CREAT); //O_APPEND//////////////////>>
+    file = open(file_name, O_WRONLY | O_CREAT); //O_APPEND//////////////////>>
     dup2(file, STDOUT_FILENO);
     close (file);
     }
@@ -76,7 +96,7 @@ void a_append(char *file_name)
         perror("");
     else
     {  
-    file = open("txt.txt", O_WRONLY |O_CREAT | O_APPEND); 
+    file = open(file_name, O_WRONLY |O_CREAT | O_APPEND); 
     close (file);
     }
 }
@@ -116,18 +136,25 @@ void ft_unset(t_env **env, char **args)
 
     while(args[++i])
     {
-        // check_valid args : isdigit w c
+        // check_valid args : only numbers, underscores, and digits.
         ft_remove(env, args[i]);
     }
     
     
 }
 
+void ft_exit()
+{
+    exit();
+}
 
 void ft_export(char **args)
 {
     //push
+    //check if func exist if si strjoin
+    //v// check_valid args 
     // if already exist str join
+
 }
 
 void c_cd(char *path)
@@ -162,36 +189,6 @@ void ft_free(char **splt, int i)
 
 
 
-int do_cmd(char **args)
-{
-//   char *args[] = {"ls", "-la", "/home/fzara/Desktop/mmmmmmmmm", NULL};
-
-    int ret;
-    int pid;
-    t_env	*env_list;
-
-	env_list = *get_adress();
-    pid = fork();
-    if (pid == -1)
-    {
-        printf("%s\n",strerror(errno));
-        return (1);
-    }
-    if (pid == 0)
-    {
-        ret = execve(args[0], args, NULL);
-        if (ret == -1)
-            perror("");
-    }
-    else
-    {
-        int wstatus;
-        wait(&wstatus);
-        int statuscode = WEXITSTATUS(wstatus);
-        return (statuscode);
-    }
-    
-}
 
 char *ft_getenv(char *str)
 {
@@ -259,12 +256,59 @@ char *get_args(t_tokens *token, int *after_args)
     return (args);
 }
 
+int fork_execve(char **args, int fd[2], int p)
+{
+//   char *args[] = {"ls", "-la", "/home/fzara/Desktop/mmmmmmmmm", NULL};
+
+    int ret;
+    int pid;
+    t_env	*env_list;
+
+	env_list = *get_adress();
+
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("");
+    }
+    if (pid == 0)
+    {
+        if (p != -1)
+        {
+            if(p == 1)
+                dup2(fd[1], STDOUT_FILENO);
+            else if(p = 0)
+                dup2(fd[0], STDIN_FILENO);
+            close(fd[0]);
+            close(fd[1]);
+        }
+
+        ret = execve(args[0], args, NULL);
+        if (ret == -1)
+            perror("");
+    }
+    else
+    {
+        int wstatus;
+        wait(&wstatus);
+        int statuscode = WEXITSTATUS(wstatus);
+        return (statuscode);
+    }
+    
+}
+
+// child_processs()
+// get_status
+
+// get_next
 
 void ft_execute(t_global *global)
 {
     t_tokens *token;
     int      after_args;
-    char    *args;
+    char    **args;
+    int fd[2];
+    int p = -1;
 
 
     after_args = -1;
@@ -273,32 +317,39 @@ void ft_execute(t_global *global)
         return;
     while (token)
     {
-        get_args(token, &after_args);
+        args = get_args(token, &after_args);
 
-        if (token->type == PIPE || token->type == REDIR_IN || token->type == REDIR_OUT || token->type == APPEND)
-            token = token->next;
         if (after_args == PIPE)
         {
-
+            if (pipe(fd) == -1)
+                perror("");
+            p = 0;
         }
-        if (after_args == REDIR_IN)
+        else if (after_args == REDIR_IN)
         {
             
         }
-        if (after_args == REDIR_OUT)
+        else if (after_args == REDIR_OUT)
         {
             
         }
-        if (after_args == APPEND)
+        else if (after_args == APPEND)
         {
             
         }
         if (token->type == COMMAND)
         {
-
+            if (p = -1)
+                fork_execve(args, fd, -1);
+            else
+                fork_execve(args, fd, p);
         }
-        // printf("token: %s, type: %d\n ", token->token, token->type);
-        // token = token->next;
+        else if (token->type == PIPE)
+        {
+            p = 1;
+        }
+        // skip args && params
+
     }
 }
 
