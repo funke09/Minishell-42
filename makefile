@@ -6,13 +6,13 @@
 #    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/11/20 02:07:36 by macos            ###   ########.fr        #
+#    Updated: 2022/11/21 06:50:44 by macos            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env.c printferror.c teest.c
+SRC = main.c env.c printferror.c teest.c excution.c utils.c
 
 OBJ = $(SRC:.c=.o)
 

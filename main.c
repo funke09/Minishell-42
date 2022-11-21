@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 20:46:20 by oelazzou         ###   ########.fr       */
+/*   Updated: 2022/11/21 05:25:28 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@
 
 void sig_handler(int var)
 {
-    
+    while (wait(NULL) > 0)
+		;
     signal(SIGQUIT, SIG_IGN);
     if(var == SIGINT)
     {
@@ -45,25 +46,6 @@ void print_tokens(t_global *global)
         printf("token: %s, type: %d\n ", token->token, token->type);
         token = token->next;
     }
-}
-
-t_type get_last_type(t_global *global)
-{
-    t_tokens *token;
-
-    if (!global || !global->tokens)
-        return (NON);
-    token = global->tokens;
-    while (token)
-    {
-        if (token->next == NULL)
-            break;
-        token = token->next;
-    }
-    if (token)
-        return(token->type);
-    return(NON);
-    
 }
 
 int is_charachter(char c)
@@ -277,14 +259,6 @@ void    print_type(t_type type)
         printf("ENV_VAR\n");
 }
 
-void print_global(t_global *global)
-{
-    printf("line :%s\n", global->line);
-    printf("cmd status :%d\n", global->cmd_status);
-    printf("heredoc :%d\n", global->heredoc_activ);
-}
-
-
 t_tokens *add_token(t_global *global, int *i)
 {
     int len = 0;
@@ -321,9 +295,6 @@ void tokenization(t_global *global)
     current = global->tokens;
     while(current)
     {
-        // write(1, "tokenization\n", 13);
-        // printf("%s\n", current->token);
-        // print_tokens(global);
         current->next = add_token(global, &i);
         current = current->next;
     }
@@ -373,27 +344,23 @@ int	ft_strcmp(char *s1, char *s2)
 int main(int ac, char **av, char **env)
 {
     t_global global;
-    // int check = 0;
     g_var = 0;
     
     stock_env(env,  &global);
     // ft_print_env();
     init_global(&global);
-    signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, sig_handler);
+    signal(SIGQUIT, SIG_IGN);
     if(!ac && !av)
 		return(0);
     while (1)
     {
-        // signal(SIGINT, sig_handler);
+            // signal(SIGQUIT, SIG_IGN);
         global.line = readline("\e[1;35mminishell$> \e[0m");
-    
         add_history(global.line);
-        // signal(SIGQUIT, SIG_IGN);
         if(global.line == NULL)
         {
-            // signal(SIGQUIT, SIG_IGN);
-            write(1, "exit\n", 6);
+            write(1, "exitt\n", 6);
             exit(1);
         }
         if( ft_strcmp(global.line, "exit") == 0)
@@ -410,20 +377,14 @@ int main(int ac, char **av, char **env)
             continue;
     
         }
-        // if(ft_strcmp(global.line, "\n") == 0)// no need too cz we shouldnt handel pipeing
-        // {
-        //     // free(global.line);
-        //     continue;
-        // }
-        // global.line = check_dolar(&global, global.env);
         tokenization(&global);
-        // printf("tokenz\n");
         check_tokens(&global);
-        // printf("check tokenz\n");
         if(global.errnum != 0)
             printferror(&global);
-        // execution(&global);
-        print_tokens(&global);
+        if (global.tokens)
+            execute(&global);
+        
+        // print_tokens(&global);
         free(global.line);
         free_tokens(global.tokens);
         global.line = NULL;

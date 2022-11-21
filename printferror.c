@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printferror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 20:34:04 by oelazzou         ###   ########.fr       */
+/*   Updated: 2022/11/20 23:52:42 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ char *generate_dolar(t_global *global, char *tokens)
     int  j = 0;
     char *str;
     char res[4096] = {0};
-    // char *tmp;
     char *val;
     (void)global;
     
@@ -39,7 +38,6 @@ char *generate_dolar(t_global *global, char *tokens)
     str = tokens;
     if(str[0] == '\"')
         i++;
-    // res = malloc(sizeof(char) * 4096);
     while (str[i])
     {
         if (str[i] == '\"')
@@ -49,18 +47,15 @@ char *generate_dolar(t_global *global, char *tokens)
             len = ft_strlen_char(str + i + 1);
             if (!(val = expantion(str + i)))
                     val = "";
-            printf("val = %s\n", val);
             ft_strncpy(res + j, val, ft_strlen(val));
             i += len;
             j += ft_strlen(val);
-            // printf("len = %d\n", len);
         }
         else
             res[j++] = str[i];
         i++;
     }
     res[j] = '\0';
-    printf("res = %s\n", res);
     return(ft_strdup(res));
     
 }
@@ -69,13 +64,10 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
 {
     char *str;
     char txt[100];
-    // int len = 0;
     char    *tmp;
     
     if(global->fd[0] != -1)
         close(global->fd[0]);
-    
-    
     if(pipe(global->fd) < 0)
         return(42);
     while(1)
@@ -90,10 +82,9 @@ int  go_to_herdoc(t_global *global, t_tokens *tokens)
             break;
         tmp = str;
         str = generate_dolar(global, str);
-        printf("str = %s\n", str);
         free(tmp);
         write(global->fd[1], str, ft_strlen(str));
-        // add_history(str);
+        // add_history(str); 
         free(str);
     }
     close(global->fd[1]);

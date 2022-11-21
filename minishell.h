@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 20:41:52 by oelazzou         ###   ########.fr       */
+/*   Updated: 2022/11/21 06:53:10 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,24 @@ typedef struct s_global
     bool herdoc_stat;
 }   t_global;
 
+typedef struct			s_pipe
+{
+	int					pipe[2];
+	pid_t				pid;
+	int					temp;
+	int					cmd_no;
+}						t_pipe;
+
+typedef struct			s_get_bin
+{
+	int					i;
+	char				*bin_file;
+	char				*env_path_value;
+	char				**dirs;
+	char				*tmp;
+	char				*tmp2;
+}						t_get_bin;
+
 int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);
@@ -99,4 +117,10 @@ char *ft_getenv(char *str, int len);
 size_t	ft_strlen_char(const char *s);
 void free_tokens(t_tokens *tokens);
 
+
+int             execute(t_global *global);
+char			*get_bin_file(char **cmd, t_env **env);
+
+
+void	ft_strdel(char **as);
 #endif
