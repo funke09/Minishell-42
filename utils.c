@@ -14,21 +14,21 @@ void	ft_strdel(char **as)
 	ft_memdel((void **)as);
 }
 
-void		ft_free_arr(char **arr)
+void		ft_free_arr(char **env)
 {
 	int		i;
 
-	if (arr)
+	if (env)
 	{
 		i = 0;
-		while (arr[i] != NULL)
+		while (env[i] != NULL)
 		{
-			ft_strdel(&arr[i]);
+			ft_strdel(&env[i]);
 			i++;
 		}
-		if (arr)
-			free(arr);
-		arr = NULL;
+		if (env)
+			free(env);
+		env = NULL;
 	}
 }
 
@@ -77,14 +77,13 @@ char *get_path(t_env **envirement) // key=value
     return (NULL);
 }
 
-char			*get_bin_file(char **cmd, t_env **env)
+char			*get_bin_file(char **cmd, t_env **env)////////////////
 {
 	t_get_bin	v;
 
 	ft_bzero(&v, sizeof(t_get_bin));
 	if (!(v.env_path_value = get_path(env)))
-    {
-		return (NULL);}
+		return (NULL);
 	if (!(v.dirs = ft_split(v.env_path_value, ':')))
 		return (NULL);
 	ft_strdel(&v.env_path_value);

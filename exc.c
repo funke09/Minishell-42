@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-//if there is a / in a cmd???
+
 
 int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
 {
@@ -49,13 +49,7 @@ int is_valid_cmd(char *cmd)
     return(0);
 }
 
-int p_pwd(void)
-{
 
-    printf("%s\n", getcwd(NULL, 0));
-
-    return (0);
-}
 
 void r_red_in(char *file_name)
 {
@@ -66,9 +60,9 @@ void r_red_in(char *file_name)
         perror("");
     else
     {  
-    file = open(file_name, O_WRONLY | O_CREAT); //O_APPEND//////////////////>>
-    dup2(file, STDIN_FILENO);
-    close (file);
+        file = open(file_name, O_WRONLY | O_CREAT);
+        dup2(file, STDIN_FILENO);
+        close (file);
     }
 }
 
@@ -81,9 +75,9 @@ void r_red_out(char *file_name)
         perror("");
     else
     {  
-    file = open(file_name, O_WRONLY | O_CREAT); //O_APPEND//////////////////>>
-    dup2(file, STDOUT_FILENO);
-    close (file);
+        file = open(file_name, O_WRONLY | O_CREAT);
+        dup2(file, STDOUT_FILENO);
+        close (file);
     }
 }
 
@@ -96,8 +90,9 @@ void a_append(char *file_name)
         perror("");
     else
     {  
-    file = open(file_name, O_WRONLY |O_CREAT | O_APPEND); 
-    close (file);
+        file = open(file_name, O_WRONLY |O_CREAT | O_APPEND); 
+        dup2(file, STDOUT_FILENO);
+        close (file);
     }
 }
 
@@ -296,6 +291,7 @@ int fork_execve(char **args, int fd[2], int p)
     }
     
 }
+
 
 // child_processs()
 // get_status

@@ -3,5 +3,6 @@
         "*.module": "php",
         "unistd.h": "c",
         "__config": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

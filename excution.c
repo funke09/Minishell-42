@@ -1,62 +1,70 @@
 #include "minishell.h"
 
-int size_to_pipe(t_tokens *head)
+int len_of_cmd_sin_pipes(t_tokens *token)
 {
     int i;
 
     i = 0;
-    while (head && head->type != PIPE)
+    while (token && token->type != PIPE)
     {
+        token = token->next;
         i++;
-        head = head->next;
     }
     return (i);
 }
 
-char **get_cmd(t_tokens *head)
+char **get_cmd(t_tokens *token)
 {
     int i;
     int len;
     char **cmd;
 
-    len = size_to_pipe(head);
-    printf("len of cmd = %d\n", len);
+    len = len_of_cmd_sin_pipes(token);
     cmd = (char**)malloc(sizeof(char *) * (len + 1));
     i = 0;
-    while (head && head->type != PIPE)
+    while (token && token->type != PIPE)
     {
-        if (head->type == REDIR_IN || head->type == REDIR_OUT || head->type == APPEND)
-            head = head->next;
-        else if(head->type == COMMAND || head->type == FLAG || 
-            head->type == PARAM || head->type == D_QUOTE || head->type == S_QUOTE || head->type == ENV_VAR)
-            cmd[i++] = ft_strdup(head->token);
-        if (!head)
+        if (token->type == REDIR_IN || token->type == REDIR_OUT || token->type == APPEND)
+            token = token->next;
+        else if(token->type == COMMAND || token->type == FLAG || token->type == PARAM || token->type == D_QUOTE || token->type == S_QUOTE || token->type == ENV_VAR)
+            cmd[i++] = ft_strdup(token->token);
+        if (!token)
             break; 
-        head = head->next;
+        token = token->next;
     }
     cmd[i] = 0;
     return (cmd);
 }
 
-t_tokens *advance_to_pipe(t_tokens *head)
+t_tokens *skip_to_pipe(t_tokens *token)
 {
-    while (head && head->type != PIPE)
+    while (token && token->type != PIPE)
     {
-        head = head->next;
+        token = token->next;
     }
-    if (head == NULL || head->next == NULL)
+    if (token == NULL || token->next == NULL)
     {
         // printf("NULL EROOOR");
         return (NULL);
     }
-    return(head->next);
+    return(token->next);
 }
 
-void			my_execve(const char *file_name, char **cmd, char **tabs)
+int is_valid_cmd(const char *cmd)
 {
-	if (access(file_name, X_OK) == 0)
+    struct stat buf;
+    if (stat(cmd, &buf) == -1)
+        return (1);
+	if (buf.st_mode & S_IXUSR )
+		return (0);
+    return(2);
+}
+
+void			ft_execve(const char *file_name, char **cmd, char **env)
+{
+	if ((!is_valid_cmd(file_name)))
 	{
-		if (execve(file_name, cmd, tabs) == -1)
+		if (execve(file_name, cmd, env) == -1)
 		{
 			ft_putendl_fd("21sh: Error: Execution Failed.", 2);
 			exit(1);
@@ -64,7 +72,11 @@ void			my_execve(const char *file_name, char **cmd, char **tabs)
 		exit(0);
 	}
 	else
-		ft_putendl_fd("21sh: permission denied: ", 2);
+	{
+		ft_putendl_fd("21sh: Command not found: ", 2);
+		exit (1);
+	}
+
 	return ;
 }
 
@@ -77,14 +89,15 @@ void			execute_direct(char **cmd)
 		file_name = ft_strrchr(cmd[0], '/') + 1;
 	else
 		file_name = cmd[0];
-	if ((pid = fork()) < 0)
+	pid = fork();
+	if (pid < 0)
 		return (ft_putendl_fd("21sh: Error: forking Failded.\n", 2));
 	if (pid == 0)
 	{
-		if (access(file_name, F_OK) == 0)
-			my_execve(file_name, cmd, NULL);
+		if (!is_valid_cmd(file_name))
+			ft_execve(file_name, cmd, NULL);
 		else
-			ft_putendl_fd("21sh: no such file or directory: ", 2);
+			ft_putendl_fd("21sh: no such file or directory: ", 2);//perror("");
 		exit(1);
 	}
 	else
@@ -106,7 +119,7 @@ void			execute_undirect(char **cmd, char **tabs, t_env **env)
 	if (pid == 0)
 	{
 		if (access(bin_file, F_OK) == 0)
-			my_execve(bin_file, cmd, tabs);
+			ft_execve(bin_file, cmd, tabs);
 		else
 			ft_putendl_fd("21sh: no such file or directory: ", 2);
 		exit(1);
@@ -117,7 +130,7 @@ void			execute_undirect(char **cmd, char **tabs, t_env **env)
 		ft_strdel(&bin_file);
 }
 
-static void		init_pipes(t_pipe *pipes)
+static void		init_pipes(t_pipe *pipes)//???
 {
 	pipes->temp = 0;
 	pipes->cmd_no = 0;
@@ -137,7 +150,7 @@ int is_there_pipe(t_tokens *head)
     return 0;
 }
 
-void		execute_pipes2(t_tokens *head, t_pipe *pipes)
+void		execute_pipes2(t_tokens *token, t_pipe *pipes)
 {
 	close(pipes->pipe[0]);
 	if (pipes->cmd_no != 0)
@@ -145,7 +158,7 @@ void		execute_pipes2(t_tokens *head, t_pipe *pipes)
 		dup2(pipes->temp, STDIN_FILENO);
 		close(pipes->temp);
 	}
-	if (is_there_pipe(head))
+	if (is_there_pipe(token))
 		dup2(pipes->pipe[1], STDOUT_FILENO);
 	close(pipes->pipe[1]);
 	return ;
@@ -170,23 +183,23 @@ void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)
 }
 
 
-void    execute_pipes(t_tokens *head, char **cmd, t_pipe *pipes, t_env **env)
+void    execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
 {
     if (pipe(pipes->pipe) == -1)
 		return ;
 	if ((pipes->pid = fork()) == -1)
 		return ;
 	if (pipes->pid == 0)
-		execute_pip_child(head, pipes, cmd, env);
+		execute_pip_child(token, pipes, cmd, env);
 	else
 	{
 		close(pipes->pipe[1]);
 		if (pipes->temp)
 			close(pipes->temp);
 		pipes->temp = pipes->pipe[0];
-		if (!is_there_pipe(head))
+		if (!is_there_pipe(token))
 			close(pipes->temp);
-		pipes->cmd_no += 1;
+		pipes->cmd_no ++;
 	}
 	return ;
 }
@@ -195,7 +208,7 @@ int execute(t_global *global)
 {
     t_pipe	pipes;
 
-	init_pipes(&pipes);
+	init_pipes(&pipes);	//pipes->temp = 0; pipes->cmd_no = 0; pipes->pipe[0] = 0; pipes->pipe[1] = 0; pipes->pid = 0;
     t_tokens *head;
     char **cmd;
 
@@ -213,11 +226,19 @@ int execute(t_global *global)
         while (cmd[j])
             free(cmd[j++]);
         free(cmd);
-        head = advance_to_pipe(head);
+        head = skip_to_pipe(head);
     }
     close(pipes.temp);
 	if (pipes.pid)
 		while (wait(NULL) > 0)
-			;
+			continue;
     return (0);
 }
+
+
+execute_builtin()
+
+// char *get_path()
+// {
+
+// }
