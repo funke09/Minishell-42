@@ -80,6 +80,36 @@ void			ft_execve(const char *file_name, char **cmd, char **env)
 	return ;
 }
 
+void	execute_blt(char **args, t_env **env)/////// ret int
+{
+	int pid = fork(), ret;
+	if (pid == -1)
+	{atus
+		ft_putendl_fd("Error while forking a child.\n");
+		return;
+	}
+	if (pid == 0)
+	{
+		ret = do_builtin(args, env);
+		if (ret != 0)
+		{
+			ft_putendl_fd("Error while executing ", 2);
+			ft_putendl_fd(args[0], 2);
+			ft_putendl_fd("\n");
+		}
+		else return (0);
+	}
+	else
+	{
+		int wstatus;
+		wait(&wstatus);
+		// if (WIFEXITED(wstatus)) // if exited return true if processs terminated normaly  
+			return (WEXITSTATUS(wstatus)); //w exit status
+	}
+
+
+}
+
 void			execute_direct(char **cmd)
 {
 	const char	*file_name;
@@ -125,7 +155,7 @@ void			execute_undirect(char **cmd, char **tabs, t_env **env)
 		exit(1);
 	}
 	else
-		wait(NULL);
+		wait(NULL);//exit status
 	if (bin_file)
 		ft_strdel(&bin_file);
 }
@@ -164,18 +194,17 @@ void		execute_pipes2(t_tokens *token, t_pipe *pipes)
 	return ;
 }
 
-void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)
+void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/////////////////////////////////////////////
 {
 	execute_pipes2(head, pipes);
 	// if (tree->redirection)
 	// 	execute_redirection(tree->redirection, g_tty_name);
 	// if (!tree->pipe && pipes->cmd_no)
 	//      close(pipes->temp);
-	// if (check_builtins(cmd[0]))
-	// 	execute_blt_with_fork(tree);
-    // else 
-	if (cmd[0][0] == '/' ||
-		(cmd[0][0] == '.' && cmd[0][1] == '/'))
+	if (is_a_builtin(cmd[0]))
+		execute_blt(args,env);
+    else 
+	if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
 		execute_direct(cmd);
 	else if (cmd[0])
 		execute_undirect(cmd, NULL, env);
@@ -209,24 +238,24 @@ int execute(t_global *global)
     t_pipe	pipes;
 
 	init_pipes(&pipes);	//pipes->temp = 0; pipes->cmd_no = 0; pipes->pipe[0] = 0; pipes->pipe[1] = 0; pipes->pid = 0;
-    t_tokens *head;
+    t_tokens *token;
     char **cmd;
 
     head = global->tokens;
-    while (head)
+    while (token)
     {
         int j = 0;
-        cmd = get_cmd(head);
+        cmd = get_cmd(token);
         // while (cmd[j])
         //     ft_putstr_fd(cmd[j++], 1);
         // ft_putstr_fd("---------\n", 1);
-        execute_pipes(head, cmd, &pipes, global->env);
+        execute_pipes(token, cmd, &pipes, global->env);
         // execute_direct(cmd, NULL);
         j = 0;
         while (cmd[j])
             free(cmd[j++]);
         free(cmd);
-        head = skip_to_pipe(head);
+        token = skip_to_pipe(token);
     }
     close(pipes.temp);
 	if (pipes.pid)
@@ -235,8 +264,40 @@ int execute(t_global *global)
     return (0);
 }
 
+int c_cd(char **args)
+{
+	if (!args[2])
+	{
+		ft_putendl_fd("sh: cd: too many arguments.\n");
+		return (1);
+	}
+    chdir(args[1]);
+	return (0);
+}
 
-execute_builtin()
+int do_builtin(char **args, t_env **env)
+{
+	int len;
+
+    len = ft_strlen(cmd);
+
+    if (!cmd)
+        return (1);
+    if (len == 3 && !ft_strncmp(cmd, "pwd", len))
+        return(pwd());
+    else if (len == 6 && !ft_strncmp(cmd, "export", len))
+        return (ft_export(args, env));
+    else if (len == 3 && !ft_strncmp(cmd, "env", len))
+        return (ft_env());
+    else if (len == 4 && !ft_strncmp(cmd, "exit", len))
+		return (ft_exit(args, env));
+    else if (len == 4 && !ft_strncmp(cmd, "echo", len))
+        return (echo(args));
+    else if (len == 5 && !ft_strncmp(cmd, "unset", len))
+        return (ft_unset(args, env));
+    else if (len == 2 && !ft_strncmp(cmd, "cd", len))
+        return (c_cd(args));
+}
 
 // char *get_path()
 // {

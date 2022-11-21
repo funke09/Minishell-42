@@ -43,7 +43,7 @@ int a_append(char *file_name)
 }
 
 
-int ft_exit()
+int ft_exit(char **args, t_env **env)
 {
     // free_env
     //free_tokens
@@ -69,15 +69,12 @@ int pwd(void)
 }
 
 
-
 void ft_free(char **splt, int i)
 {
     while (i >= 0)
         free(splt[i--]);
     free(splt);
 }
-
-
 
 
 char *ft_getenv(char *str)
@@ -151,5 +148,5 @@ int echo(char **args)
 
 int herredoc()
 {
-    
+
 }

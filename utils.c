@@ -77,7 +77,7 @@ char *get_path(t_env **envirement) // key=value
     return (NULL);
 }
 
-char			*get_bin_file(char **cmd, t_env **env)////////////////
+char			*get_bin_file(char **cmd, t_env **env)//////////////////////////////////////////////////////////////////////////////////////
 {
 	t_get_bin	v;
 

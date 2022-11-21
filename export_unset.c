@@ -150,6 +150,7 @@ int ft_export(t_env **env,char **args)
             if (ch)
             {
                 push2(args[i], env);
+                return (1);
             }
         }
 
