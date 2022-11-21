@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/21 06:53:10 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/21 07:52:47 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include<stdbool.h>
 int g_var;
+char *g_tty_name;
 
 typedef enum s_error
 {

@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/21 05:25:28 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/21 07:58:10 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,6 +347,8 @@ int main(int ac, char **av, char **env)
     g_var = 0;
     
     stock_env(env,  &global);
+    if (!(g_tty_name = ttyname(0)))
+		return (1);
     // ft_print_env();
     init_global(&global);
     signal(SIGINT, sig_handler);
