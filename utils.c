@@ -84,7 +84,6 @@ char			*get_bin_file(char **cmd, t_env **env)
 	ft_bzero(&v, sizeof(t_get_bin));
 	if (!(v.env_path_value = get_path(env)))
     {
-        printf("chi7ajaa %s\n", v.env_path_value);
 		return (NULL);}
 	if (!(v.dirs = ft_split(v.env_path_value, ':')))
 		return (NULL);

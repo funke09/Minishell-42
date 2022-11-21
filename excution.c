@@ -27,7 +27,8 @@ char **get_cmd(t_tokens *head)
     {
         if (head->type == REDIR_IN || head->type == REDIR_OUT || head->type == APPEND)
             head = head->next;
-        else if(head->type == COMMAND || head->type == FLAG || head->type == PARAM)
+        else if(head->type == COMMAND || head->type == FLAG || 
+            head->type == PARAM || head->type == D_QUOTE || head->type == S_QUOTE || head->type == ENV_VAR)
             cmd[i++] = ft_strdup(head->token);
         if (!head)
             break; 
