@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
+/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 03:44:27 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 20:13:19 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ size_t	ft_strlen_char(const char *s);
 void free_tokens(t_tokens *tokens);
 void ft_print_env(void);
 int ft_sizearray(char **args);
+int check_arg_valid(char *str, int *l);
+t_env *check_var_exist(t_env **env, char *arg, int len);
 
 
 int             execute(t_global *global);
@@ -135,7 +137,9 @@ int echo(char **args);
 int  c_cd(char **args, t_env **env);
 int ft_exit(char **args, t_env **env);
 char *ft_strdup2(char *str);
+int	push(char *env, t_env **begin_lst);
 char		**list_to_tabs(t_env **env_list);
 
 void	ft_strdel(char **as);
 #endif
+

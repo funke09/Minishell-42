@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
+/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 03:44:27 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 21:51:18 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void print_tokens(t_global *global)
 
 int is_charachter(char c)
 {
-    if(c == '<' || c == '|' || c == '>' || c == ';' || c == '+' || c == '$' || c == '\'' || c == '"') 
+    if(c == '<' || c == '|' || c == '>' || c == ';' || c == '$' || c == '\'' || c == '"') 
         return(1);
     return(0);   
 }
@@ -346,6 +346,7 @@ int func()
 {
     return(0);
 }
+
 int main(int ac, char **av, char **env)
 {
     t_global global;
@@ -363,7 +364,7 @@ int main(int ac, char **av, char **env)
     signal(SIGQUIT, SIG_IGN);
     if((!ac && !av) || ac != 1)
     {
-        write(2, "minishell :to many args .\n", ft_strlen("minishell :to many args .\n"));
+        write(2, "minishell :to many args .\n", 26);
 		return(0);
     }
     while (1)
