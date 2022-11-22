@@ -124,26 +124,22 @@ int echo(char **args)
 {
     int i;
     int n;
-    int l;
 
     i = 1;
     n = 0;
-    l = 0;
-
-    l = ft_sizearray(args);
-    if (l >= 2 && !strncmp(args[i], "-n", 2))
+    if (args[1] && !strncmp(args[1], "-n", 2))
     {
         n = 1;
         i++;
     }
     while (args[i])
     {
-        ft_putendl_fd(args[i++], 1);
+        ft_putstr_fd(args[i++], 1);
         if (args[i])
-            ft_putendl_fd(" ", 1);   
+            ft_putchar_fd(' ', 1);   
     }
-    if (n == 0)
-        ft_putendl_fd("\n", 1);
+    if (!n)
+        ft_putchar_fd('\n', 1);
     return(0);
 }
 

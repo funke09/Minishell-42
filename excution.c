@@ -62,7 +62,8 @@ int is_valid_cmd(const char *cmd)
 
 void			ft_execve(const char *file_name, char **cmd, char **env)
 {
-	if ((!is_valid_cmd(file_name)))
+	// (void)env;
+	if (access(file_name, X_OK) == 0)
 	{
 		if (execve(file_name, cmd, env) == -1)
 		{
@@ -82,14 +83,15 @@ void			ft_execve(const char *file_name, char **cmd, char **env)
 
 int 	execute_blt(char **args, t_env **env)/////// ret int
 {
-	int pid = fork(), ret;
-	if (pid == -1)
-	{
-		ft_putendl_fd("Error while forking a child.\n", 2);
-		return(1);
-	}
-	if (pid == 0)
-	{
+	int ret;
+	// int pid = fork(), ret;
+	// if (pid == -1)
+	// {
+	// 	ft_putendl_fd("Error while forking a child.\n", 2);
+	// 	return(1);
+	// }
+	// if (pid == 0)
+	// {
 		ret = do_builtin(args, env);
 		if (ret != 0)
 		{
@@ -97,21 +99,21 @@ int 	execute_blt(char **args, t_env **env)/////// ret int
 			ft_putendl_fd(args[0], 2);
 			ft_putendl_fd("\n", 2);
 		}
-		else 
-		return (0);
-	}
-	else
-	{
-		int wstatus;
-		wait(&wstatus);
-		// if (WIFEXITED(wstatus)) // if exited return true if processs terminated normaly  
-			return (WEXITSTATUS(wstatus)); //w exit status
-	}
+	// 	else 
+	// 	return (0);
+	// }
+	// else
+	// {
+	// 	int wstatus;
+	// 	wait(&wstatus);
+	// 	// if (WIFEXITED(wstatus)) // if exited return true if processs terminated normaly  
+	// 		return (WEXITSTATUS(wstatus)); //w exit status
+	// }
 	return(0);
 
 }
 
-void			execute_direct(char **cmd)
+void			execute_direct(char **cmd, char **env)
 {
 	const char	*file_name;
 	pid_t		pid;
@@ -126,7 +128,7 @@ void			execute_direct(char **cmd)
 	if (pid == 0)
 	{
 		if (!is_valid_cmd(file_name))
-			ft_execve(file_name, cmd, NULL);// env char env
+			ft_execve(file_name, cmd, env);// env char env
 		else
 			ft_putendl_fd("minishell: no such file or directory: ", 2);//perror("");
 		exit(1);
@@ -197,24 +199,29 @@ void		execute_pipes2(t_tokens *token, t_pipe *pipes)
 
 void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/////////////////////////////////////////////
 {
-	(void)env;
+	signal(SIGQUIT, SIG_DFL);
+	// (void)env;
 	execute_pipes2(head, pipes);
-	// if (tree->redirection)
-	// 	execute_redirection(tree->redirection, g_tty_name);
+	// if(head->type == REDIR_IN || head->type == REDIR_OUT || head->type == APPEND || head->type == HEREDOC )
+	// 	execute_redirection(head, pipes->tty_num);
 	// if (!tree->pipe && pipes->cmd_no)
 	//      close(pipes->temp);
+	char **tabs = list_to_tabs(env);
+	if (!is_a_builtin(cmd[0]))
+	{
+		do_builtin(cmd, env);
+		exit(0);
+	}
     if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
-		execute_direct(cmd);
+		execute_direct(cmd, tabs);
 	else if (cmd[0])
-		execute_undirect(cmd, NULL, env);
+		execute_undirect(cmd, tabs, env);
 	exit(EXIT_SUCCESS);
 }
 
 
 void    execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
 {
-	if (!is_a_builtin(cmd[0]))
-		execute_blt(cmd,env);
     if (pipe(pipes->pipe) == -1)
 		return ;
 	if ((pipes->pid = fork()) == -1)
@@ -251,7 +258,7 @@ int execute(t_global *global)
         // while (cmd[j])
         //     ft_putstr_fd(cmd[j++], 1);
         // ft_putstr_fd("---------\n", 1);
-        	execute_pipes(token, cmd, &pipes, env);
+        execute_pipes(token, cmd, &pipes, env);
         // execute_direct(cmd, NULL);
         j = 0;
         while (cmd[j])
@@ -261,9 +268,8 @@ int execute(t_global *global)
     }
     close(pipes.temp);
 	if (pipes.pid)
-		while (wait(NULL) > 0)//var / 256
-
-			continue;
+		while (wait(NULL) > 0)
+			;//var / 256
     return (0);
 }
 
@@ -276,10 +282,42 @@ int ft_sizearray(char **args)
 		i++;
 	return(i);
 }
+void		go_to_cd(char *path, t_env **env_list)
+{
+	struct stat	st;
+	// char		*tmp;
+	// char		*tmp2;
+	(void)env_list;
 
+	if (path && access(path, F_OK) == 0)
+	{
+		stat(path, &st);
+		if (!S_ISDIR(st.st_mode) && ft_strrchr(path, '/'))
+		{
+			return (ft_putendl_fd("minishell: cd: not a directory: ", 2));
+		}
+	}
+	// 	if (access(path, X_OK) == 0)
+	// 	{
+	// 		oldpwd((tmp = get_cwd()), env_list);
+	// 		chdir(path);
+	// 		generate_pwd((tmp2 = get_cwd()), env_list);
+	// 		ft_strdel_2(&tmp, &tmp2);
+	// 	}
+	// 	else if (ft_strrchr(path, '/'))
+	// 		ft_putendl_fd_error(ERROR5, ft_strrchr(path, '/') + 1, "\n", NULL);
+	// }
+	// else if (ft_strrchr(path, '/'))
+	// 	ft_putendl_fd_error(ERROR6, ft_strrchr(path, '/') + 1, "\n", NULL);
+	// else
+	// 	ft_putendl_fd_error(ERROR6, path, "\n", NULL);
+}
 
 int c_cd(char **args, t_env **env)
 {
+	char *path;
+
+
 	int len = ft_sizearray(args);
 	if (len > 2)
 	{
@@ -288,14 +326,16 @@ int c_cd(char **args, t_env **env)
 	}
 	if(len ==  1)
 	{
-		if(!get_path(env, "HOME"))
+			printf("GET-PATH = %s\n", get_path(env, "HOME"));
+		if(!(path = get_path(env, "HOME")))
 			return(1);
 	}
+	// go_to_cd(path, env);
 	// if len = 1
 	// go home(env)
-	printf("%s\n", args[1]);
-    if (chdir(args[1]) == -1)
-		printf("%s\n", strerror(errno)); ///////
+	// printf("ARGS = %s\n", args[1]);
+    // if (chdir(args[1]) == -1)
+	// 	printf("%s\n", strerror(errno)); ///////
 	return (0);
 }
 

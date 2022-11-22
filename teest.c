@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 22:40:03 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 03:24:50 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,10 @@ char *ft_getenv(char *str, int len)
 {
 	t_env	*env_list;
     char    *path;
-    // size_t     len;
 
 	env_list = *get_adress();
 	while (env_list)
 	{
-        // len = ft_strlen_character(env_list->str, '=');
-        printf("len %i\n", len);
         if (!ft_strncmp(str, env_list->str, len))
         {
             path = ft_substr(env_list->str, len, ft_strlen(env_list->str) - len);
@@ -42,14 +39,9 @@ char *expantion(char *token)
     char  *var;
     char  *tmp;
     int len;
-
-    printf("this is the token=%s\n", token);
     
     str = token;
-
     len = ft_strlen_char(str + 1);
-    printf("len = %d\n" , len);
-
     if(str[1] == '?')
     {
        return NULL;
@@ -58,16 +50,12 @@ char *expantion(char *token)
     else
     {
         var = ft_substr(str,  1, len);
-        
-        printf("var = %s len = %d\n" , var, len);
         tmp = ft_getenv(var, len);
-        // printf("tmp = %s\n" , tmp);
         free(var);
         if(!tmp)
             return(NULL);  
         tmp = ft_strchr(tmp, '=') + 1;
         tmp = ft_substr(tmp, 0, ft_strlen(tmp));
-        // printf("tmp = %s\n", tmp);
     }
     return(tmp);
 }

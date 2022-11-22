@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/20 23:52:42 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 03:05:24 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,9 +153,6 @@ void printferror(t_global *global)
         printf("ERROR_COMMAND\n");
     if(error == ENV_NOT_FOUND)
         printf("ENV_NOT_FOUND\n");
-    
-
-//free if there is something to be freed// not sure if it's the right place// sometimes it's not working exactly when we have a quote in our line but not closed (heap use after free)
     if(global->tokens)
     {
         free_tokens(global->tokens);
@@ -164,14 +161,14 @@ void printferror(t_global *global)
     global->errnum = 0;
 }
 
-// function that check tokens and return if there is an error
+
 void check_tokens(t_global *global)
 {
     t_tokens *tmp;
     char *temp;
     tmp = global->tokens;
     int start = 1;
-    // printf("tmp = %d, token = %d", tmp->type , global->tokens->type);
+    
     while(tmp)
     {
         if(tmp->type == ENV_VAR)
@@ -180,7 +177,6 @@ void check_tokens(t_global *global)
             tmp->token = generate_dolar(global, tmp->token);
             if (!tmp->token)
                 global->errnum = ENV_NOT_FOUND;
-            printf("tmp->token = %s\n", tmp->token);
             free(temp);
         }
         else if(tmp->type == PIPE)
@@ -217,15 +213,12 @@ void check_tokens(t_global *global)
         {
             temp = tmp->token;
             tmp->token = generate_dolar(global, tmp->token);
-            // if(!tmp->token)
-            //     tmp->token = temp;
             free(temp);
         }
         else if(tmp->type == S_QUOTE)
         {
             temp = tmp->token;
             tmp->token = inside_quote(tmp->token);
-            printf("tmp->token = %s\n", tmp->token);
             free(temp);
         }
         tmp = tmp->next;

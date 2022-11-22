@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 00:06:36 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 03:44:27 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ int is_param(t_global *global, int *i)
         {
             global->is_redir = 0;
             return(1);
-        }//iscaracter ??
+        }
     }
     *i = start;
     return(0);
@@ -230,35 +230,35 @@ void skip_blanks(t_global *global, int *i)
         (*i)++;
 }
 
-void    print_type(t_type type)
-{
-    if(type == PIPE)
-        printf("PIPE\n");
-    else if(type == APPEND)
-        printf("APPEND\n");
-    else if(type == HEREDOC)
-        printf("HEREDOC\n");
-    else if(type == HERDOC_KEY)
-        printf("HERDOC_KEY\n");
-    else if(type == REDIR_IN)
-        printf("REDIR_IN\n");
-    else if(type == REDIR_OUT)
-        printf("REDIR_OUT\n");
-    else if(type == FLAG)
-        printf("FLAG\n");
-    else if(type == S_QUOTE)
-        printf("S_QUOTE\n");
-    else if(type == D_QUOTE)
-        printf("D_QUOTE\n");
-    else if (type == COMMAND)
-        printf("COMMAND\n");
-    else if(type == PARAM)
-        printf("PARAM\n");
-    else if(type == NON)
-        printf("NON\n");
-    else if(type == ENV_VAR)
-        printf("ENV_VAR\n");
-}
+// void    print_type(t_type type)
+// {
+//     if(type == PIPE)
+//         printf("PIPE\n");
+//     else if(type == APPEND)
+//         printf("APPEND\n");
+//     else if(type == HEREDOC)
+//         printf("HEREDOC\n");
+//     else if(type == HERDOC_KEY)
+//         printf("HERDOC_KEY\n");
+//     else if(type == REDIR_IN)
+//         printf("REDIR_IN\n");
+//     else if(type == REDIR_OUT)
+//         printf("REDIR_OUT\n");
+//     else if(type == FLAG)
+//         printf("FLAG\n");
+//     else if(type == S_QUOTE)
+//         printf("S_QUOTE\n");
+//     else if(type == D_QUOTE)
+//         printf("D_QUOTE\n");
+//     else if (type == COMMAND)
+//         printf("COMMAND\n");
+//     else if(type == PARAM)
+//         printf("PARAM\n");
+//     else if(type == NON)
+//         printf("NON\n");
+//     else if(type == ENV_VAR)
+//         printf("ENV_VAR\n");
+// }
 
 t_tokens *add_token(t_global *global, int *i)
 {
@@ -284,7 +284,7 @@ t_tokens *add_token(t_global *global, int *i)
     new->token = ft_substr(global->line, start, len);
     new->next = NULL;
     // print_global(global);
-    print_type(new->type);
+    // print_type(new->type);
     return(new);
 }
 
@@ -352,7 +352,7 @@ int main(int ac, char **av, char **env)
     g_var = 0;
     
     stock_env(env,  &global);
-    // if (!(g_tty_name = ttyname(0)))
+    // if (!(tty_num = ttyname(0)))
 	// 	return (1);
     // ft_print_env();
     init_global(&global);
@@ -383,21 +383,12 @@ int main(int ac, char **av, char **env)
             //+free it all
             exit(1);
         }
-        if( ft_strcmp(global.line, "env") == 0)
-        {
-            ft_print_env();
-            free(global.line);
-            continue;
-    
-        }
         tokenization(&global);
         check_tokens(&global);
         if(global.errnum != 0)
             printferror(&global);
         if (global.tokens)
             execute(&global);
-        
-        // print_tokens(&global);
         free(global.line);
         free_tokens(global.tokens);
         global.line = NULL;

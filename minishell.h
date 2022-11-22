@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 00:43:45 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 03:44:27 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@
 #include "libft/libft.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include<stdbool.h>
+#include <stdbool.h>
 int g_var;
-char *g_tty_name;
 
 typedef enum s_error
 {
@@ -94,6 +93,7 @@ typedef struct			s_pipe
 	pid_t				pid;
 	int					temp;
 	int					cmd_no;
+    char                *tty_num;
 }						t_pipe;
 
 typedef struct			s_get_bin
@@ -135,7 +135,7 @@ int echo(char **args);
 int  c_cd(char **args, t_env **env);
 int ft_exit(char **args, t_env **env);
 char *ft_strdup2(char *str);
-
+char		**list_to_tabs(t_env **env_list);
 
 void	ft_strdel(char **as);
 #endif

@@ -1,5 +1,32 @@
 #include "minishell.h"
 
+char		**list_to_tabs(t_env **env_list)
+{
+	char	**tabs;
+	// char	*str;
+	t_env	*current;
+	int		i;
+
+	if (!(current = *env_list))
+		return (NULL);
+	tabs = NULL;
+	i = -1;
+	while (++i >= 0 && current != NULL)
+		current = current->next;
+	if (!(tabs = (char **)malloc(sizeof(char *) * (i + 1))))
+		return (NULL);
+	current = *env_list;
+	i = 0;
+	while (current != NULL)
+	{
+		if (current->str)
+			tabs[i++] = ft_strdup(current->str);
+		current = current->next;
+	}
+	tabs[i] = NULL;
+	return (tabs);
+}
+
 void	ft_memdel(void **ap)
 {
 	if (ap)
