@@ -3,24 +3,25 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
+#    By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/11/21 06:50:44 by macos            ###   ########.fr        #
+#    Updated: 2022/11/21 22:19:02 by oelazzou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env.c printferror.c teest.c excution.c utils.c
+SRC = main.c env.c printferror.c teest.c excution.c utils.c export_unset.c built_in.c
 
 OBJ = $(SRC:.c=.o)
 
 HEADER = minishell.h
 
+
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -Wall -Wextra -Werror -fsanitize=address
+FLAGS = -I$(HOME)/goinfre/brew/opt/readline/include -Wall -Wextra -Werror -fsanitize=address
 
 all :$(NAME) 
 
@@ -30,7 +31,7 @@ $(NAME) : $(OBJ)
 	@echo "\033[0;32mCompiling libft..."
 	@make -C libft/
 	@echo "\033[0;32mCompiling minishell..."
-	@$(CC) $(FLAGS) $(OBJ) -lreadline -o $(NAME) $(LIB)
+	@$(CC) $(FLAGS) $(OBJ) -L$(HOME)/goinfre/brew/opt/readline/lib -lreadline -o $(NAME) $(LIB)
 	@echo "\n\033[0mCompilation Done !"
 
 %.o : %.c  $(HEADER)

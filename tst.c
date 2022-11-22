@@ -38,10 +38,12 @@
 
 int main(int argc, char **argv)
 {
-    if (argc > 1) {
-        struct stat sb;
-        stat(argv[1], &sb)
-        printf("%o", argv[1],  == 0 &&  "" : " not");
-    }
+//     if (argc > 1) {
+//         struct stat sb;
+//         stat(argv[1], &sb)
+        printf("%s\n",getcwd(NULL, 0));
+        chdir("");
+                printf("%s\n",getcwd(NULL, 0));
+
     return 0;
 }   

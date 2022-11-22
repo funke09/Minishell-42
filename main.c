@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/21 07:58:10 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 00:06:36 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@
 void sig_handler(int var)
 {
     while (wait(NULL) > 0)
-		;
+        ;
     signal(SIGQUIT, SIG_IGN);
     if(var == SIGINT)
     {
         g_var = 1;
         ft_putstr_fd("\n\e[1;35mminishell$> \e[0m", 1);
+        // rl_done = 1;
     }
 }
 
@@ -267,8 +268,9 @@ t_tokens *add_token(t_global *global, int *i)
 
     skip_blanks(global, i);
     start = *i;
-    new = (t_tokens *)malloc(sizeof(t_tokens));//!malloc
-
+    new = (t_tokens *)malloc(sizeof(t_tokens));
+    if(!new)
+        return(NULL);
     new->type = type(global, i);
     if(new->type == NON)
     {
@@ -340,21 +342,30 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-
+int func()
+{
+    return(0);
+}
 int main(int ac, char **av, char **env)
 {
     t_global global;
     g_var = 0;
     
     stock_env(env,  &global);
-    if (!(g_tty_name = ttyname(0)))
-		return (1);
+    // if (!(g_tty_name = ttyname(0)))
+	// 	return (1);
     // ft_print_env();
     init_global(&global);
+    // rl_catch_signals = 0;
+    // rl_event_hook = func;
+    // rl_done = 1;
     signal(SIGINT, sig_handler);
     signal(SIGQUIT, SIG_IGN);
-    if(!ac && !av)
+    if((!ac && !av) || ac != 1)
+    {
+        write(2, "minishell :to many args .\n", ft_strlen("minishell :to many args .\n"));
 		return(0);
+    }
     while (1)
     {
             // signal(SIGQUIT, SIG_IGN);

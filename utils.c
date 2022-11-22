@@ -50,7 +50,7 @@ char		*ft_freejoin(char *s1, char *s2, int num)
 	return (str);
 }
 
-char *get_path(t_env **envirement) // key=value
+char *get_path(t_env **envirement, char *name) // key=value
 {
     char *tmp;
     int len;
@@ -59,21 +59,25 @@ char *get_path(t_env **envirement) // key=value
     env = NULL;
     if (envirement)
         env = *envirement;
-    while (env)
-    {
-        len = len_key(env->str);
-        if(ft_strncmp(env->str, "PATH", len) == 0)
-        {
-            tmp = ft_strchr(env->str, '=');
-            if (tmp)
-            {
-                tmp = ft_substr(tmp + 1, 0, ft_strlen(env->str) - len);
-                
-                return (tmp);
-            }
-        }
-        env = env->next;
-    }
+	if(name && env)
+	{
+
+		while (env)
+		{
+			len = len_key(env->str);
+			if(ft_strncmp(env->str, name, len) == 0)
+			{
+				tmp = ft_strchr(env->str, '=');
+				if (tmp)
+				{
+					tmp = ft_substr(tmp + 1, 0, ft_strlen(env->str) - len);
+					
+					return (tmp);
+				}
+			}
+			env = env->next;
+		}
+	}
     return (NULL);
 }
 
@@ -82,7 +86,7 @@ char			*get_bin_file(char **cmd, t_env **env)///////////////////////////////////
 	t_get_bin	v;
 
 	ft_bzero(&v, sizeof(t_get_bin));
-	if (!(v.env_path_value = get_path(env)))
+	if (!(v.env_path_value = get_path(env, "PATH")))
 		return (NULL);
 	if (!(v.dirs = ft_split(v.env_path_value, ':')))
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/21 07:52:47 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/22 00:43:45 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,24 @@ void sig_handler(int var);
 char *ft_getenv(char *str, int len);
 size_t	ft_strlen_char(const char *s);
 void free_tokens(t_tokens *tokens);
+void ft_print_env(void);
+int ft_sizearray(char **args);
 
 
 int             execute(t_global *global);
+char *get_path(t_env **envirement, char *name);
 char			*get_bin_file(char **cmd, t_env **env);
+
+int do_builtin(char **args, t_env **env);
+int is_a_builtin(char *cmd);
+int ft_unset(t_env **env, char **args);
+int pwd(void);
+int ft_export(t_env **env,char **args);
+int ft_env(char **args);
+int echo(char **args);
+int  c_cd(char **args, t_env **env);
+int ft_exit(char **args, t_env **env);
+char *ft_strdup2(char *str);
 
 
 void	ft_strdel(char **as);

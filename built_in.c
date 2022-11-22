@@ -2,69 +2,65 @@
 
 
 
-void r_red_in(char *file_name)
-{
-    int file;
+// void r_red_in(char *file_name)
+// {
+//     int file;
     
-    file = open(file_name, O_WRONLY | O_CREAT);
-    if (file < 0)
-        return (ft_putendl_fd("Error opening the file descriptor.\n", 2));
-    dup2(file, STDIN_FILENO);
-    close (file);
-}
+//     file = open(file_name, O_WRONLY | O_CREAT);
+//     if (file < 0)
+//         return (ft_putendl_fd("Error opening the file descriptor.\n", 2));
+//     dup2(file, STDIN_FILENO);
+//     close (file);
+// }
 
-void r_red_out(char *file_name)
-{
-    int file;
+// int r_red_out(char *file_name)
+// {
+//     int file;
 
-        file = open(file_name, O_WRONLY | O_CREAT);
-        if (file < 0)
-        {
-            ft_putendl_fd("Error opening the file descriptor.\n", 2);
-            return (2);
-        }
-        dup2(file, STDOUT_FILENO);
-        close (file);
-}
+//         file = open(file_name, O_WRONLY | O_CREAT);
+//         if (file < 0)
+//         {
+//             ft_putendl_fd("Error opening the file descriptor.\n", 2);
+//             return (2);
+//         }
+//         dup2(file, STDOUT_FILENO);
+//         close (file);
+// }
 
-int a_append(char *file_name)
-{
+// int a_append(char *file_name)
+// {
 
-    int file;
+//     int file;
 
-    file = open(file_name, O_WRONLY |O_CREAT | O_APPEND);
-    if (file < 0)
-    {
-        ft_putendl_fd("Error opening the file descriptor.\n", 2);
-        return (1);
-    }
-    dup2(file, STDOUT_FILENO);
-    close (file);
-}
+//     file = open(file_name, O_WRONLY |O_CREAT | O_APPEND);
+//     if (file < 0)
+//     {
+//         ft_putendl_fd("Error opening the file descriptor.\n", 2);
+//         return (1);
+//     }
+//     dup2(file, STDOUT_FILENO);
+//     close (file);
+// }
 
 
 int ft_exit(char **args, t_env **env)
 {
     // free_env
     //free_tokens
+    (void)env;
+    (void)args;
     exit(0);
 }
 
 
 
-int  c_cd(char *path)
-{
-    chdir(path);
-    return (0);
-}
 
 int pwd(void)
 {
     char *ret;
 
     ret = getcwd(NULL, 0);
-    
-
+    ft_putendl_fd(ret, 1);
     return (0);
 }
 
@@ -77,27 +73,27 @@ void ft_free(char **splt, int i)
 }
 
 
-char *ft_getenv(char *str)
-{
-	t_env	*env_list;
-    char    *path;
-    size_t     len;
+// char *ft_getenv(char *str)
+// {
+// 	t_env	*env_list;
+//     char    *path;
+//     size_t     len;
 
-	env_list = *get_adress();
-	while (env_list)
-	{
-        len = len_key(env_list->str);
-        if (!ft_strncmp(str, env_list->str, len))
-        {
-            path = ft_substr(env_list->str, len, ft_strlen(env_list->str) - len);
-            return(path);
-        }
-		if (!env_list->next)
-			break;
-		env_list = env_list->next;
-	}
-    return (NULL);
-}
+// 	env_list = *get_adress();
+// 	while (env_list)
+// 	{
+//         len = len_key(env_list->str);
+//         if (!ft_strncmp(str, env_list->str, len))
+//         {
+//             path = ft_substr(env_list->str, len, ft_strlen(env_list->str) - len);
+//             return(path);
+//         }
+// 		if (!env_list->next)
+// 			break;
+// 		env_list = env_list->next;
+// 	}
+//     return (NULL);
+// }
 
 int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
 {
@@ -128,10 +124,14 @@ int echo(char **args)
 {
     int i;
     int n;
+    int l;
 
-    i = 0;
+    i = 1;
     n = 0;
-    if (strncmp(args[i], "-n", 2) && !args[2])
+    l = 0;
+
+    l = ft_sizearray(args);
+    if (l >= 2 && !strncmp(args[i], "-n", 2))
     {
         n = 1;
         i++;
@@ -142,11 +142,12 @@ int echo(char **args)
         if (args[i])
             ft_putendl_fd(" ", 1);   
     }
-    if (n = 0)
+    if (n == 0)
         ft_putendl_fd("\n", 1);
+    return(0);
 }
 
-int herredoc()
-{
+// int herredoc()
+// {
 
-}
+// }

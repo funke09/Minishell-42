@@ -37,7 +37,7 @@ int valid_env_var(char *str)
     i = -1;
     while (str[++i])
     {
-        if (!ft_isdigit(str[i]) && !isalpha(str[i]) && str[i] != '=' && str[i] != '_')
+        if (!ft_isdigit(str[i]) && !ft_isalpha(str[i]) && str[i] != '=' && str[i] != '_' && str[i] != '+')
             return (1);
     }
     return (0);
@@ -58,22 +58,24 @@ int ft_unset(t_env **env, char **args)
         ft_remove(env, args[i]);
         return (0);
     }   
+    return (0);
 }
 
 int check_var_exist_replace(t_env **env, char *arg)
 {
-    int i;
+    // int i;
     int len;
     t_env *envir;
     char *tmp;
 
     len = len_key(arg);
-    i = -1;
+    // i = -1;
     envir = *env;
     while (envir)
     {
         if (!strncmp(envir->str, arg, len))
         {
+                printf("AAAAAAAAAAA  %c  AAAAAAAAAAAA\n", arg[len - 1]);////
             if (arg[len - 1] == '+')
             {
                 tmp = ft_strjoin(envir->str, (ft_strrchr(arg, '=') + 1));
@@ -120,6 +122,7 @@ int	push2(char *env, t_env **begin_lst)
 	env_new = malloc(sizeof(t_env));
 	if (env_new == NULL)
 		return (42);
+    printf("ppppp\n");
 	env_new->str = ft_strdup2(env);
 	if (env_new->str == NULL)
 		return (42);
@@ -134,8 +137,7 @@ int ft_export(t_env **env,char **args)
     int len;
     int ch;
 
-    i = -1;
-        //v// check_valid args 
+    i = 0;
     while (args[++i])
     {
         if (valid_env_var(args[i]))
@@ -143,27 +145,33 @@ int ft_export(t_env **env,char **args)
             ft_putendl_fd("Not a valid export identifier.\n", 2);
             return (1);
         }
-        len = len_key(args[0]);
+        len = len_key(args[1]);
         if (args[i][len] == '=')
         {
+            printf("aaa111\n");////
             ch = check_var_exist_replace(env, args[i]);
-            if (ch)
-            {
+            if (!ch)
+            {   printf("AAA2222\n");////
                 push2(args[i], env);
                 return (1);
             }
         }
 
     }
-    //check if func exist if si strjoin
-    //push
-    // if already exist str join}
     return (0);
 
 }
 
-int ft_env(void)
+int ft_env(char **args)
 {
-    ft_print_env();
+    int l;
+
+    l = ft_sizearray(args);
+    if (l > 1)
+    {
+        ft_putendl_fd("Too many arguments.\n", 2);
+    }
+    else
+        ft_print_env();
     return (0);
 }
