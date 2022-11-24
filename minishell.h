@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/24 21:29:33 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/25 00:11:35 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdbool.h>
+
 int g_var;
 
 typedef enum s_error
@@ -62,8 +63,9 @@ typedef enum s_type
 
 typedef struct s_tokens
 {
-    char *token;
-    t_type type;
+    char    *token; // << EOF
+    t_type  type; // HERE
+    char    *here_doc_txt; //  data
     struct s_tokens *next;
 }   t_tokens; 
 
@@ -72,7 +74,6 @@ typedef struct s_env
     char *str;
     struct s_env *next;
 }   t_env;
-
 
 typedef struct s_global
 {

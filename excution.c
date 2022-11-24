@@ -200,6 +200,8 @@ void		execute_pipes2(t_tokens *token, t_pipe *pipes)
 void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/////////////////////////////////////////////
 {
 	t_tokens *redir;
+
+	redir = NULL;
 	signal(SIGQUIT, SIG_DFL);
 	// (void)env;
 	execute_pipes2(head, pipes);
@@ -207,7 +209,8 @@ void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/
 	{
 		printf("redir 1\n");
 		execute_redirection(redir);
-		printf("redir 2\n");}
+		printf("redir 2\n");
+	}
 	// if (!tree->pipe && pipes->cmd_no)
 	//      close(pipes->temp);
 	char **tabs = list_to_tabs(env);
@@ -267,7 +270,8 @@ int execute(t_global *global)
         // while (cmd[j])
         //     ft_putstr_fd(cmd[j++], 1);
         // ft_putstr_fd("---------\n", 1);
-        execute_pipes(token, cmd, &pipes, env);
+		if (cmd && cmd[0])
+        	execute_pipes(token, cmd, &pipes, env);
         // execute_direct(cmd, NULL);
         j = 0;
         while (cmd[j])

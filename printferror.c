@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/24 00:51:31 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/25 00:01:55 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,41 +60,46 @@ char *generate_dolar(t_global *global, char *tokens)
     
 }
 
-int  go_to_herdoc(t_global *global, t_tokens *tokens)
+char  *go_to_herdoc(t_global *global, t_tokens *tokens)
 {
     char *str;
-    char txt[100];
     char    *tmp;
     
-    if(global->fd[0] != -1)
-        close(global->fd[0]);
-    if(pipe(global->fd) < 0)
-        return(42);
+    tokens->here_doc_txt = "";
     while(1)
     {
-        str = readline("> ");
+        str = readline("heredoc> ");
         if(g_var)
         {
             g_var = 0;
             break;
         }
-        if(!str || !ft_strcmp(str, tokens->token) || global->herdoc_stat)
+        if(!str || !ft_strcmp(str, tokens->token) ) // key
             break;
         tmp = str;
         str = generate_dolar(global, str);
         free(tmp);
-        write(global->fd[1], str, ft_strlen(str));
+        //
+        tmp = str;
+        str = ft_strjoin(tokens->here_doc_txt, str);
+        free(tmp);
+        // if (tokens->here_doc_txt)
+        //     tmp = tokens->here_doc_txt;
+        // write(global->fd[1], str, ft_strlen(str));
+        tokens->here_doc_txt = ft_strjoin(str, "\n");
+        // free(tmp);
         // add_history(str); 
         free(str);
     }
-    close(global->fd[1]);
-    //***********************test:need to del
-    int n;
-    if((n = read(global->fd[0], txt ,100)) < 0)
-        return(42);
-    txt[n] = 0;
-    printf("%s\n", txt);
-    return(0);
+    // close(global->fd[1]);
+    // //***********************test:need to del
+    // int n;
+    // if((n = read(global->fd[0], txt ,100)) < 0)
+    //     return(42);
+    // txt[n] = 0;
+    // printf("%s\n", txt);
+    printf("text=%s", tokens->here_doc_txt);
+    return(tokens->here_doc_txt);
 }
 
 //free_tokens
@@ -205,7 +210,7 @@ void check_tokens(t_global *global)
                 global->errnum = ERROR_HEREDOC;
             else if(tmp->next->type == HERDOC_KEY)
             {
-                if(go_to_herdoc(global, tmp->next) == 42)
+                if((tmp->here_doc_txt = go_to_herdoc(global, tmp->next)) == NULL)
                         global->errnum = ERROR_HEREDOC;
             }
         }

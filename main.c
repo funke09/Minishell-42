@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/24 18:23:29 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/24 21:38:42 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void init_global(t_global *global)
     global->heredoc_activ = 0;
     global->errnum = 0;
     global->is_redir = 0;
-    global->herdoc_stat = 0;
+    // global->herdoc_stat = 0;
 }
 
 

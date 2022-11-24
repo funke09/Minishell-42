@@ -41,8 +41,31 @@ void redirect_in_out(t_tokens *token)
     close(fd);
 }
 
+void redir_here_doc(t_tokens *txt, char *tty_name)
+{
+    int pip[2];
+    int fd;
+
+    if ((fd = open(tty_name, O_RDWR)) == -1) // 5
+		return ;
+	dup2(fd, STDIN_FILENO);
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	if ((pipe(pip)) == -1)
+		return ;
+	if (txt->here_doc_txt)
+		ft_putstr_fd(txt->here_doc_txt, pip[1]);
+	close(pip[1]);
+	dup2(pip[0], STDIN_FILENO);
+	close(pip[0]);
+}
+
 void    execute_redirection(t_tokens *red)
 {
+    char *tty_name;
+
+    tty_name = ttyname(0);
+    // printf("ttyname=%s\n", ttyname(0));
 	while (red != NULL)
 	{
 		// OUT IN *
@@ -54,8 +77,8 @@ void    execute_redirection(t_tokens *red)
 		// 	append_redir(redirections);
 
 		// HERE DOC *
-		// else if (redirections->token && !ft_strcmp(redirections->token, "<<"))
-		// 	 here_document(redirections, g_tty_name);
+		else if (red->token && red->type == HEREDOC)
+			redir_here_doc(red, tty_name);
 		red = go_to_redir(red->next);
     }
 }
