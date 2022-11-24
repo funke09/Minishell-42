@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: oelazzou <oelazzou@student.42.fr>          +#+  +:+       +#+         #
+#    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/11/21 22:19:02 by oelazzou         ###   ########.fr        #
+#    Updated: 2022/11/24 21:12:39 by macos            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env.c printferror.c teest.c excution.c utils.c export_unset.c built_in.c
+SRC = main.c env.c printferror.c teest.c excution.c utils.c export_unset.c built_in.c redirections.c
 
 OBJ = $(SRC:.c=.o)
 

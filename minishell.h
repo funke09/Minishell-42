@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/24 17:49:20 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/24 21:29:33 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,10 @@ int				if_exist(t_env **env_list, char *var_name);
 void			oldpwd(char *cwd, t_env **env_list);
 char			*get_cwd(void);
 
+//REDIRECTION
+t_tokens* go_to_redir(t_tokens *token);
+void    execute_redirection(t_tokens *red);
+int is_a_builtin_child(char *cmd);
 void	ft_strdel(char **as);
 #endif
 

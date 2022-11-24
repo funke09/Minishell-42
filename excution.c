@@ -199,15 +199,23 @@ void		execute_pipes2(t_tokens *token, t_pipe *pipes)
 
 void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/////////////////////////////////////////////
 {
+	t_tokens *redir;
 	signal(SIGQUIT, SIG_DFL);
 	// (void)env;
 	execute_pipes2(head, pipes);
-	// if(head->type == REDIR_IN || head->type == REDIR_OUT || head->type == APPEND || head->type == HEREDOC )
-	// 	execute_redirection(head, pipes->tty_num);
+	if((redir = go_to_redir(head)))
+	{
+		printf("redir 1\n");
+		execute_redirection(redir);
+		printf("redir 2\n");}
 	// if (!tree->pipe && pipes->cmd_no)
 	//      close(pipes->temp);
 	char **tabs = list_to_tabs(env);
-	
+	if (!is_a_builtin_child(cmd[0]))
+	{
+		do_builtin(cmd, env);
+		exit(EXIT_SUCCESS) ;
+	}
     if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
 		execute_direct(cmd, tabs);
 	else if (cmd[0])
