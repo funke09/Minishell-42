@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 20:13:19 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:49:20 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,10 @@ int ft_exit(char **args, t_env **env);
 char *ft_strdup2(char *str);
 int	push(char *env, t_env **begin_lst);
 char		**list_to_tabs(t_env **env_list);
+int				len_path(char **cmd);
+int				if_exist(t_env **env_list, char *var_name);
+void			oldpwd(char *cwd, t_env **env_list);
+char			*get_cwd(void);
 
 void	ft_strdel(char **as);
 #endif

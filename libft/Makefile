@@ -20,6 +20,7 @@ ft_isascii.c\
 ft_isdigit.c\
 ft_strncpy.c\
 ft_isprint.c\
+ft_strcpy.c\
 ft_strcmp.c\
 ft_itoa.c\
 ft_lstadd_back.c\

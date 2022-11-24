@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 21:51:18 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:23:29 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -388,11 +388,12 @@ int main(int ac, char **av, char **env)
         check_tokens(&global);
         if(global.errnum != 0)
             printferror(&global);
+        print_tokens(&global);
         if (global.tokens)
             execute(&global);
         free(global.line);
-        free_tokens(global.tokens);
         global.line = NULL;
+        free_tokens(global.tokens);
     }
     return(0);
 }
