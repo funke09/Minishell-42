@@ -206,11 +206,7 @@ void		execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/
 	// (void)env;
 	execute_pipes2(head, pipes);
 	if((redir = go_to_redir(head)))
-	{
-		printf("redir 1\n");
 		execute_redirection(redir);
-		printf("redir 2\n");
-	}
 	// if (!tree->pipe && pipes->cmd_no)
 	//      close(pipes->temp);
 	char **tabs = list_to_tabs(env);

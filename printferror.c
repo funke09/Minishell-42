@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/25 00:01:55 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/25 15:19:04 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char  *go_to_herdoc(t_global *global, t_tokens *tokens)
     //     return(42);
     // txt[n] = 0;
     // printf("%s\n", txt);
-    printf("text=%s", tokens->here_doc_txt);
+    // printf("text=%s", tokens->here_doc_txt);
     return(tokens->here_doc_txt);
 }
 
