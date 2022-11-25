@@ -45,10 +45,13 @@ void redir_here_doc(t_tokens *txt, char *tty_name)
 {
     int pip[2];
     int fd;
+    int tmp;
 
+    tmp = 255;
     if ((fd = open(tty_name, O_RDWR)) == -1) // 5
 		return ;
 	dup2(fd, STDIN_FILENO);
+    dup2(STDOUT_FILENO, tmp);
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	if ((pipe(pip)) == -1)
@@ -58,6 +61,8 @@ void redir_here_doc(t_tokens *txt, char *tty_name)
 	close(pip[1]);
 	dup2(pip[0], STDIN_FILENO);
 	close(pip[0]);
+    dup2(tmp, STDOUT_FILENO);
+    close(tmp);
 }
 
 void    execute_redirection(t_tokens *red)
