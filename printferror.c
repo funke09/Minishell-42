@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/25 15:19:04 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/25 15:42:52 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ char  *go_to_herdoc(t_global *global, t_tokens *tokens)
         if(g_var)
         {
             g_var = 0;
+            // free(str);
             break;
         }
         if(!str || !ft_strcmp(str, tokens->token) ) // key
