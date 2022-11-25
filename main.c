@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/24 21:38:42 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/25 01:21:40 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -388,7 +388,7 @@ int main(int ac, char **av, char **env)
         check_tokens(&global);
         if(global.errnum != 0)
             printferror(&global);
-        print_tokens(&global);
+        // print_tokens(&global);
         if (global.tokens)
             execute(&global);
         free(global.line);
