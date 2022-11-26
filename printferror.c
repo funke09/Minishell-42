@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/25 15:42:52 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 02:22:03 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ char  *go_to_herdoc(t_global *global, t_tokens *tokens)
     while(1)
     {
         str = readline("heredoc> ");
-        if(g_var)
+        if(g_glb.g_var)
         {
-            g_var = 0;
+            g_glb.g_var = 0;
             // free(str);
             break;
         }

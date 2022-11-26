@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/25 00:11:35 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 01:56:10 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 
-int g_var;
+// int g_glb.g_var;
 
 typedef enum s_error
 {
@@ -68,6 +68,14 @@ typedef struct s_tokens
     char    *here_doc_txt; //  data
     struct s_tokens *next;
 }   t_tokens; 
+
+typedef struct s_var
+{
+    int exit_status;
+    int g_var;
+}   t_var;
+
+t_var g_glb;
 
 typedef struct s_env
 {

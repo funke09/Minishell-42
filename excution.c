@@ -99,6 +99,7 @@ void	execute_direct(char **cmd, char **env)
 {
 	const char	*file_name;
 	pid_t		pid;
+	int	status;
 
 	if (cmd[0][0] == '.' && cmd[0][1] == '/')
 		file_name = ft_strrchr(cmd[0], '/') + 1;
@@ -116,17 +117,23 @@ void	execute_direct(char **cmd, char **env)
 		exit(1);
 	}
 	else
-		wait(NULL);
+	{
+		wait(&status);
+		if (WIFEXITED(status))
+			g_glb.exit_status = WEXITSTATUS(status);
+	}
 }
 
 void	execute_undirect(char **cmd, char **tabs, t_env **env)
 {
 	char		*bin_file;
 	pid_t		pid;
+	int			status;
 
 	if (!(bin_file = get_bin_file(cmd, env)))
 	{
 		ft_putendl_fd("minishell: command not found: ", 2);
+		g_glb.exit_status = 127;
 		return ;
 	}
 	if ((pid = fork()) < 0)
@@ -140,7 +147,11 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env)
 		exit(1);
 	}
 	else
-		wait(NULL);
+	{
+		wait(&status);
+		if (WIFEXITED(status))
+			g_glb.exit_status = WEXITSTATUS(status);
+	}
 	if (bin_file)
 		ft_strdel(&bin_file);
 }
@@ -199,7 +210,7 @@ void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)//
 		execute_direct(cmd, tabs);
 	else if (cmd[0])
 		execute_undirect(cmd, tabs, env);
-	exit(EXIT_SUCCESS);
+	exit(g_glb.exit_status);
 }
 
 void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
@@ -235,6 +246,7 @@ int	execute(t_global *global)
 	t_tokens	*token;
 	char		**cmd;
 	int 		j;
+	int status;
 
 	env = get_adress();
 	init_pipes(&pipes);
@@ -254,8 +266,10 @@ int	execute(t_global *global)
 	if (pipes.temp)
 		close(pipes.temp);
 	if (pipes.pid)
-		while (wait(NULL) > 0)
+		while (wait(&status) > 0)
 			;
+	if (WIFEXITED(status))
+		g_glb.exit_status = WEXITSTATUS(status);
 	return (0);
 }
 

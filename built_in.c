@@ -239,6 +239,20 @@ int is_a_builtin_child(char *cmd) //pwd, export,env, exit, echo, unset, cd
     return (1);
 }
 
+int check_arg(int *i, char *str)
+{
+	int j;
+
+	j = 1;
+	while (str[j])
+	{
+		if (str[j] != 'n')
+			return 0;
+		j++;
+	}
+	*i += 1;
+	return (1);
+}
 
 int echo(char **args)
 {
@@ -247,11 +261,9 @@ int echo(char **args)
 
     i = 1;
     n = 0;
-    if (args[1] && !strncmp(args[1], "-n", 2))
-    {
-        n = 1;
-        i++;
-    }
+	
+	if (args[1] && args[1][0] == '-')
+		n = check_arg(&i, args[1]);
     while (args[i])
     {
         ft_putstr_fd(args[i++], 1);
@@ -262,8 +274,3 @@ int echo(char **args)
         ft_putchar_fd('\n', 1);
     return(0);
 }
-
-// int herredoc()
-// {
-
-// }

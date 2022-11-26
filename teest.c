@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/22 03:24:50 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 02:16:57 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char *expantion(char *token)
     len = ft_strlen_char(str + 1);
     if(str[1] == '?')
     {
+        
        return NULL;
         
     }

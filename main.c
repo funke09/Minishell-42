@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 01:26:51 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 02:00:30 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	sig_handler(int var)
 	signal(SIGQUIT, SIG_IGN);
 	if (var == SIGINT)
 	{
-		g_var = 1;
+		g_glb.g_var = 1;
 		ft_putstr_fd("\n\e[1;35mminishell$> \e[0m", 1);
 	}
 }
@@ -318,7 +318,7 @@ int	main(int ac, char **av, char **env)
 {
 	t_global	global;
 
-	g_var = 0;
+	g_glb.g_var = 0;
 	stock_env(env, &global);
 	init_global(&global);
 	// rl_catch_signals = 0;
@@ -351,6 +351,7 @@ int	main(int ac, char **av, char **env)
 			printferror(&global);
 		if (global.tokens)
 			execute(&global);
+		printf("exit status = %d\n", g_glb.exit_status);
 		free(global.line);
 		global.line = NULL;
 		free_tokens(global.tokens);
