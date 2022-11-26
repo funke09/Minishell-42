@@ -75,7 +75,7 @@ void	ft_execve(const char *file_name, char **cmd, char **env)
 	}
 	else
 	{
-		ft_putendl_fd("minishell: Command not found: ", 2);
+		ft_putendl_fd("minishell: Command not found ", 2);
 		exit (1);
 	}
 	return ;
@@ -132,7 +132,7 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env)
 
 	if (!(bin_file = get_bin_file(cmd, env)))
 	{
-		ft_putendl_fd("minishell: command not found: ", 2);
+		ft_putendl_fd("minishell: command not found ", 2);
 		g_glb.exit_status = 127;
 		return ;
 	}

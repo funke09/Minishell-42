@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 02:00:30 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 14:36:59 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,11 +185,11 @@ int	is_dolar(t_global *global, int	*i)
 	int	start;
 
 	start = *i;
-	if (global->line[*i] && global->line[*i] == '$' && ft_isalnum(global->line[*i + 1]))
+	if (global->line[*i] && global->line[*i] == '$' && (ft_isalnum(global->line[*i + 1]) || global->line[*i + 1] == '?'))
 	{
 		(*i)++;
-		while (global->line[*i] && !is_blank(global->line[*i]) && ft_isalnum(global->line[*i])
-			&& !is_charachter(global->line[*i]))
+		while (global->line[*i] && !is_blank(global->line[*i]) && (ft_isalnum(global->line[*i])
+			|| global->line[*i] == '?') && !is_charachter(global->line[*i]))
 			(*i)++;
 		return (1);
 	}
@@ -351,7 +351,7 @@ int	main(int ac, char **av, char **env)
 			printferror(&global);
 		if (global.tokens)
 			execute(&global);
-		printf("exit status = %d\n", g_glb.exit_status);
+		// printf("exit status = %d\n", g_glb.exit_status);
 		free(global.line);
 		global.line = NULL;
 		free_tokens(global.tokens);
