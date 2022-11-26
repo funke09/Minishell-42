@@ -201,11 +201,11 @@ void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env, t
 	if ((redir = go_to_redir(head)))
 		execute_redirection(redir);
 	tabs = list_to_tabs(env);
-	// if (!is_a_builtin_child(cmd[0]))
-	// {
-	// 	do_builtin(cmd, env);
-	// 	exit(EXIT_SUCCESS);
-	// }
+	if (!is_a_builtin_child(cmd[0]))
+	{
+		do_builtin(cmd, env);
+		exit(EXIT_SUCCESS);
+	}
 	if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
 		execute_direct(cmd, tabs, g_glb);
 	else if (cmd[0])

@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 01:56:10 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 18:56:44 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef struct s_var
     int g_var;
 }   t_var;
 
-
+t_var g_glb;
 
 typedef struct s_env
 {

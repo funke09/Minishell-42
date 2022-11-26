@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 15:04:31 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 19:00:28 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char *expantion(char *token)
         status = ft_itoa(g_glb.exit_status);
         if(len > 2)
         {   
-            var = ft_substr(str, 2, len);
+            var = ft_substr(str, 2, (len - 1));
             status = ft_strjoin(status, var);
             free(var);
         }
