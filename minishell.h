@@ -115,6 +115,7 @@ typedef struct			s_get_bin
 	char				*tmp2;
 }						t_get_bin;
 
+
 int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);

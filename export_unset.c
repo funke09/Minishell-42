@@ -9,6 +9,7 @@
 // env | grep "what" !!!wtf
 //
 //expantion mkhwra
+//blank history 
 
 //export _=/usr/bin/env done
 // SHLVL
@@ -27,7 +28,7 @@ void ft_remove(t_env **env, char *var_name)
     l = ft_strlen (var_name);
     if (!env || !*env)
         return;
-    while (*env && !ft_strncmp(var_name, (*env)->str, l))
+    while (*env && l == len_key((*env)->str) && !ft_strncmp(var_name, (*env)->str, l))
     {
         tmp = (*env)->next;
         free(*env);
@@ -36,7 +37,7 @@ void ft_remove(t_env **env, char *var_name)
     curr = *env;
     while (curr && curr->next)
     {
-        if (!ft_strncmp(var_name, curr->next->str, l))
+        if (!ft_strncmp(var_name, curr->next->str, l) && l == len_key(curr->next->str))
         {
             tmp = curr->next;
             curr->next = curr->next->next;
@@ -47,57 +48,42 @@ void ft_remove(t_env **env, char *var_name)
     }
 }
 
+int check_unset_arg_valid(char *str)
+{
+    int i;
 
+    i = -1;
+    if (ft_isdigit(str[0]))
+        return 1;
+    while (str[++i])
+    {
+        if (!ft_isdigit(str[i]) && !ft_isalpha(str[i]) && str[i] != '_')
+            return (1);
+    }
+    return (0);
+}
 
 int ft_unset(t_env **env, char **args)
 {
-    int i = -1;
+    int i = 0;
 
     while(args[++i])
     {
-        // check_valid args : only numbers, underscores, and digits .==
-        // if (valid_env_var(args[i]), &l)
-        // {
-        //     ft_putendl_fd("Not a valid unset identifier.\n", 2);
-        //     return (1);
-        // }
+        if (check_unset_arg_valid(args[i]))
+        {
+            ft_putstr_fd("minishell: unset: ", 2);
+            ft_putstr_fd(args[i], 2);
+            ft_putstr_fd(" : not a valid identifier\n", 2);
+            return (1);
+        }
         ft_remove(env, args[i]);
+        // ft_print_env();
         return (0);
     }  
 
     return (0);
 }
 
-int check_var_exist_replace(t_env **env, char *arg, int len)
-{
-    // int i;
-    t_env *envir;
-    char *tmp;
-
-    // i = -1;
-    envir = *env;
-    while (envir)
-    {
-        if (!strncmp(envir->str, arg, len))
-        {
-                // printf("AAAAAAAAAAA  %c  AAAAAAAAAAAA\n", arg[len - 1]);////
-            if (arg[len - 1] == '+')
-            {
-                tmp = ft_strjoin(envir->str, (ft_strrchr(arg, '=') + 1));
-                free(envir->str);
-                envir->str = tmp;
-            }
-            else
-            {
-                free(envir->str);
-                envir->str = ft_strdup(arg);
-                return (0);
-            }
-        }
-        envir = envir->next;
-    }
-    return (1);
-}
 
 
 
@@ -136,44 +122,7 @@ int	push2(char *env, t_env **begin_lst)
 	return (0);
 }
 
-// int  export_no_args()
-// {
 
-// }
-
-// int ft_export(t_env **env,char **args)
-// {
-//     int i;
-//     int len;
-//     int ch;
-
-
-//     i = 0;
-//     // if (!args[1])
-//     //     export_no_args();
-//     while (args[++i])
-//     {
-//         if (valid_env_var(args[i]))/////to check
-//         {
-//             ft_putendl_fd("Not a valid export identifier.\n", 2);
-//             return (1);
-//         }
-//         len = len_key(args[1]);
-//         if (args[i][len] == '=')
-//         {
-//             ch = check_var_exist_replace(env, args[i], len);
-//             if (!ch)
-//             {
-//                 printf("AAA2222\n");////
-//                 push2(args[i], env);
-//                 return (1);
-//             }
-//         }
-
-//     }
-//     return (0);
-
-// }
 
 int check_arg_valid(char *str, int *l)
 {
@@ -291,14 +240,13 @@ int ft_export(t_env **env, char **args)
     }
     while (args[i])
     {
-        // printf("loop%s\n", args[i]);
         if (!check_arg_valid(args[i], &len))
             ft_handle_arg(env, args[i], len);
         else
         {
-            ft_putendl_fd("minishell: export: ", 2);
-            ft_putendl_fd(args[i], 2);
-            ft_putendl_fd(" : not a valid identifier\n", 2);
+            ft_putstr_fd("minishell: export: ", 2);
+            ft_putstr_fd(args[i], 2);
+            ft_putstr_fd(" : not a valid identifier\n", 2);
             return (1);
         }
         i++;
