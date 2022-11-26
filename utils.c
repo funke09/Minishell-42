@@ -84,9 +84,9 @@ char *get_path(t_env **envirement, char *name) // key=value
     t_env *env;
 
     env = NULL;
-    if (envirement)
+	if (envirement)
         env = *envirement;
-	if(name && env)
+	if (name && env)
 	{
 
 		while (env)

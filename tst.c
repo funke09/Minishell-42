@@ -36,14 +36,29 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+typedef struct s_var
+{
+    int exit_status;
+    int g_var;
+}   t_var;
+
+void func2(t_var *g_var)
+{
+	(*g_var).exit_status *= 20;
+}
+
+
+void func(t_var *g_var)
+{
+	func2(g_var);
+}
+
 int main(int argc, char **argv)
 {
-//     if (argc > 1) {
-//         struct stat sb;
-//         stat(argv[1], &sb)
-        printf("%s\n",getcwd(NULL, 0));
-        chdir("");
-                printf("%s\n",getcwd(NULL, 0));
+	t_var g_glb;
 
+	g_glb.exit_status = 10;
+	func(&g_glb);
+	printf("%d\n", g_glb.exit_status);
     return 0;
 }   

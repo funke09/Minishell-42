@@ -60,7 +60,7 @@ char *generate_dolar(t_global *global, char *tokens)
     
 }
 
-char  *go_to_herdoc(t_global *global, t_tokens *tokens)
+char  *go_to_herdoc(t_global *global, t_tokens *tokens, t_var *g_glb)
 {
     char *str;
     char    *tmp;
@@ -69,9 +69,9 @@ char  *go_to_herdoc(t_global *global, t_tokens *tokens)
     while(1)
     {
         str = readline("heredoc> ");
-        if(g_glb.g_var)
+        if((*g_glb).g_var)
         {
-            g_glb.g_var = 0;
+            (*g_glb).g_var = 0;
             // free(str);
             break;
         }
@@ -168,7 +168,7 @@ void printferror(t_global *global)
 }
 
 
-void check_tokens(t_global *global)
+void check_tokens(t_global *global, t_var *g_glb)
 {
     t_tokens *tmp;
     char *temp;
@@ -211,7 +211,7 @@ void check_tokens(t_global *global)
                 global->errnum = ERROR_HEREDOC;
             else if(tmp->next->type == HERDOC_KEY)
             {
-                if((tmp->here_doc_txt = go_to_herdoc(global, tmp->next)) == NULL)
+                if((tmp->here_doc_txt = go_to_herdoc(global, tmp->next, g_glb)) == NULL)
                         global->errnum = ERROR_HEREDOC;
             }
         }

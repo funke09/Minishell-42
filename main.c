@@ -22,6 +22,8 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 
+t_var g_glb;
+
 void	sig_handler(int var)
 {
 	while (wait(NULL) > 0)
@@ -346,11 +348,11 @@ int	main(int ac, char **av, char **env)
 			exit(1);
 		}
 		tokenization(&global);
-		check_tokens(&global);
+		check_tokens(&global, &g_glb);
 		if (global.errnum != 0)
 			printferror(&global);
 		if (global.tokens)
-			execute(&global);
+			execute(&global, &g_glb);
 		printf("exit status = %d\n", g_glb.exit_status);
 		free(global.line);
 		global.line = NULL;

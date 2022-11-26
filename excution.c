@@ -95,7 +95,7 @@ int	execute_blt(char **args, t_env **env)
 	return (0);
 }
 
-void	execute_direct(char **cmd, char **env)
+void	execute_direct(char **cmd, char **env, t_var *g_glb)
 {
 	const char	*file_name;
 	pid_t		pid;
@@ -120,11 +120,11 @@ void	execute_direct(char **cmd, char **env)
 	{
 		wait(&status);
 		if (WIFEXITED(status))
-			g_glb.exit_status = WEXITSTATUS(status);
+			(*g_glb).exit_status = WEXITSTATUS(status);
 	}
 }
 
-void	execute_undirect(char **cmd, char **tabs, t_env **env)
+void	execute_undirect(char **cmd, char **tabs, t_env **env, t_var *g_glb)
 {
 	char		*bin_file;
 	pid_t		pid;
@@ -133,7 +133,7 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env)
 	if (!(bin_file = get_bin_file(cmd, env)))
 	{
 		ft_putendl_fd("minishell: command not found: ", 2);
-		g_glb.exit_status = 127;
+		(*g_glb).exit_status = 127;
 		return ;
 	}
 	if ((pid = fork()) < 0)
@@ -150,7 +150,7 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env)
 	{
 		wait(&status);
 		if (WIFEXITED(status))
-			g_glb.exit_status = WEXITSTATUS(status);
+			(*g_glb).exit_status = WEXITSTATUS(status);
 	}
 	if (bin_file)
 		ft_strdel(&bin_file);
@@ -190,7 +190,7 @@ void	execute_pipes2(t_tokens *token, t_pipe *pipes)
 	return ;
 }
 
-void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/////////////////////////////////////////////
+void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env, t_var *g_glb)/////////////////////////////////////////////
 {
 	t_tokens	*redir;
 	char		**tabs;
@@ -201,19 +201,19 @@ void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)//
 	if ((redir = go_to_redir(head)))
 		execute_redirection(redir);
 	tabs = list_to_tabs(env);
-	if (!is_a_builtin_child(cmd[0]))
-	{
-		do_builtin(cmd, env);
-		exit(EXIT_SUCCESS);
-	}
+	// if (!is_a_builtin_child(cmd[0]))
+	// {
+	// 	do_builtin(cmd, env);
+	// 	exit(EXIT_SUCCESS);
+	// }
 	if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
-		execute_direct(cmd, tabs);
+		execute_direct(cmd, tabs, g_glb);
 	else if (cmd[0])
-		execute_undirect(cmd, tabs, env);
-	exit(g_glb.exit_status);
+		execute_undirect(cmd, tabs, env, g_glb);
+	exit((*g_glb).exit_status);
 }
 
-void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
+void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env, t_var *g_glb)
 {
 	if (!is_a_builtin(cmd[0]))
 	{
@@ -225,7 +225,7 @@ void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
 	if ((pipes->pid = fork()) == -1)
 		return ;
 	if (pipes->pid == 0)
-		execute_pip_child(token, pipes, cmd, env);
+		execute_pip_child(token, pipes, cmd, env, g_glb);
 	else
 	{
 		close(pipes->pipe[1]);
@@ -239,7 +239,7 @@ void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
 	return ;
 }
 
-int	execute(t_global *global)
+int	execute(t_global *global, t_var *g_glb)
 {
 	t_pipe		pipes;
 	t_env		**env;
@@ -256,7 +256,7 @@ int	execute(t_global *global)
 		j = 0;
 		cmd = get_cmd(token);
 		if (cmd && cmd[0])
-			execute_pipes(token, cmd, &pipes, env);
+			execute_pipes(token, cmd, &pipes, env, g_glb);
 		j = 0;
 		while (cmd[j])
 			free(cmd[j++]);
@@ -269,7 +269,7 @@ int	execute(t_global *global)
 		while (wait(&status) > 0)
 			;
 	if (WIFEXITED(status))
-		g_glb.exit_status = WEXITSTATUS(status);
+		(*g_glb).exit_status = WEXITSTATUS(status);
 	return (0);
 }
 

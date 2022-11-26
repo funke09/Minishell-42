@@ -1,5 +1,23 @@
 #include "minishell.h"
 
+//exit : free global line!!
+//expantion f export !!!!!
+//leaks f echo a var !!!
+// leaks f invalid commands
+//leaks f crl c
+// export expantion  
+// env | grep "what" !!!wtf
+//
+//expantion mkhwra
+
+//export _=/usr/bin/env done
+// SHLVL
+//unset
+//handling shlvl f minishell embarque
+
+// builtin fork
+
+
 void ft_remove(t_env **env, char *var_name)
 {
     int l;
@@ -62,7 +80,7 @@ int check_var_exist_replace(t_env **env, char *arg, int len)
     {
         if (!strncmp(envir->str, arg, len))
         {
-                printf("AAAAAAAAAAA  %c  AAAAAAAAAAAA\n", arg[len - 1]);////
+                // printf("AAAAAAAAAAA  %c  AAAAAAAAAAAA\n", arg[len - 1]);////
             if (arg[len - 1] == '+')
             {
                 tmp = ft_strjoin(envir->str, (ft_strrchr(arg, '=') + 1));
@@ -109,7 +127,7 @@ int	push2(char *env, t_env **begin_lst)
 	env_new = malloc(sizeof(t_env));
 	if (env_new == NULL)
 		return (42);
-    printf("ppppp\n");
+    // printf("ppppp\n");
 	env_new->str = ft_strdup2(env);
 	if (env_new->str == NULL)
 		return (42);
@@ -180,9 +198,6 @@ t_env *check_var_exist(t_env **env, char *arg, int len)
     t_env *en;
 
     en = *env;
-    // printf(" cmp = %d\n", ft_strncmp("kjhzskjadksj", arg, len));
-    write(1, arg, len);
-    printf("+++++++++++\n");
     while (en)
     {
         if (!ft_strncmp(en->str, arg, len))
@@ -215,8 +230,50 @@ void    ft_handle_arg(t_env **env, char *arg, int len)
     }
     else
     {
-        push(arg, env);
+        push2(arg, env);
     }
+}
+
+void	ft_putstr2(char *s)
+{	
+	int	i;
+    int ch;
+
+	i = 0;
+    ch = 1;
+	if (!s || !s[i])
+		return ;
+    if (s[i] == '_'  && s[i + 1] == '=')
+        return;
+    ft_putstr_fd("declare -x ", 1);
+	while (s[i])
+	{
+        ft_putchar_fd(s[i], 1);
+        if (s[i] == '=' && ch)
+        {
+            ch = 0;
+            ft_putchar_fd('"', 1);
+        }
+		
+		i++;
+	}
+    ft_putchar_fd('"', 1);
+}
+
+
+void ft_print_export(t_env **env)
+{
+    t_env *env_list;
+
+    env_list = *env;
+    while (env)
+	{
+		ft_putstr2(env_list->str);
+		ft_putchar_fd('\n', 1);
+		if (!env_list->next)
+			break;
+		env_list = env_list->next;
+	}
 }
 
 
@@ -229,7 +286,7 @@ int ft_export(t_env **env, char **args)
     len = -1;
     if (!args[1])
     {
-        ft_print_env();
+        ft_print_export(env);
         return 0;
     }
     while (args[i])
@@ -239,16 +296,17 @@ int ft_export(t_env **env, char **args)
             ft_handle_arg(env, args[i], len);
         else
         {
-            ft_putendl_fd("", 2);
+            ft_putendl_fd("minishell: export: ", 2);
+            ft_putendl_fd(args[i], 2);
+            ft_putendl_fd(" : not a valid identifier\n", 2);
             return (1);
         }
         i++;
     }
-    ft_print_env();
     return 0;
 }
 
-// if value start with a $
+
 
 int ft_env(char **args)
 {

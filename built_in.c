@@ -211,22 +211,9 @@ int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
         return (1);
     else if (len == 4 && !ft_strncmp(cmd, "exit", len))
         return (0);
-    // else if (len == 5 && !ft_strncmp(cmd, "unset", len))
-    //     return (0);
     else if (len == 2 && !ft_strncmp(cmd, "cd", len))
         return (0);
-    return (1);
-}
-
-int is_a_builtin_child(char *cmd) //pwd, export,env, exit, echo, unset, cd
-{
-    int len;
-
-    len = ft_strlen(cmd);
-
-    if (!cmd)
-        return (1);
-    if (len == 3 && !ft_strncmp(cmd, "pwd", len))
+	else if (len == 3 && !ft_strncmp(cmd, "pwd", len))
         return (0);
     else if (len == 6 && !ft_strncmp(cmd, "export", len))
         return (0);
@@ -238,6 +225,27 @@ int is_a_builtin_child(char *cmd) //pwd, export,env, exit, echo, unset, cd
         return (0);
     return (1);
 }
+
+// int is_a_builtin_child(char *cmd) //pwd, export,env, exit, echo, unset, cd
+// {
+    // int len;
+
+//     len = ft_strlen(cmd);
+
+//     if (!cmd)
+//         return (1);
+//     if (len == 3 && !ft_strncmp(cmd, "pwd", len))
+//         return (0);
+//     else if (len == 6 && !ft_strncmp(cmd, "export", len))
+//         return (0);
+//     else if (len == 3 && !ft_strncmp(cmd, "env", len))
+//         return (0);
+//     else if (len == 4 && !ft_strncmp(cmd, "echo", len))
+//         return (0);
+//     else if (len == 5 && !ft_strncmp(cmd, "unset", len))
+//         return (0);
+//     return (1);
+// }
 
 int check_arg(int *i, char *str)
 {
