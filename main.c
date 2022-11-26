@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/25 18:15:43 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 01:15:33 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ int	is_dolar(t_global *global, int	*i)
 	int	start;
 
 	start = *i;
-	if (global->line[*i] && global->line[*i] == '$' && global->line[*i + 1])
+	if (global->line[*i] && global->line[*i] == '$' && ft_isalnum(global->line[*i + 1]))
 	{
 		(*i)++;
 		while (global->line[*i] && !is_blank(global->line[*i])

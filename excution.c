@@ -276,9 +276,9 @@ void	go_to_cd(char *path, t_env **env_list)
 	if (path && access(path, F_OK) == 0)
 	{
 		stat(path, &st);
-		if (!S_ISDIR(st.st_mode) && ft_strrchr(path, '/'))
+		if (!S_ISDIR(st.st_mode) )
 		{
-			return (ft_putendl_fd("minishell: cd: not a directory: ", 2));
+			return (ft_putendl_fd("cd: not a directory", 2));
 		}
 	}
 		if (access(path, X_OK) == 0)
@@ -300,7 +300,7 @@ void	go_to_cd(char *path, t_env **env_list)
 int	c_cd(char **args, t_env **env)
 {
 	char	*path;
-	char	*cwd;
+	// char	*cwd;
 	int		len;
 
 	len = ft_sizearray(args);
@@ -317,23 +317,24 @@ int	c_cd(char **args, t_env **env)
 	}
 	if (len == 2)
 	{
-		if (args[1][0] != '/' && args[1][0] != '.' && args[1][0] != '-')
-		{
-			if (!(cwd = get_cwd()))
-				return (1);
-			ft_strcpy(cwd + ft_strlen(cwd), "/");
-			if (!(path = ft_strjoin(cwd, args[1])))
-				return (1);
-			go_to_cd(path, env);
-			// cd_simple(new_path, env_list);
-			free(path);
-			free(cwd);
-			// ft_strdel_2(&new_path, &cwd);
-		}
+		go_to_cd(args[1], env);
+		// if (args[1][0] != '/' && args[1][0] != '.' && args[1][0] != '-')
+		// {
+		// 	if (!(cwd = get_cwd()))
+		// 		return (1);
+		// 	ft_strcpy(cwd + ft_strlen(cwd), "/");
+		// 	if (!(path = ft_strjoin(cwd, args[1])))
+		// 		return (1);
+		// 	go_to_cd(path, env);
+		// 	// cd_simple(new_path, env_list);
+		// 	free(path);
+		// 	free(cwd);
+		// 	// ft_strdel_2(&new_path, &cwd);
+		// }
 		// else if (cmd[1][0] == '-' && cmd[1][1] == '\0')
 		// 	cd_back(env_list);
-		else
-			go_to_cd(args[1], env);
+		// else
+			// go_to_cd(args[1], env);
 	}
 	// go_to_cd(path, env);
 	// if len = 1
