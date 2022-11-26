@@ -75,7 +75,7 @@ typedef struct s_var
     int g_var;
 }   t_var;
 
-t_var g_glb;
+
 
 typedef struct s_env
 {
@@ -118,7 +118,7 @@ typedef struct			s_get_bin
 int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);
-void check_tokens(t_global *global);
+void check_tokens(t_global *global, t_var *g_glb);
 char *ft_strtrim_quotes(char *str);
 int	len_key(char *env);
 char *expantion(char *token);
@@ -132,7 +132,7 @@ int check_arg_valid(char *str, int *l);
 t_env *check_var_exist(t_env **env, char *arg, int len);
 
 
-int             execute(t_global *global);
+int             execute(t_global *global, t_var *g_glb);
 char *get_path(t_env **envirement, char *name);
 char			*get_bin_file(char **cmd, t_env **env);
 

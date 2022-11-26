@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 14:36:59 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/26 18:55:06 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
+
+t_var g_glb;
 
 void	sig_handler(int var)
 {
@@ -346,11 +348,11 @@ int	main(int ac, char **av, char **env)
 			exit(1);
 		}
 		tokenization(&global);
-		check_tokens(&global);
+		check_tokens(&global, &g_glb);
 		if (global.errnum != 0)
 			printferror(&global);
 		if (global.tokens)
-			execute(&global);
+			execute(&global, &g_glb);
 		// printf("exit status = %d\n", g_glb.exit_status);
 		free(global.line);
 		global.line = NULL;
