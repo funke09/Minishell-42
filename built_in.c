@@ -210,7 +210,10 @@ int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
     if (!cmd)
         return (1);
     else if (len == 4 && !ft_strncmp(cmd, "exit", len))
-        return (0);
+	{
+		ft_putstr_fd("exit\n", 1);
+        exit(0);
+	}
     else if (len == 2 && !ft_strncmp(cmd, "cd", len))
         return (0);
 	// else if (len == 3 && !ft_strncmp(cmd, "pwd", len))

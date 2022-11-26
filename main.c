@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 18:55:06 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/27 00:03:26 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,12 @@ t_var g_glb;
 
 void	sig_handler(int var)
 {
-	while (wait(NULL) > 0)
-		;
 	signal(SIGQUIT, SIG_IGN);
 	if (var == SIGINT)
 	{
 		g_glb.g_var = 1;
-		ft_putstr_fd("\n\e[1;35mminishell$> \e[0m", 1);
 	}
+	
 }
 
 int	is_charachter(char c)
@@ -316,6 +314,19 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
+
+int line_is_empty(char *line)
+{
+    int i = -1;
+
+    while (line[++i])
+    {
+        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+            return (0);
+    }
+    return (1);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_global	global;
@@ -333,20 +344,18 @@ int	main(int ac, char **av, char **env)
 	}
 	while (1)
 	{
-		global.line = readline("\e[1;35mminishell$> \e[0m");
-		add_history(global.line);
+		global.line = readline("minishell$> ");
 		if (global.line == NULL)
 		{
 			write(1, "exitt\n", 6);
 			exit(1);
 		}
-		if (ft_strcmp(global.line, "exit") == 0)
-		{
-			write(1, "exit\n", 6);
-			free(global.line);
-			//+free it all
-			exit(1);
-		}
+		if (global.line[0])
+			add_history(global.line);
+		// else 
+        // {
+        //     // if (!line_is_empty(global.line))
+        // }
 		tokenization(&global);
 		check_tokens(&global, &g_glb);
 		if (global.errnum != 0)
