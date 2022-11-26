@@ -24,7 +24,7 @@ size_t	ft_strlen_char(const char *s)
     return (i);
 }
 
-char *generate_dolar(t_global *global, char *tokens)
+char *generate_dolar(t_global *global, char *tokens, t_var *g_glb)
 {
     int  i = 0;
     int  j = 0;
@@ -45,7 +45,7 @@ char *generate_dolar(t_global *global, char *tokens)
         if(str[i] == '$' && str[i + 1] != ' ' && str[i + 1])
         {
             len = ft_strlen_char(str + i + 1);
-            if (!(val = expantion(str + i)))
+            if (!(val = expantion((str + i), g_glb)))
                     val = "";
             ft_strncpy(res + j, val, ft_strlen(val));
             i += len;
@@ -78,7 +78,7 @@ char  *go_to_herdoc(t_global *global, t_tokens *tokens, t_var *g_glb)
         if(!str || !ft_strcmp(str, tokens->token) ) // key
             break;
         tmp = str;
-        str = generate_dolar(global, str);
+        str = generate_dolar(global, str, g_glb);
         free(tmp);
         //
         tmp = str;
@@ -180,7 +180,7 @@ void check_tokens(t_global *global, t_var *g_glb)
         if(tmp->type == ENV_VAR)
         {
             temp = tmp->token;
-            tmp->token = generate_dolar(global, tmp->token);
+            tmp->token = generate_dolar(global, tmp->token, g_glb);
             if (!tmp->token)
                 global->errnum = ENV_NOT_FOUND;
             free(temp);
@@ -218,7 +218,7 @@ void check_tokens(t_global *global, t_var *g_glb)
         else if(tmp->type == D_QUOTE)
         {
             temp = tmp->token;
-            tmp->token = generate_dolar(global, tmp->token);
+            tmp->token = generate_dolar(global, tmp->token, g_glb);
             free(temp);
         }
         else if(tmp->type == S_QUOTE)

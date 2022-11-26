@@ -75,7 +75,6 @@ typedef struct s_var
     int g_var;
 }   t_var;
 
-t_var g_glb;
 
 typedef struct s_env
 {
@@ -122,7 +121,7 @@ void printferror(t_global *global);
 void check_tokens(t_global *global, t_var *g_glb);
 char *ft_strtrim_quotes(char *str);
 int	len_key(char *env);
-char *expantion(char *token);
+char *expantion(char *token, t_var *g_glb);
 void sig_handler(int var);
 char *ft_getenv(char *str, int len);
 size_t	ft_strlen_char(const char *s);

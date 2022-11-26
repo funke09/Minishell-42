@@ -33,7 +33,7 @@ char *ft_getenv(char *str, int len)
     return (NULL);
 }
 
-char *expantion(char *token)
+char *expantion(char *token, t_var *g_glb)
 {
     char  *str;
     char  *var;
@@ -45,7 +45,7 @@ char *expantion(char *token)
     len = ft_strlen_char(str + 1);
     if(str[1] == '?')
     {
-        status = ft_itoa(g_glb.exit_status);
+        status = ft_itoa((*g_glb).exit_status);
         if(len > 2)
         {   
             var = ft_substr(str, 2, (len - 1));
