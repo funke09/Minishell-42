@@ -8,9 +8,10 @@
 // export expantion  
 //
 //blank history 
-
+//export test/////////////////////////////////////////////
 // SHLVL
 //handling shlvl f minishell embarque
+////grep"string"
 
 // builtin fork
 
@@ -61,9 +62,9 @@ int check_unset_arg_valid(char *str)
 
 int ft_unset(t_env **env, char **args)
 {
-    int i = 0;
+    int i = 1;
 
-    while(args[++i])
+    while(args[i])
     {
         if (check_unset_arg_valid(args[i]))
         {
@@ -73,8 +74,7 @@ int ft_unset(t_env **env, char **args)
             return (1);
         }
         ft_remove(env, args[i]);
-        // ft_print_env();
-        return (0);
+        i++;
     }  
 
     return (0);
@@ -231,12 +231,7 @@ int ft_export(t_env **env, char **args)
 
     i = 1;
     len = -1;
-    // printf("Pp\n");
-    // {
-    //     int j = 0;
-    //     while(args[++j])
-    //         printf("%s\n", args[j]);
-    // }
+
     if (!args[1])
     {
         ft_print_export(env);

@@ -76,7 +76,7 @@ typedef struct s_var
     int _status;
 }   t_var;
 
-t_var g_glb; // 
+// t_var g_glb; // 
 
 typedef struct s_env
 {

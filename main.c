@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+t_var g_glb; // 
+
 
 void	sig_handler(int var)
 {
