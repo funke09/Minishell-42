@@ -6,7 +6,7 @@
 #    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/11/24 21:12:39 by macos            ###   ########.fr        #
+#    Updated: 2022/11/27 03:46:20 by macos            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ HEADER = minishell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -I$(HOME)/goinfre/brew/opt/readline/include -Wall -Wextra -Werror -fsanitize=address
+FLAGS = -I /usr/local/Cellar/readline/8.2.1/include -Wall -Wextra -Werror -fsanitize=address
 
 all :$(NAME) 
 
@@ -31,12 +31,12 @@ $(NAME) : $(OBJ)
 	@echo "\033[0;32mCompiling libft..."
 	@make -C libft/
 	@echo "\033[0;32mCompiling minishell..."
-	@$(CC) $(FLAGS) $(OBJ) -L$(HOME)/goinfre/brew/opt/readline/lib -lreadline -o $(NAME) $(LIB)
+	@$(CC) $(FLAGS) $(OBJ)  -L /usr/local/Cellar/readline/8.2.1/lib -lreadline -o $(NAME) $(LIB)
 	@echo "\n\033[0mCompilation Done !"
 
 %.o : %.c  $(HEADER)
 	@printf "\033[0;33mcreating minishell objects... %-33.33s\r" $@
-	@$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@ 
 clean :
 	@echo "\nDeleting minishell objects..."
 	@rm -f $(OBJ)

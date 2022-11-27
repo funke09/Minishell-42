@@ -6,30 +6,23 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/27 00:03:26 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/27 03:34:59 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdio.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "libft/libft.h"
 
-t_var g_glb;
 
 void	sig_handler(int var)
 {
 	signal(SIGQUIT, SIG_IGN);
-	if (var == SIGINT)
+	if (var == SIGINT && !g_glb._status)
 	{
 		g_glb.g_var = 1;
+		ft_putstr_fd("\n", 1);
+		rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
 	}
 	
 }
@@ -334,7 +327,8 @@ int	main(int ac, char **av, char **env)
 	g_glb.g_var = 0;
 	stock_env(env, &global);
 	init_global(&global);
-	// rl_catch_signals = 0;
+	rl_catch_signals = 0;
+	g_glb._status = 0;
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	if ((!ac && !av) || ac != 1)

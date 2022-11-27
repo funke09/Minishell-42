@@ -214,6 +214,8 @@ void ft_print_export(t_env **env)
 {
     t_env *env_list;
 
+    if(!env[0])
+        return;
     env_list = *env;
     while (env)
 	{

@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 18:56:44 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/27 03:34:00 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,10 @@ typedef struct s_var
 {
     int exit_status;
     int g_var;
+    int _status;
 }   t_var;
 
+t_var g_glb; // 
 
 typedef struct s_env
 {

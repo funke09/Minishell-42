@@ -105,6 +105,7 @@ void	execute_direct(char **cmd, char **env, t_var *g_glb)
 		file_name = ft_strrchr(cmd[0], '/') + 1;
 	else
 		file_name = cmd[0];
+	(*g_glb)._status = 1;
 	pid = fork();
 	if (pid < 0)
 		return (ft_putendl_fd("minishell: Error: forking Failded.\n", 2));
@@ -136,6 +137,7 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env, t_var *g_glb)
 		(*g_glb).exit_status = 127;
 		return ;
 	}
+	(*g_glb)._status = 1;
 	if ((pid = fork()) < 0)
 		return (ft_putendl_fd("minishell: Error: forking Failded.", 2));
 	if (pid == 0)
@@ -201,12 +203,12 @@ void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env, t
 	if ((redir = go_to_redir(head)))
 		execute_redirection(redir);
 	tabs = list_to_tabs(env);
-	if (!is_a_builtin_child(cmd[0]))
+	if (cmd[0] && !is_a_builtin_child(cmd[0]))
 	{
 		do_builtin(cmd, env);
 		exit(EXIT_SUCCESS);
 	}
-	if (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/'))
+	if (cmd[0] && (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/')))
 		execute_direct(cmd, tabs, g_glb);
 	else if (cmd[0])
 		execute_undirect(cmd, tabs, env, g_glb);
@@ -215,13 +217,14 @@ void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env, t
 
 void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env, t_var *g_glb)
 {
-	if (!is_a_builtin(cmd[0]))
+	if (cmd && !is_a_builtin(cmd[0]))
 	{
 		do_builtin(cmd, env);
 		return ;
 	}
 	if (pipe(pipes->pipe) == -1)
 		return ;
+	(*g_glb)._status = 1;
 	if ((pipes->pid = fork()) == -1)
 		return ;
 	if (pipes->pid == 0)
@@ -255,8 +258,8 @@ int	execute(t_global *global, t_var *g_glb)
 	{
 		j = 0;
 		cmd = get_cmd(token);
-		if (cmd && cmd[0])
-			execute_pipes(token, cmd, &pipes, env, g_glb);
+		// if (cmd && cmd[0])
+		execute_pipes(token, cmd, &pipes, env, g_glb);
 		j = 0;
 		while (cmd[j])
 			free(cmd[j++]);
