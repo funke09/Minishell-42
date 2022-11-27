@@ -6,14 +6,10 @@
 // leaks f invalid commands
 //leaks f crl c
 // export expantion  
-// env | grep "what" !!!wtf
 //
-//expantion mkhwra
 //blank history 
 
-//export _=/usr/bin/env done
 // SHLVL
-//unset
 //handling shlvl f minishell embarque
 
 // builtin fork
@@ -235,6 +231,12 @@ int ft_export(t_env **env, char **args)
 
     i = 1;
     len = -1;
+    // printf("Pp\n");
+    // {
+    //     int j = 0;
+    //     while(args[++j])
+    //         printf("%s\n", args[j]);
+    // }
     if (!args[1])
     {
         ft_print_export(env);
