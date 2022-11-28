@@ -285,6 +285,61 @@ int	ft_sizearray(char **args)
 		i++;
 	return (i);
 }
+
+
+// void			oldpwd2(char *cwd, t_env **env_list)
+// {
+// 	bool		flag;
+// 	char		*cwd_;
+// 	char		*cmd[4];
+
+// 	flag = false;
+// 	cwd_ = NULL;
+// 	if (cwd == NULL)
+// 	{
+// 		if (!(cwd_ = get_path(env_list, "PWD")))
+// 			return ;
+// 		cwd = cwd_;
+// 		flag = true;
+// 	}
+// 	cmd[0] = "export";
+// 	cmd[1] = ft_strjoin("OLDPWD=", cwd);
+// 	cmd[2] = NULL;
+// 	export(cmd, env_list);
+// 	if (flag)
+// 		ft_strdel(&cwd_);
+// 	return ;
+// }
+
+void oldpwd_var(t_env **env_list)
+{
+	char **tmp;
+
+	tmp = malloc(3 * sizeof(char *));
+	tmp[2]= NULL;
+	tmp[1] = ft_strjoin("OLDPWD=", getcwd(NULL, 0));
+	tmp[0] = ft_strdup("export");
+
+	ft_export(env_list, tmp);
+	ft_free(tmp, 1);
+}
+
+void pwd_var(t_env **env_list)
+{
+	char **tmp;
+
+	tmp = malloc(3 * sizeof(char *));
+	tmp[2]= NULL;
+	tmp[1] = ft_strjoin("PWD=", getcwd(NULL, 0));
+	tmp[0] = ft_strdup("export");
+
+	ft_export(env_list, tmp);
+
+	ft_free(tmp, 1);
+}
+
+
+
 void	go_to_cd(char *path, t_env **env_list)
 {
 	struct stat	st;
@@ -295,13 +350,15 @@ void	go_to_cd(char *path, t_env **env_list)
 		stat(path, &st);
 		if (!S_ISDIR(st.st_mode) )
 		{
-			return (ft_putendl_fd("cd: not a directory", 2));
+			return (ft_putendl_fd("minishell : cd: not a directory", 2));
 		}
 	}
 		if (access(path, X_OK) == 0)
 		{
+			oldpwd_var(env_list);
 			// oldpwd((tmp = get_cwd()), env_list);
 			chdir(path);
+			pwd_var(env_list);
 			// generate_pwd((tmp2 = get_cwd()), env_list);
 			// ft_strdel_2(&tmp, &tmp2);
 		}
@@ -364,6 +421,7 @@ int	do_builtin(char **args, t_env **env)
 	int	len;
 
 	len = ft_strlen(args[0]);
+
 	if (!args[0])
 		return (1);
 	if (len == 3 && !ft_strncmp(args[0], "pwd", len))

@@ -7,11 +7,12 @@
 //leaks f crl c
 // export expantion  
 //
-//blank history 
-//export test/////////////////////////////////////////////
 // SHLVL
 //handling shlvl f minishell embarque
-////grep"string"
+////grep"string"  ////
+//echo aa"bb" tokenization should be one arg not 2
+//also echo aa'n'
+// echo "="="="
 
 // builtin fork
 
@@ -125,7 +126,7 @@ int check_arg_valid(char *str, int *l)
     int i;
 
     i = -1;
-    if (ft_isdigit(str[0]))
+    if (ft_isdigit(str[0]) || str[0] == '=')
         return 1;
     while (str[++i] && str[i] != '=')
     {
@@ -134,6 +135,7 @@ int check_arg_valid(char *str, int *l)
         if (!ft_isdigit(str[i]) && !ft_isalpha(str[i]) && str[i] != '_')
             return (1);
     }
+
     *l = i;
     return (0);
 }
@@ -161,6 +163,7 @@ void    ft_handle_arg(t_env **env, char *arg, int len)
 
     plus = (arg[len] == '+');
     exist = check_var_exist(env, arg, len);
+
     if (exist && plus)
     {
         value = ft_strjoin(exist->str, &arg[len + 1 + plus]);
@@ -223,6 +226,11 @@ void ft_print_export(t_env **env)
 	}
 }
 
+// the _= value will match the location of the env binary (e.g. /usr/bin/env)
+// export | hang
+// echo $? 
+//grep"ll" shouldn't work
+// cd "".."" too many args!! prob f getting args
 
 int ft_export(t_env **env, char **args)
 {
@@ -240,7 +248,11 @@ int ft_export(t_env **env, char **args)
     while (args[i])
     {
         if (!check_arg_valid(args[i], &len))
+        {
+            if (!args[i][len] || !(args[i][len + 1]))
+                return (0);
             ft_handle_arg(env, args[i], len);
+        }
         else
         {
             ft_putstr_fd("minishell: export: ", 2);

@@ -103,50 +103,26 @@ int				len_path(char **cmd)
 	return (i - 1);
 }
 
-void			export(char **cmd, t_env **env_list)
-{
-	if ((len_path(cmd)) == 1)
-		return (ft_print_env());
-	if ((len_path(cmd)) != 2)
-		return (ft_putendl_fd("EROOR EXPORT\n", 2));
-	else if (!check_name(cmd[1]))
-	{
-		ft_putstr_fd("EROOR\n", 2);
-		ft_putendl_fd("ERROR22\n", 2);
-		return ;
-	}
-	if (if_exist(env_list, cmd[1]) == 0)
-        write(1, "exist\n", 7);
-	// 	addtolist(env_list, ft_strdup(cmd[1]), ft_strdup(cmd[2]));
-	// else
-	// 	modify_env(env_list, cmd[1], cmd[2]);
-	return ;
-}
+// void			export(char **cmd, t_env **env_list)
+// {
+// 	if ((len_path(cmd)) == 1)
+// 		return (ft_print_env());
+// 	if ((len_path(cmd)) != 2)
+// 		return (ft_putendl_fd("EROOR EXPORT\n", 2));
+// 	else if (!check_name(cmd[1]))
+// 	{
+// 		ft_putstr_fd("EROOR\n", 2);
+// 		ft_putendl_fd("ERROR22\n", 2);
+// 		return ;
+// 	}
+// 	if (if_exist(env_list, cmd[1]) == 0)
+//         write(1, "exist\n", 7);
+// 	// 	addtolist(env_list, ft_strdup(cmd[1]), ft_strdup(cmd[2]));
+// 	// else
+// 	// 	modify_env(env_list, cmd[1], cmd[2]);
+// 	return ;
+// }
 
-
-void			oldpwd(char *cwd, t_env **env_list)
-{
-	bool		flag;
-	char		*cwd_;
-	char		*cmd[4];
-
-	flag = false;
-	cwd_ = NULL;
-	if (cwd == NULL)
-	{
-		if (!(cwd_ = get_path(env_list, "PWD")))
-			return ;
-		cwd = cwd_;
-		flag = true;
-	}
-	cmd[0] = "export";
-	cmd[1] = ft_strjoin("OLDPWD=", cwd);
-	cmd[2] = NULL;
-	export(cmd, env_list);
-	if (flag)
-		ft_strdel(&cwd_);
-	return ;
-}
 
 
 int ft_exit(char **args, t_env **env)

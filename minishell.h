@@ -160,5 +160,6 @@ t_tokens* go_to_redir(t_tokens *token);
 void    execute_redirection(t_tokens *red);
 int is_a_builtin_child(char *cmd);
 void	ft_strdel(char **as);
+void ft_free(char **splt, int i);
 #endif
 

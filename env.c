@@ -72,7 +72,7 @@ int init_env(t_env **env_list)
         return (42);
     }
     free(s);
-    if(push("OLDPWD", env_list) == 42)
+    if(push("OLDPWD", env_list) == 42)/////////////////////////////////////////////////////////
     {
         ft_clean_envlist(env_list);
         return (42);
