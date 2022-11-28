@@ -21,6 +21,7 @@
 // echo "="="="
 
 // builtin fork
+// echo text$HOME
 
 
 void ft_remove(t_env **env, char *var_name)
