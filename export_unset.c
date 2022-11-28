@@ -1,5 +1,11 @@
 #include "minishell.h"
 
+// the _= value will match the location of the env binary (e.g. /usr/bin/env)
+// export | hang
+// echo $? result not correct
+//grep"ll" shouldn't work
+// cd "".."" too many args!! prob f getting args
+
 //exit : free global line!!
 //expantion f export !!!!!
 //leaks f echo a var !!!
@@ -225,12 +231,6 @@ void ft_print_export(t_env **env)
 		env_list = env_list->next;
 	}
 }
-
-// the _= value will match the location of the env binary (e.g. /usr/bin/env)
-// export | hang
-// echo $? 
-//grep"ll" shouldn't work
-// cd "".."" too many args!! prob f getting args
 
 int ft_export(t_env **env, char **args)
 {
