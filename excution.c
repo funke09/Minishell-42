@@ -81,21 +81,21 @@ void	ft_execve(const char *file_name, char **cmd, char **env)
 	return ;
 }
 
-int	execute_blt(char **args, t_env **env)
-{
-	int	ret;
+// int	execute_blt(char **args, t_env **env)
+// {
+// 	int	ret;
 
-	ret = do_builtin(args, env);
-	if (ret != 0)
-	{
-		ft_putendl_fd("Error while executing ", 2);
-		ft_putendl_fd(args[0], 2);
-		ft_putendl_fd("\n", 2);
-	}
-	return (0);
-}
+// 	ret = do_builtin(args, env);
+// 	if (ret != 0)
+// 	{
+// 		ft_putendl_fd("Error while executing ", 2);
+// 		ft_putendl_fd(args[0], 2);
+// 		ft_putendl_fd("\n", 2);
+// 	}
+// 	return (0);
+// }
 
-void	execute_direct(char **cmd, char **env, t_var *g_glb)
+void	execute_direct(char **cmd, char **env)
 {
 	const char	*file_name;
 	pid_t		pid;
@@ -105,7 +105,7 @@ void	execute_direct(char **cmd, char **env, t_var *g_glb)
 		file_name = ft_strrchr(cmd[0], '/') + 1;
 	else
 		file_name = cmd[0];
-	(*g_glb)._status = 1;
+	g_glb._status = 1;
 	pid = fork();
 	if (pid < 0)
 		return (ft_putendl_fd("minishell: Error: forking Failded.\n", 2));
@@ -121,11 +121,11 @@ void	execute_direct(char **cmd, char **env, t_var *g_glb)
 	{
 		wait(&status);
 		if (WIFEXITED(status))
-			(*g_glb).exit_status = WEXITSTATUS(status);
+			g_glb.exit_status = WEXITSTATUS(status);
 	}
 }
 
-void	execute_undirect(char **cmd, char **tabs, t_env **env, t_var *g_glb)
+void	execute_undirect(char **cmd, char **tabs, t_env **env)
 {
 	char		*bin_file;
 	pid_t		pid;
@@ -133,11 +133,11 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env, t_var *g_glb)
 
 	if (!(bin_file = get_bin_file(cmd, env)))
 	{
-		ft_putendl_fd("minishell: command not found: ", 2);
-		(*g_glb).exit_status = 127;
+		ft_putendl_fd("minishell: command not found ", 2);
+		g_glb.exit_status = 127;
 		return ;
 	}
-	(*g_glb)._status = 1;
+	g_glb._status = 1;
 	if ((pid = fork()) < 0)
 		return (ft_putendl_fd("minishell: Error: forking Failded.", 2));
 	if (pid == 0)
@@ -152,7 +152,7 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env, t_var *g_glb)
 	{
 		wait(&status);
 		if (WIFEXITED(status))
-			(*g_glb).exit_status = WEXITSTATUS(status);
+			g_glb.exit_status = WEXITSTATUS(status);
 	}
 	if (bin_file)
 		ft_strdel(&bin_file);
@@ -192,13 +192,14 @@ void	execute_pipes2(t_tokens *token, t_pipe *pipes)
 	return ;
 }
 
-void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env, t_var *g_glb)/////////////////////////////////////////////
+void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env)/////////////////////////////////////////////
 {
 	t_tokens	*redir;
 	char		**tabs;
 
 	redir = NULL;
 	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
 	execute_pipes2(head, pipes);
 	if ((redir = go_to_redir(head)))
 		execute_redirection(redir);
@@ -209,26 +210,26 @@ void	execute_pip_child(t_tokens *head, t_pipe *pipes, char **cmd, t_env **env, t
 		exit(EXIT_SUCCESS);
 	}
 	if (cmd[0] && (cmd[0][0] == '/' || (cmd[0][0] == '.' && cmd[0][1] == '/')))
-		execute_direct(cmd, tabs, g_glb);
+		execute_direct(cmd, tabs);
 	else if (cmd[0])
-		execute_undirect(cmd, tabs, env, g_glb);
-	exit((*g_glb).exit_status);
+		execute_undirect(cmd, tabs, env);
+	exit(g_glb.exit_status);
 }
 
-void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env, t_var *g_glb)
+void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
 {
-	if (cmd && !is_a_builtin(cmd[0]))
+	if (cmd && !is_a_builtin(cmd) )
 	{
 		do_builtin(cmd, env);
 		return ;
 	}
 	if (pipe(pipes->pipe) == -1)
 		return ;
-	(*g_glb)._status = 1;
+	g_glb._status = 1;
 	if ((pipes->pid = fork()) == -1)
 		return ;
 	if (pipes->pid == 0)
-		execute_pip_child(token, pipes, cmd, env, g_glb);
+		execute_pip_child(token, pipes, cmd, env);
 	else
 	{
 		close(pipes->pipe[1]);
@@ -242,7 +243,7 @@ void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env, t_va
 	return ;
 }
 
-int	execute(t_global *global, t_var *g_glb)
+int	execute(t_global *global)
 {
 	t_pipe		pipes;
 	t_env		**env;
@@ -259,7 +260,7 @@ int	execute(t_global *global, t_var *g_glb)
 		j = 0;
 		cmd = get_cmd(token);
 		// if (cmd && cmd[0])
-		execute_pipes(token, cmd, &pipes, env, g_glb);
+		execute_pipes(token, cmd, &pipes, env);
 		j = 0;
 		while (cmd[j])
 			free(cmd[j++]);
@@ -272,7 +273,7 @@ int	execute(t_global *global, t_var *g_glb)
 		while (wait(&status) > 0)
 			;
 	if (WIFEXITED(status))
-		(*g_glb).exit_status = WEXITSTATUS(status);
+		g_glb.exit_status = WEXITSTATUS(status);
 	return (0);
 }
 
@@ -427,7 +428,7 @@ int	do_builtin(char **args, t_env **env)
 	if (len == 3 && !ft_strncmp(args[0], "pwd", len))
 		return (pwd());
 	else if (len == 6 && !ft_strncmp(args[0], "export", len))
-		return (ft_export(env, args));
+			return (ft_export(env, args));
 	else if (len == 3 && !ft_strncmp(args[0], "env", len))
 		return (ft_env(args));
 	else if (len == 4 && !ft_strncmp(args[0], "exit", len))

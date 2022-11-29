@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/27 03:34:00 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/29 23:28:52 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdbool.h>
-
-// int g_glb.g_var;
 
 typedef enum s_error
 {
@@ -76,7 +74,7 @@ typedef struct s_var
     int _status;
 }   t_var;
 
-// t_var g_glb; // 
+t_var g_glb; // 
 
 typedef struct s_env
 {
@@ -120,10 +118,10 @@ typedef struct			s_get_bin
 int stock_env(char **env, t_global *global);
 t_env	**get_adress(void);
 void printferror(t_global *global);
-void check_tokens(t_global *global, t_var *g_glb);
+void check_tokens(t_global *global);
 char *ft_strtrim_quotes(char *str);
 int	len_key(char *env);
-char *expantion(char *token, t_var *g_glb);
+char *expantion(char *token);
 void sig_handler(int var);
 char *ft_getenv(char *str, int len);
 size_t	ft_strlen_char(const char *s);
@@ -134,15 +132,16 @@ int check_arg_valid(char *str, int *l);
 t_env *check_var_exist(t_env **env, char *arg, int len);
 
 
-int             execute(t_global *global, t_var *g_glb);
+int             execute(t_global *global);
 char *get_path(t_env **envirement, char *name);
 char			*get_bin_file(char **cmd, t_env **env);
 
 int do_builtin(char **args, t_env **env);
-int is_a_builtin(char *cmd);
+int is_a_builtin(char **cmd);
 int ft_unset(t_env **env, char **args);
 int pwd(void);
 int ft_export(t_env **env,char **args);
+void ft_print_export(t_env **env);
 int ft_env(char **args);
 int echo(char **args);
 int  c_cd(char **args, t_env **env);
@@ -161,5 +160,10 @@ void    execute_redirection(t_tokens *red);
 int is_a_builtin_child(char *cmd);
 void	ft_strdel(char **as);
 void ft_free(char **splt, int i);
+
+
+void	sig_handler_hered(int var);
+
+char  *go_to_herdoc(t_global *global, t_tokens *tokens);
 #endif
 

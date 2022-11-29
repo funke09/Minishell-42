@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/26 14:50:40 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/29 23:42:31 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ size_t	ft_strlen_char(const char *s)
     return (i);
 }
 
-char *generate_dolar(t_global *global, char *tokens, t_var *g_glb)
+char *generate_dolar(t_global *global, char *tokens)
 {
     int  i = 0;
     int  j = 0;
@@ -45,7 +45,7 @@ char *generate_dolar(t_global *global, char *tokens, t_var *g_glb)
         if(str[i] == '$' && str[i + 1] != ' ' && str[i + 1])
         {
             len = ft_strlen_char(str + i + 1);
-            if (!(val = expantion((str + i), g_glb)))
+            if (!(val = expantion((str + i))))
                     val = "";
             ft_strncpy(res + j, val, ft_strlen(val));
             i += len;
@@ -60,25 +60,29 @@ char *generate_dolar(t_global *global, char *tokens, t_var *g_glb)
     
 }
 
-char  *go_to_herdoc(t_global *global, t_tokens *tokens, t_var *g_glb)
+char  *go_to_herdoc(t_global *global, t_tokens *tokens)
 {
     char *str;
     char    *tmp;
     
     tokens->here_doc_txt = "";
+    // signal(SIGINT, sig_handler_hered);m
     while(1)
     {
         str = readline("heredoc> ");
-        if((*g_glb).g_var)
-        {
-            (*g_glb).g_var = 0;
-            // free(str);
-            break;
-        }
-        if(!str || !ft_strcmp(str, tokens->token) ) // key
+        // if(g_glb.g_var)
+        // {
+        //     printf("heredocsig %d\n",g_glb.g_var);
+        //     g_glb.g_var = 0;
+        //     break ;
+        //     // free(str);
+        // }
+        // printf("here we go \n");
+        // printf("before %d\n",g_glb.g_var);
+        if(!str || !ft_strcmp(str, tokens->token))
             break;
         tmp = str;
-        str = generate_dolar(global, str, g_glb);
+        str = generate_dolar(global, str);
         free(tmp);
         //
         tmp = str;
@@ -92,14 +96,11 @@ char  *go_to_herdoc(t_global *global, t_tokens *tokens, t_var *g_glb)
         // add_history(str); 
         free(str);
     }
-    // close(global->fd[1]);
-    // //***********************test:need to del
-    // int n;
-    // if((n = read(global->fd[0], txt ,100)) < 0)
-    //     return(42);
-    // txt[n] = 0;
-    // printf("%s\n", txt);
-    // printf("text=%s", tokens->here_doc_txt);
+    if (!str)
+    {
+        free(tokens->here_doc_txt);
+        tokens->here_doc_txt = NULL;
+    }
     return(tokens->here_doc_txt);
 }
 
@@ -168,7 +169,7 @@ void printferror(t_global *global)
 }
 
 
-void check_tokens(t_global *global, t_var *g_glb)
+void check_tokens(t_global *global)
 {
     t_tokens *tmp;
     char *temp;
@@ -180,7 +181,7 @@ void check_tokens(t_global *global, t_var *g_glb)
         if(tmp->type == ENV_VAR)
         {
             temp = tmp->token;
-            tmp->token = generate_dolar(global, tmp->token, g_glb);
+            tmp->token = generate_dolar(global, tmp->token);
             if (!tmp->token)
                 global->errnum = ENV_NOT_FOUND;
             free(temp);
@@ -209,16 +210,16 @@ void check_tokens(t_global *global, t_var *g_glb)
         {
             if(!tmp->next || tmp->next->type == HEREDOC || tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT || tmp->next->type == APPEND || tmp->next->type == PIPE) // problem in quote (missunderstanding the problem check bash)
                 global->errnum = ERROR_HEREDOC;
-            else if(tmp->next->type == HERDOC_KEY)
-            {
-                if((tmp->here_doc_txt = go_to_herdoc(global, tmp->next, g_glb)) == NULL)
-                        global->errnum = ERROR_HEREDOC;
-            }
+            // else if(tmp->next->type == HERDOC_KEY)
+            // {
+            //     if((tmp->here_doc_txt = go_to_herdoc(global, tmp->next)) == NULL)
+            //             global->errnum = ERROR_HEREDOC;
+            // }
         }
         else if(tmp->type == D_QUOTE)
         {
             temp = tmp->token;
-            tmp->token = generate_dolar(global, tmp->token, g_glb);
+            tmp->token = generate_dolar(global, tmp->token);
             free(temp);
         }
         else if(tmp->type == S_QUOTE)

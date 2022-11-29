@@ -177,30 +177,30 @@ void ft_free(char **splt, int i)
 //     return (NULL);
 // }
 
-int is_a_builtin(char *cmd) //pwd, export,env, exit, echo, unset, cd
+int is_a_builtin(char **cmd) //pwd, export,env, exit, echo, unset, cd
 {
     int len;
 
-    len = ft_strlen(cmd);
 
-    if (!cmd)
+    if (!cmd[0])
         return (1);
-    else if (len == 4 && !ft_strncmp(cmd, "exit", len))
+    len = ft_strlen(cmd[0]);
+    if (len == 4 && !ft_strncmp(cmd[0], "exit", len))
 	{
 		ft_putstr_fd("exit\n", 1);
         exit(0);
 	}
-    else if (len == 2 && !ft_strncmp(cmd, "cd", len))
+    else if (len == 2 && !ft_strncmp(cmd[0], "cd", len))
         return (0);
 	// else if (len == 3 && !ft_strncmp(cmd, "pwd", len))
     //     return (0);
-    else if (len == 6 && !ft_strncmp(cmd, "export", len))
+    else if (len == 6 && !ft_strncmp(cmd[0], "export", len) && cmd[1] != NULL)
         return (0);
     // else if (len == 3 && !ft_strncmp(cmd, "env", len))
     //     return (0);
     // else if (len == 4 && !ft_strncmp(cmd, "echo", len))
     //     return (0);
-    else if (len == 5 && !ft_strncmp(cmd, "unset", len))
+    else if (len == 5 && !ft_strncmp(cmd[0], "unset", len))
         return (0);
     return (1);
 }
@@ -215,8 +215,8 @@ int is_a_builtin_child(char *cmd) //pwd, export,env, exit, echo, unset, cd
         return (1);
     if (len == 3 && !ft_strncmp(cmd, "pwd", len))
         return (0);
-    // else if (len == 6 && !ft_strncmp(cmd, "export", len))
-    //     return (0);
+    else if (len == 6 && !ft_strncmp(cmd, "export", len))
+        return (0);
     else if (len == 3 && !ft_strncmp(cmd, "env", len))
         return (0);
     else if (len == 4 && !ft_strncmp(cmd, "echo", len))

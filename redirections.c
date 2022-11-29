@@ -56,6 +56,7 @@ void redir_here_doc(t_tokens *txt, char *tty_name)
 	close(fd);
 	if ((pipe(pip)) == -1)
 		return ;
+    txt->here_doc_txt = go_to_herdoc(NULL, txt->next);
 	if (txt->here_doc_txt)
 		ft_putstr_fd(txt->here_doc_txt, pip[1]);
 	close(pip[1]);

@@ -6,27 +6,43 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/27 03:34:59 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/29 23:36:39 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_var g_glb; // 
+
+
+void	sig_handler_hered(int var)
+{
+	// signal(SIGQUIT, SIG_IGN);
+	if (var == SIGINT)
+	{
+		// rl_done = 1;
+		// g_glb.g_var = 1;
+		// printf("sig_handler %d", g_glb.g_var);
+		printf("\n");
+		rl_on_new_line();
+        rl_redisplay();
+        rl_replace_line("", 0);
+	}
+}
 
 
 void	sig_handler(int var)
 {
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	if (var == SIGINT && !g_glb._status)
 	{
-		g_glb.g_var = 1;
-		ft_putstr_fd("\n", 1);
+		// rl_done = 1;
+		// g_glb.g_var = 1;
+		// printf("sig_handler %d", g_glb.g_var);
+		printf("\n");
 		rl_on_new_line();
-        rl_replace_line("", 0);
         rl_redisplay();
+        rl_replace_line("", 0);
 	}
-	
 }
 
 int	is_charachter(char c)
@@ -326,21 +342,22 @@ int	main(int ac, char **av, char **env)
 {
 	t_global	global;
 
-	g_glb.g_var = 0;
-	stock_env(env, &global);
-	init_global(&global);
-	rl_catch_signals = 0;
-	g_glb._status = 0;
-	signal(SIGINT, sig_handler);
-	signal(SIGQUIT, SIG_IGN);
 	if ((!ac && !av) || ac != 1)
 	{
 		write(2, "minishell :to many args .\n", 26);
 		return (0);
 	}
+	stock_env(env, &global);
+	init_global(&global);
+	// g_glb._status = 0;
+	// rl_catch_signals = 0;
+	signal(SIGINT, sig_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
+		g_glb._status = 0;
 		global.line = readline("minishell$> ");
+		// g_glb.g_var = 0;
 		if (global.line == NULL)
 		{
 			write(1, "exitt\n", 6);
@@ -353,11 +370,11 @@ int	main(int ac, char **av, char **env)
         //     // if (!line_is_empty(global.line))
         // }
 		tokenization(&global);
-		check_tokens(&global, &g_glb);
+		check_tokens(&global);
 		if (global.errnum != 0)
 			printferror(&global);
 		if (global.tokens)
-			execute(&global, &g_glb);
+			execute(&global);
 		// printf("exit status = %d\n", g_glb.exit_status);
 		free(global.line);
 		global.line = NULL;
