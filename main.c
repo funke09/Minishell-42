@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/29 23:36:39 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/30 02:26:15 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int	is_heredoc_key(t_global *global, int	*i)
 	return (0);
 }
 
-int	is_flag(t_global *global, int	*i)
+int	is_flag(t_global *global, int *i, int *no_space)
 {
 	int	start;
 
@@ -123,13 +123,15 @@ int	is_flag(t_global *global, int	*i)
 		(*i)++;
 		while (ft_isalpha(global->line[*i]))
 			(*i)++;
+		if (is_charachter(global->line[*i]))
+				*no_space = 1;
 		return (1);
 	}
 	*i = start;
 	return (0);
 }
 
-int	is_quote(t_global *global, int	*i, char c)
+int	is_quote(t_global *global, int	*i, char c, int *no_space)
 {
 	int	start;
 
@@ -144,6 +146,8 @@ int	is_quote(t_global *global, int	*i, char c)
 		if (global->line[*i] == c)
 		{
 			(*i)++;
+			if (global->line[*i] && !is_blank(global->line[*i]))
+				*no_space = 1;
 			return (1);
 		}
 	}
@@ -151,7 +155,7 @@ int	is_quote(t_global *global, int	*i, char c)
 	return (0);
 }
 
-int	is_command(t_global *global, int	*i)
+int	is_command(t_global *global, int *i, int *no_space)
 {
 	int	start;
 
@@ -163,6 +167,8 @@ int	is_command(t_global *global, int	*i)
 		if (is_blank(global->line[*i]) || global->line[*i] == '\0'
 			|| is_charachter(global->line[*i]))
 		{
+			if (is_charachter(global->line[*i]))
+				*no_space = 1;
 			global->cmd_status = 1;
 			return (1);
 		}
@@ -171,7 +177,7 @@ int	is_command(t_global *global, int	*i)
 	return (0);
 }
 
-int	is_param(t_global *global, int	*i)
+int	is_param(t_global *global, int	*i, int *no_space)
 {
 	int	start;
 
@@ -183,6 +189,8 @@ int	is_param(t_global *global, int	*i)
 		if (is_blank(global->line[*i]) || !global->line[*i]
 			|| is_charachter(global->line[*i]))
 		{
+			if (is_charachter(global->line[*i]))
+				*no_space = 1;
 			global->is_redir = 0;
 			return (1);
 		}
@@ -191,7 +199,7 @@ int	is_param(t_global *global, int	*i)
 	return (0);
 }
 
-int	is_dolar(t_global *global, int	*i)
+int	is_dolar(t_global *global, int	*i, int *no_space)
 {
 	int	start;
 
@@ -202,19 +210,21 @@ int	is_dolar(t_global *global, int	*i)
 		while (global->line[*i] && !is_blank(global->line[*i]) && (ft_isalnum(global->line[*i])
 			|| global->line[*i] == '?') && !is_charachter(global->line[*i]))
 			(*i)++;
+		if (global->line[*i] == '$')
+			*no_space = 1;
 		return (1);
 	}
 	*i = start;
 	return (0);
 }
 
-t_type	type(t_global *global, int	*i)
+t_type	type(t_global *global, int	*i, int *no_space)
 {
 	if (is_heredoc_key(global, i))
 		return (HERDOC_KEY);
-	else if (is_quote(global, i, '\''))
+	else if (is_quote(global, i, '\'', no_space))
 		return (S_QUOTE);
-	else if (is_quote(global, i, '\"'))
+	else if (is_quote(global, i, '\"', no_space))
 		return (D_QUOTE);
 	else if (global->line[*i] == '|')
 	{
@@ -222,7 +232,7 @@ t_type	type(t_global *global, int	*i)
 		global->cmd_status = 0;
 		return (PIPE);
 	}
-	else if (is_dolar(global, i))
+	else if (is_dolar(global, i, no_space))
 		return (ENV_VAR);
 	else if (is_heredoc_or_append(global, i, '>'))
 		return (APPEND);
@@ -230,13 +240,13 @@ t_type	type(t_global *global, int	*i)
 		return (HEREDOC);
 	else if (is_redir(global, i, '<'))
 		return (REDIR_IN);
-	else if (is_flag(global, i))
+	else if (is_flag(global, i, no_space))
 		return (FLAG);
 	else if (is_redir(global, i, '>'))
 		return (REDIR_OUT);
-	else if (is_command(global, i))
+	else if (is_command(global, i, no_space))
 		return (COMMAND);
-	else if (is_param(global, i))
+	else if (is_param(global, i, no_space))
 		return (PARAM);
 	return (NON);
 }
@@ -247,18 +257,21 @@ void skip_blanks(t_global *global, int	*i)
 		(*i)++;
 }
 
-t_tokens	*add_token(t_global *global, int	*i)
+t_tokens	*add_token(t_global *global, int *i)
 {
 	int			len;
 	int			start;
 	t_tokens	*new;
+	int 		no_space;
 
+	no_space = 0;
 	skip_blanks(global, i);
 	start = *i;
 	new = (t_tokens *)malloc(sizeof(t_tokens));
 	if (!new)
 		return (NULL);
-	new->type = type(global, i);
+	new->type = type(global, i, &no_space);
+	new->no_space = no_space;
 	if (new->type == NON)
 	{
 		free(new);
@@ -338,6 +351,20 @@ int line_is_empty(char *line)
     return (1);
 }
 
+void print_tokens(t_global *global)
+{
+    t_tokens *token;
+
+    token = global->tokens;
+    if (!token)
+        return;
+    while (token)
+    {
+        printf("token: %s, type: %d, no_space=%d\n ", token->token, token->type, token->no_space);
+        token = token->next;
+    }
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_global	global;
@@ -371,6 +398,7 @@ int	main(int ac, char **av, char **env)
         // }
 		tokenization(&global);
 		check_tokens(&global);
+		print_tokens(&global);
 		if (global.errnum != 0)
 			printferror(&global);
 		if (global.tokens)

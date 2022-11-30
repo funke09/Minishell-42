@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/29 23:28:52 by macos            ###   ########.fr       */
+/*   Updated: 2022/11/30 02:08:23 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ typedef enum s_type
 typedef struct s_tokens
 {
     char    *token; // << EOF
-    t_type  type; // HERE
+    t_type  type;
+    int     no_space; //
     char    *here_doc_txt; //  data
     struct s_tokens *next;
 }   t_tokens; 

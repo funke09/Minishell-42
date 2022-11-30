@@ -13,6 +13,30 @@ int	len_of_cmd_sin_pipes(t_tokens *token)
 	return (i);
 }
 
+t_tokens	*join_expantion(t_tokens *token, char **cmd, int i)
+{
+	char *str;
+	char *res;
+	char *tmp = NULL;
+
+	str = token->token;
+	res = NULL;
+	while (token && token->no_space == 1 && token->next)
+	{
+		tmp = res;
+		if (!(res = ft_strjoin(str, token->next->token)))
+			return (NULL);
+		if (tmp)
+			free(tmp);
+		// if (str)
+		// 	free(str);
+		str = res;
+		token = token->next;
+	}
+	cmd[i] = res;
+	return (token->next);
+}
+
 char	**get_cmd(t_tokens *token)
 {
 	int		i;
@@ -31,7 +55,20 @@ char	**get_cmd(t_tokens *token)
 			|| token->type == PARAM
 			|| token->type == D_QUOTE || token->type == S_QUOTE
 			|| token->type == ENV_VAR)
-			cmd[i++] = ft_strdup(token->token);
+			{
+				if ((token->type == ENV_VAR || token->type == COMMAND || token->type == FLAG
+					|| token->type == PARAM
+					|| token->type == D_QUOTE || token->type == S_QUOTE)
+					&& token->no_space && token->next)
+				{
+					token = join_expantion(token, cmd, i);
+					i++;
+					continue ;
+					// token = token->next;
+				}
+				else
+					cmd[i++] = ft_strdup(token->token);
+			}
 		if (!token)
 			break ;
 		token = token->next;
