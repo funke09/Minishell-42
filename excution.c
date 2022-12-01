@@ -26,6 +26,7 @@ t_tokens	*join_expantion(t_tokens *token, char **cmd, int i)
 		tmp = res;
 		if (!(res = ft_strjoin(str, token->next->token)))
 			return (NULL);
+		printf(">>>>>>>>>>>>>>>> %s\n <<<<<", res);
 		if (tmp)
 			free(tmp);
 		// if (str)

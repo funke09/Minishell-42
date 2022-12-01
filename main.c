@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/01 02:31:07 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/01 23:33:34 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ void	sig_handler(int var)
 	// signal(SIGQUIT, SIG_IGN);
 	if (var == SIGINT && !g_glb._status)
 	{
-		// rl_done = 1;
+		rl_done = 1;
 		// g_glb.g_var = 1;
-		// printf("sig_handler %d", g_glb.g_var);
 		write(1, "\n", 1);
 		rl_on_new_line();
         rl_redisplay();
@@ -105,7 +104,7 @@ int	is_flag(t_global *global, int *i, int *no_space)
 		(*i)++;
 		while (ft_isalpha(global->line[*i]))
 			(*i)++;
-		if (is_charachter(global->line[*i]))
+		if (!is_blank(global->line[*i]) && global->line[*i] != '|' && global->line[*i] != '<' && global->line[*i] != '>')
 				*no_space = 1;
 		return (1);
 	}
@@ -128,7 +127,9 @@ int	is_quote(t_global *global, int	*i, char c, int *no_space)
 		if (global->line[*i] == c)
 		{
 			(*i)++;
-			if (global->line[*i] && !is_blank(global->line[*i]))
+			if (global->line[*i] && !is_blank(global->line[*i]) 
+			&& global->line[*i] != '|' && global->line[*i] != '<' 
+			&& global->line[*i] != '>')
 				*no_space = 1;
 			return (1);
 		}
@@ -149,7 +150,8 @@ int	is_command(t_global *global, int *i, int *no_space)
 		if (is_blank(global->line[*i]) || global->line[*i] == '\0'
 			|| is_charachter(global->line[*i]))
 		{
-			if (is_charachter(global->line[*i]))
+			if (!is_blank(global->line[*i]) && global->line[*i] != '|' 
+			&& global->line[*i] != '<' && global->line[*i] != '>')
 				*no_space = 1;
 			global->cmd_status = 1;
 			return (1);
@@ -171,7 +173,8 @@ int	is_param(t_global *global, int	*i, int *no_space)
 		if (is_blank(global->line[*i]) || !global->line[*i]
 			|| is_charachter(global->line[*i]))
 		{
-			if (is_charachter(global->line[*i]))
+			if (!is_blank(global->line[*i]) && global->line[*i] != '|' 
+			&& global->line[*i] != '<' && global->line[*i] != '>')
 				*no_space = 1;
 			global->is_redir = 0;
 			return (1);
@@ -192,7 +195,8 @@ int	is_dolar(t_global *global, int	*i, int *no_space)
 		while (global->line[*i] && !is_blank(global->line[*i]) && (ft_isalnum(global->line[*i])
 			|| global->line[*i] == '?') && !is_charachter(global->line[*i]))
 			(*i)++;
-		if (!is_blank(global->line[*i]))
+		if (!is_blank(global->line[*i]) && global->line[*i] != '|' 
+		&& global->line[*i] != '<' && global->line[*i] != '>')
 			*no_space = 1;
 		return (1);
 	}
