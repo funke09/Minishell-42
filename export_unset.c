@@ -2,26 +2,10 @@
 
 // the _= value will match the location of the env binary (e.g. /usr/bin/env)
 // export | hang
-// echo $? result not correct
-//grep"ll" shouldn't work
-// cd "".."" too many args!! prob f getting args
-
 //exit : free global line!!
 //expantion f export !!!!!
-//leaks f echo a var !!!
-// leaks f invalid commands
-//leaks f crl c
 // export expantion  
-//
-// SHLVL
-//handling shlvl f minishell embarque
-////grep"string"  ////
-//echo aa"bb" tokenization should be one arg not 2
-//also echo aa'n'
-// echo "="="="
-
 // builtin fork
-// echo text$HOME
 
 
 void ft_remove(t_env **env, char *var_name)
@@ -174,7 +158,7 @@ void    ft_handle_arg(t_env **env, char *arg, int len)
     if (exist && plus)
     {
         value = ft_strjoin(exist->str, &arg[len + 1 + plus]);
-        printf("{%s}\n", value);
+        // printf("{%s}\n", value);
         free(exist->str);
         exist->str = value;
     }

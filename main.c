@@ -6,29 +6,11 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/30 02:26:15 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/01 02:31:07 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
-
-void	sig_handler_hered(int var)
-{
-	// signal(SIGQUIT, SIG_IGN);
-	if (var == SIGINT)
-	{
-		// rl_done = 1;
-		// g_glb.g_var = 1;
-		// printf("sig_handler %d", g_glb.g_var);
-		printf("\n");
-		rl_on_new_line();
-        rl_redisplay();
-        rl_replace_line("", 0);
-	}
-}
-
 
 void	sig_handler(int var)
 {
@@ -38,7 +20,7 @@ void	sig_handler(int var)
 		// rl_done = 1;
 		// g_glb.g_var = 1;
 		// printf("sig_handler %d", g_glb.g_var);
-		printf("\n");
+		write(1, "\n", 1);
 		rl_on_new_line();
         rl_redisplay();
         rl_replace_line("", 0);
@@ -210,7 +192,7 @@ int	is_dolar(t_global *global, int	*i, int *no_space)
 		while (global->line[*i] && !is_blank(global->line[*i]) && (ft_isalnum(global->line[*i])
 			|| global->line[*i] == '?') && !is_charachter(global->line[*i]))
 			(*i)++;
-		if (global->line[*i] == '$')
+		if (!is_blank(global->line[*i]))
 			*no_space = 1;
 		return (1);
 	}
@@ -377,7 +359,7 @@ int	main(int ac, char **av, char **env)
 	stock_env(env, &global);
 	init_global(&global);
 	// g_glb._status = 0;
-	// rl_catch_signals = 0;
+	rl_catch_signals = 0;
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	while (1)
@@ -392,10 +374,6 @@ int	main(int ac, char **av, char **env)
 		}
 		if (global.line[0])
 			add_history(global.line);
-		// else 
-        // {
-        //     // if (!line_is_empty(global.line))
-        // }
 		tokenization(&global);
 		check_tokens(&global);
 		print_tokens(&global);

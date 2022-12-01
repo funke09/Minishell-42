@@ -275,7 +275,7 @@ void	execute_pipes(t_tokens *token, char **cmd, t_pipe *pipes, t_env **env)
 		pipes->temp = pipes->pipe[0];
 		if (!is_there_pipe(token))
 			close(pipes->temp);
-		pipes->cmd_no ++;
+		pipes->cmd_no++;
 	}
 	return ;
 }
@@ -296,7 +296,10 @@ int	execute(t_global *global)
 	{
 		j = 0;
 		cmd = get_cmd(token);
+
 		// if (cmd && cmd[0])
+		// while (cmd[j])
+		// 	ft_putendl_fd(cmd[j++], 1);
 		execute_pipes(token, cmd, &pipes, env);
 		j = 0;
 		while (cmd[j])

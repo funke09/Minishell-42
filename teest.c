@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/30 02:31:39 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/01 00:03:14 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ char *ft_getenv(char *str, int len)
         if (len == lengh && !ft_strncmp(str, env_list->str, lengh))
         {
             path = ft_substr(env_list->str, len, ft_strlen(env_list->str) - len);
-            printf("Path=%s\n", path);
             return(path);
         }
 		if (!env_list->next)
@@ -73,7 +72,7 @@ char *expantion(char *token)
     {
         var = ft_substr(str,  1, len);
         tmp = ft_getenv(var, len);
-        // printf("tmp = %s\n", tmp);
+        printf("tmp = %s\n", tmp);
         free(var);
         if(!tmp)
             return(NULL);  
