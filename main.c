@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/01 23:33:34 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/02 13:00:43 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 void	sig_handler(int var)
 {
-	// signal(SIGQUIT, SIG_IGN);
 	if (var == SIGINT && !g_glb._status)
 	{
-		rl_done = 1;
-		// g_glb.g_var = 1;
 		write(1, "\n", 1);
 		rl_on_new_line();
-        rl_redisplay();
-        rl_replace_line("", 0);
+		rl_redisplay();
+		rl_replace_line("", 0);
 	}
 }
 
@@ -127,9 +124,9 @@ int	is_quote(t_global *global, int	*i, char c, int *no_space)
 		if (global->line[*i] == c)
 		{
 			(*i)++;
-			if (global->line[*i] && !is_blank(global->line[*i]) 
-			&& global->line[*i] != '|' && global->line[*i] != '<' 
-			&& global->line[*i] != '>')
+			if (global->line[*i] && !is_blank(global->line[*i])
+				&& global->line[*i] != '|' && global->line[*i] != '<'
+				&& global->line[*i] != '>')
 				*no_space = 1;
 			return (1);
 		}
@@ -150,8 +147,8 @@ int	is_command(t_global *global, int *i, int *no_space)
 		if (is_blank(global->line[*i]) || global->line[*i] == '\0'
 			|| is_charachter(global->line[*i]))
 		{
-			if (!is_blank(global->line[*i]) && global->line[*i] != '|' 
-			&& global->line[*i] != '<' && global->line[*i] != '>')
+			if (!is_blank(global->line[*i]) && global->line[*i] != '|'
+				&& global->line[*i] != '<' && global->line[*i] != '>')
 				*no_space = 1;
 			global->cmd_status = 1;
 			return (1);
@@ -173,8 +170,8 @@ int	is_param(t_global *global, int	*i, int *no_space)
 		if (is_blank(global->line[*i]) || !global->line[*i]
 			|| is_charachter(global->line[*i]))
 		{
-			if (!is_blank(global->line[*i]) && global->line[*i] != '|' 
-			&& global->line[*i] != '<' && global->line[*i] != '>')
+			if (!is_blank(global->line[*i]) && global->line[*i] != '|'
+				&& global->line[*i] != '<' && global->line[*i] != '>')
 				*no_space = 1;
 			global->is_redir = 0;
 			return (1);
@@ -192,16 +189,24 @@ int	is_dolar(t_global *global, int	*i, int *no_space)
 	if (global->line[*i] && global->line[*i] == '$' && (ft_isalnum(global->line[*i + 1]) || global->line[*i + 1] == '?'))
 	{
 		(*i)++;
-		while (global->line[*i] && !is_blank(global->line[*i]) && (ft_isalnum(global->line[*i])
-			|| global->line[*i] == '?') && !is_charachter(global->line[*i]))
+		while (global->line[*i] && !is_blank(global->line[*i])
+			&& (ft_isalnum(global->line[*i])
+				|| global->line[*i] == '?') && !is_charachter(global->line[*i]))
 			(*i)++;
-		if (!is_blank(global->line[*i]) && global->line[*i] != '|' 
-		&& global->line[*i] != '<' && global->line[*i] != '>')
+		if (!is_blank(global->line[*i]) && global->line[*i] != '|'
+			&& global->line[*i] != '<' && global->line[*i] != '>')
 			*no_space = 1;
 		return (1);
 	}
 	*i = start;
 	return (0);
+}
+
+t_type	if_pipe(t_global *global, int *i)
+{
+	(*i)++;
+	global->cmd_status = 0;
+	return (PIPE);
 }
 
 t_type	type(t_global *global, int	*i, int *no_space)
@@ -213,11 +218,7 @@ t_type	type(t_global *global, int	*i, int *no_space)
 	else if (is_quote(global, i, '\"', no_space))
 		return (D_QUOTE);
 	else if (global->line[*i] == '|')
-	{
-		(*i)++;
-		global->cmd_status = 0;
-		return (PIPE);
-	}
+		return (if_pipe(global, i));
 	else if (is_dolar(global, i, no_space))
 		return (ENV_VAR);
 	else if (is_heredoc_or_append(global, i, '>'))
@@ -248,7 +249,7 @@ t_tokens	*add_token(t_global *global, int *i)
 	int			len;
 	int			start;
 	t_tokens	*new;
-	int 		no_space;
+	int			no_space;
 
 	no_space = 0;
 	skip_blanks(global, i);
@@ -299,7 +300,7 @@ void	init_global(t_global *global)
 	global->is_redir = 0;
 }
 
-void	ft_print_env(void)/////key=value
+void	ft_print_env(void)
 {
 	t_env	*env_list;
 
@@ -312,29 +313,6 @@ void	ft_print_env(void)/////key=value
 			break ;
 		env_list = env_list->next;
 	}
-}
-
-int	ft_strcmp(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
-		i++;
-	return (s1[i] - s2[i]);
-}
-
-
-int line_is_empty(char *line)
-{
-    int i = -1;
-
-    while (line[++i])
-    {
-        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-            return (0);
-    }
-    return (1);
 }
 
 void print_tokens(t_global *global)
@@ -351,6 +329,26 @@ void print_tokens(t_global *global)
     }
 }
 
+void	ft_read_line(t_global *global)
+{
+	g_glb._status = 0;
+	global->line = readline("minishell$> ");
+	if (global->line == NULL)
+	{
+		write(1, "exitt\n", 6);
+		exit(1);
+	}
+	if (global->line[0])
+		add_history(global->line);
+}
+
+void	free_all(t_global *global)
+{
+	free(global->line);
+	global->line = NULL;
+	free_tokens(global->tokens);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_global	global;
@@ -362,22 +360,12 @@ int	main(int ac, char **av, char **env)
 	}
 	stock_env(env, &global);
 	init_global(&global);
-	// g_glb._status = 0;
 	rl_catch_signals = 0;
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		g_glb._status = 0;
-		global.line = readline("minishell$> ");
-		// g_glb.g_var = 0;
-		if (global.line == NULL)
-		{
-			write(1, "exitt\n", 6);
-			exit(1);
-		}
-		if (global.line[0])
-			add_history(global.line);
+		ft_read_line(&global);
 		tokenization(&global);
 		check_tokens(&global);
 		print_tokens(&global);
@@ -385,10 +373,7 @@ int	main(int ac, char **av, char **env)
 			printferror(&global);
 		if (global.tokens)
 			execute(&global);
-		// printf("exit status = %d\n", g_glb.exit_status);
-		free(global.line);
-		global.line = NULL;
-		free_tokens(global.tokens);
+		free_all(&global);
 	}
 	return (0);
 }

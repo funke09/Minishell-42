@@ -15,22 +15,21 @@ int	len_of_cmd_sin_pipes(t_tokens *token)
 
 t_tokens	*join_expantion(t_tokens *token, char **cmd, int i)
 {
-	char *str;
-	char *res;
-	char *tmp = NULL;
+	char	*str;
+	char	*res;
+	char	*tmp;
 
 	str = token->token;
 	res = NULL;
+	tmp = NULL;
 	while (token && token->no_space == 1 && token->next)
 	{
 		tmp = res;
-		if (!(res = ft_strjoin(str, token->next->token)))
+		res = ft_strjoin(str, token->next->token);
+		if (!res)
 			return (NULL);
-		printf(">>>>>>>>>>>>>>>> %s\n <<<<<", res);
 		if (tmp)
 			free(tmp);
-		// if (str)
-		// 	free(str);
 		str = res;
 		token = token->next;
 	}
