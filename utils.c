@@ -1,19 +1,20 @@
 #include "minishell.h"
 
-char		**list_to_tabs(t_env **env_list)
+char	**list_to_tabs(t_env **env_list)
 {
 	char	**tabs;
-	// char	*str;
 	t_env	*current;
 	int		i;
 
-	if (!(current = *env_list))
+	current = *env_list;
+	if (!current)
 		return (NULL);
 	tabs = NULL;
 	i = -1;
 	while (++i >= 0 && current != NULL)
 		current = current->next;
-	if (!(tabs = (char **)malloc(sizeof(char *) * (i + 1))))
+	tabs = (char **)malloc(sizeof(char *) * (i + 1));
+	if (!tabs)
 		return (NULL);
 	current = *env_list;
 	i = 0;
@@ -41,7 +42,7 @@ void	ft_strdel(char **as)
 	ft_memdel((void **)as);
 }
 
-void		ft_free_arr(char **env)
+void	ft_free_arr(char **env)
 {
 	int		i;
 
@@ -59,11 +60,12 @@ void		ft_free_arr(char **env)
 	}
 }
 
-char		*ft_freejoin(char *s1, char *s2, int num)
+char	*ft_freejoin(char *s1, char *s2, int num)
 {
 	char	*str;
 
-	if (!(str = ft_strjoin(s1, s2)))
+	str = ft_strjoin(s1, s2);
+	if (!str)
 		return (NULL);
 	if (num == 0)
 		free(s1);
@@ -77,54 +79,54 @@ char		*ft_freejoin(char *s1, char *s2, int num)
 	return (str);
 }
 
-char *get_path(t_env **envirement, char *name) // key=value
+char	*get_path(t_env **envirement, char *name)
 {
-    char *tmp;
-    int len;
-    t_env *env;
+	char	*tmp;
+	int		len;
+	t_env	*env;
 
-    env = NULL;
+	env = NULL;
 	if (envirement)
-        env = *envirement;
+		env = *envirement;
 	if (name && env)
 	{
-
 		while (env)
 		{
 			len = len_key(env->str);
-			if(ft_strncmp(env->str, name, len) == 0)
+			if (ft_strncmp(env->str, name, len) == 0)
 			{
 				tmp = ft_strchr(env->str, '=');
 				if (tmp)
 				{
 					tmp = ft_substr(tmp + 1, 0, ft_strlen(env->str) - len);
-					
 					return (tmp);
 				}
 			}
 			env = env->next;
 		}
 	}
-    return (NULL);
+	return (NULL);
 }
 
-char			*get_bin_file(char **cmd, t_env **env)//////////////////////////////////////////////////////////////////////////////////////
+char	*get_bin_file(char **cmd, t_env **env)
 {
 	t_get_bin	v;
 
 	ft_bzero(&v, sizeof(t_get_bin));
-	if (!(v.env_path_value = get_path(env, "PATH")))
+	v.env_path_value = get_path(env, "PATH");
+	if (!v.env_path_value)
 		return (NULL);
-	if (!(v.dirs = ft_split(v.env_path_value, ':')))
-		return (NULL);
+	v.dirs = ft_split(v.env_path_value, ':');
 	ft_strdel(&v.env_path_value);
 	v.i = -1;
-	while (v.dirs[++v.i] != NULL)
+	while (v.dirs && v.dirs[++v.i] != NULL)
 	{
-		if (!(v.tmp = ft_strdup(v.dirs[v.i])))
+		v.tmp = ft_strdup(v.dirs[v.i]);
+		if (!v.tmp)
 			return (NULL);
 		v.tmp2 = ft_freejoin(v.tmp, "/", 0);
-		if (!(v.bin_file = ft_strjoin(v.tmp2, cmd[0])))
+		v.bin_file = ft_strjoin(v.tmp2, cmd[0]);
+		if (!v.bin_file)
 			return (NULL);
 		ft_strdel(&v.tmp2);
 		if (access(v.bin_file, F_OK) == 0)

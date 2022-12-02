@@ -91,7 +91,6 @@ int	push2(char *env, t_env **begin_lst)
 	env_new = malloc(sizeof(t_env));
 	if (env_new == NULL)
 		return (42);
-	// printf("ppppp\n");
 	env_new->str = ft_strdup2(env);
 	if (env_new->str == NULL)
 		return (42);
