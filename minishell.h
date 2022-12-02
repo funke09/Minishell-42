@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/30 02:08:23 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/02 17:38:53 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,17 @@ void	ft_strdel(char **as);
 void ft_free(char **splt, int i);
 
 
-void	sig_handler_hered(int var);
+void tokenization(t_global *global);
+int	is_dolar(t_global *global, int	*i, int *no_space);
+int	is_param(t_global *global, int	*i, int *no_space);
+int	is_command(t_global *global, int *i, int *no_space);
+int	is_quote(t_global *global, int	*i, char c, int *no_space);
+int	is_flag(t_global *global, int *i, int *no_space);
+int	is_heredoc_key(t_global *global, int	*i);
+int	is_heredoc_or_append(t_global *global, int	*i, char c);
+int	is_redir(t_global *global, int	*i, char c);
+int	is_blank(char c);
+int	is_charachter(char c);
 
 char  *go_to_herdoc(t_global *global, t_tokens *tokens);
 #endif

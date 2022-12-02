@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:37 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/11/19 20:37:41 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/02 17:49:55 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,31 +53,31 @@ int	push(char *env, t_env **begin_lst)
 	return (0);
 }
 
-int init_env(t_env **env_list)
+int	init_env(t_env **env_list)
 {
-    char *s;
+	char	*s;
 
-    s = ft_strjoin("PWD=", getcwd(NULL, 0));
-    if(s == NULL)
-        return (42);
-    if(push("SHLVL=1", env_list) == 42)
-    {
-        ft_clean_envlist(env_list);
-        return (42);
-    }
-    if(push(s, env_list) == 42)
-    {
-        free(s);
-        ft_clean_envlist(env_list);
-        return (42);
-    }
-    free(s);
-    if(push("OLDPWD", env_list) == 42)/////////////////////////////////////////////////////////
-    {
-        ft_clean_envlist(env_list);
-        return (42);
-    }
-    return (0);
+	s = ft_strjoin("PWD=", getcwd(NULL, 0));
+	if (s == NULL)
+		return (42);
+	if (push("SHLVL=1", env_list) == 42)
+	{
+		ft_clean_envlist(env_list);
+		return (42);
+	}
+	if (push(s, env_list) == 42)
+	{
+		free(s);
+		ft_clean_envlist(env_list);
+		return (42);
+	}
+	free(s);
+	if (push("OLDPWD", env_list) == 42)
+	{
+		ft_clean_envlist(env_list);
+		return (42);
+	}
+	return (0);
 }
 
 t_env	**get_adress(void)
@@ -87,10 +87,10 @@ t_env	**get_adress(void)
 	return (&new);
 }
 
-int stock_env(char **env, t_global *global)
+int	stock_env(char **env, t_global *global)
 {
-
 	int		i;
+
 	global->env = get_adress();
 	i = 0;
 	while (env[i])

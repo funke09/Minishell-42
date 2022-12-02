@@ -6,13 +6,13 @@
 #    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/12/01 23:20:14 by macos            ###   ########.fr        #
+#    Updated: 2022/12/02 17:39:31 by macos            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env.c printferror.c teest.c excution.c utils.c export_unset.c built_in.c redirections.c
+SRC = main.c env.c printferror.c teest.c excution.c utils.c export_unset.c built_in.c redirections.c tokenz_utils.c toknezation.c tok_utils2.c
 
 OBJ = $(SRC:.c=.o)
 
