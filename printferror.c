@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:14 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/02 21:07:32 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/03 22:47:12 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*go_to_herdoc(t_global *global, t_tokens *tokens)
 	char	*str;
 	char	*tmp;
 
-	tokens->here_doc_txt = "";
+	tokens->here_doc_txt = ft_strdup("");
 	(void)global;
 	while (1)
 	{
@@ -72,14 +72,13 @@ char	*go_to_herdoc(t_global *global, t_tokens *tokens)
 		tmp = str;
 		str = ft_strjoin(tokens->here_doc_txt, str);
 		free(tmp);
+		tmp = tokens->here_doc_txt;
 		tokens->here_doc_txt = ft_strjoin(str, "\n");
+		free(tmp);
 		free(str);
 	}
 	if (!str)
-	{
-		free(tokens->here_doc_txt);
-		tokens->here_doc_txt = NULL;
-	}
+		ft_strdel(&(tokens->here_doc_txt));
 	return (tokens->here_doc_txt);
 }
 

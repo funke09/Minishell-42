@@ -2,9 +2,9 @@
 
 void	ft_remove(t_env **env, char *var_name)
 {
-	int			l;
-	t_env		*curr;
-	t_env			*tmp;
+	int		l;
+	t_env	*curr;
+	t_env	*tmp;
 
 	l = ft_strlen (var_name);
 	if (!env || !*env)
@@ -19,7 +19,8 @@ void	ft_remove(t_env **env, char *var_name)
 	curr = *env;
 	while (curr && curr->next)
 	{
-		if (!ft_strncmp(var_name, curr->next->str, l) && l == len_key(curr->next->str))
+		if (!ft_strncmp(var_name, curr->next->str, l)
+			&& l == len_key(curr->next->str))
 		{
 			tmp = curr->next;
 			curr->next = curr->next->next;
@@ -30,13 +31,13 @@ void	ft_remove(t_env **env, char *var_name)
 	}
 }
 
-int check_unset_arg_valid(char *str)
+int	check_unset_arg_valid(char *str)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	if (ft_isdigit(str[0]))
-		return 1;
+		return (1);
 	while (str[++i])
 	{
 		if (!ft_isdigit(str[i]) && !ft_isalpha(str[i]) && str[i] != '_')
@@ -45,11 +46,12 @@ int check_unset_arg_valid(char *str)
 	return (0);
 }
 
-int ft_unset(t_env **env, char **args)
+int	ft_unset(t_env **env, char **args)
 {
-	int i = 1;
+	int	i;
 
-	while(args[i])
+	i = 1;
+	while (args[i])
 	{
 		if (check_unset_arg_valid(args[i]))
 		{
@@ -60,16 +62,15 @@ int ft_unset(t_env **env, char **args)
 		}
 		ft_remove(env, args[i]);
 		i++;
-	}  
-
+	}
 	return (0);
 }
 
-char *ft_strdup2(char *str)
+char	*ft_strdup2(char *str)
 {
-	char *ret;
-	int i;
-	int j;
+	char	*ret;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
@@ -99,30 +100,27 @@ int	push2(char *env, t_env **begin_lst)
 	return (0);
 }
 
-
-
-int check_arg_valid(char *str, int *l)
+int	check_arg_valid(char *str, int *l)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	if (ft_isdigit(str[0]) || str[0] == '=')
-		return 1;
+		return (1);
 	while (str[++i] && str[i] != '=')
 	{
-		if (str[i] == '+' && str[i+1] == '=')
+		if (str[i] == '+' && str[i + 1] == '=')
 			break ;
 		if (!ft_isdigit(str[i]) && !ft_isalpha(str[i]) && str[i] != '_')
 			return (1);
 	}
-
 	*l = i;
 	return (0);
 }
 
-t_env *check_var_exist(t_env **env, char *arg, int len)
+t_env	*check_var_exist(t_env **env, char *arg, int len)
 {
-	t_env *en;
+	t_env	*en;
 
 	en = *env;
 	while (en)
@@ -134,20 +132,17 @@ t_env *check_var_exist(t_env **env, char *arg, int len)
 	return (NULL);
 }
 
-
-void    ft_handle_arg(t_env **env, char *arg, int len)
+void	ft_handle_arg(t_env **env, char *arg, int len)
 {
-	int plus;
-	t_env *exist;
-	char *value;
+	int		plus;
+	t_env	*exist;
+	char	*value;
 
 	plus = (arg[len] == '+');
 	exist = check_var_exist(env, arg, len);
-
 	if (exist && plus)
 	{
 		value = ft_strjoin(exist->str, &arg[len + 1 + plus]);
-		// printf("{%s}\n", value);
 		free(exist->str);
 		exist->str = value;
 	}
@@ -165,14 +160,14 @@ void    ft_handle_arg(t_env **env, char *arg, int len)
 void	ft_putstr2(char *s)
 {	
 	int	i;
-	int ch;
+	int	ch;
 
 	i = 0;
 	ch = 1;
 	if (!s || !s[i])
 		return ;
-	if (s[i] == '_'  && s[i + 1] == '=')
-		return;
+	if (s[i] == '_' && s[i + 1] == '=')
+		return ;
 	ft_putstr_fd("declare -x ", 1);
 	while (s[i])
 	{
@@ -182,42 +177,39 @@ void	ft_putstr2(char *s)
 			ch = 0;
 			ft_putchar_fd('"', 1);
 		}
-		
 		i++;
 	}
 	ft_putchar_fd('"', 1);
 }
 
-
-void ft_print_export(t_env **env)
+void	ft_print_export(t_env **env)
 {
-	t_env *env_list;
+	t_env	*env_list;
 
-	if(!env[0])
-		return;
+	if (!env[0])
+		return ;
 	env_list = *env;
 	while (env)
 	{
 		ft_putstr2(env_list->str);
 		ft_putchar_fd('\n', 1);
 		if (!env_list->next)
-			break;
+			break ;
 		env_list = env_list->next;
 	}
 }
 
-int ft_export(t_env **env, char **args)
+int	ft_export(t_env **env, char **args)
 {
-	int i;
-	int len;
+	int	i;
+	int	len;
 
 	i = 1;
 	len = -1;
-
 	if (!args[1])
 	{
 		ft_print_export(env);
-		return 0;
+		return (0);
 	}
 	while (args[i])
 	{
@@ -236,14 +228,12 @@ int ft_export(t_env **env, char **args)
 		}
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
-
-
-int ft_env(char **args)
+int	ft_env(char **args)
 {
-	int l;
+	int	l;
 
 	l = ft_sizearray(args);
 	if (l > 1)

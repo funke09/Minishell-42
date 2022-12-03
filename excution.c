@@ -113,6 +113,7 @@ void	ft_execve(const char *file_name, char **cmd, char **env)
 	else
 	{
 		ft_putendl_fd("minishell: Command not found ", 2);
+		// ft_putstr_fd((char*)file_name, 1);
 		exit (1);
 	}
 	return ;
@@ -296,7 +297,6 @@ int	execute(t_global *global)
 	{
 		j = 0;
 		cmd = get_cmd(token);
-
 		// if (cmd && cmd[0])
 		// while (cmd[j])
 		// 	ft_putendl_fd(cmd[j++], 1);
@@ -389,11 +389,10 @@ void	go_to_cd(char *path, t_env **env_list)
 	if (path && access(path, F_OK) == 0)
 	{
 		stat(path, &st);
-		if (!S_ISDIR(st.st_mode) )
+		if (!S_ISDIR(st.st_mode))
 		{
 			return (ft_putendl_fd("minishell : cd: not a directory", 2));
 		}
-	}
 		if (access(path, X_OK) == 0)
 		{
 			oldpwd_var(env_list);
@@ -403,6 +402,10 @@ void	go_to_cd(char *path, t_env **env_list)
 			// generate_pwd((tmp2 = get_cwd()), env_list);
 			// ft_strdel_2(&tmp, &tmp2);
 		}
+	}
+	else
+		ft_putendl_fd("minishell: cd: No such file or directory", 2);
+
 	// 	else if (ft_strrchr(path, '/'))
 	// 		ft_putendl_fd_error(ERROR5, ft_strrchr(path, '/') + 1, "\n", NULL);
 	// }

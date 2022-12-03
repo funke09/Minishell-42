@@ -57,7 +57,7 @@ int	is_heredoc_key(t_global *global, int	*i)
 		&& !is_charachter(global->line[*i]))
 	{
 			(*i)++;
-		if (is_blank(global->line[*i]) || !global->line[*i])
+		if (is_blank(global->line[*i]) || !global->line[*i] || is_charachter(global->line[*i]))
 		{
 			global->heredoc_activ = 0;
 			return (1);
