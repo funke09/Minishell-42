@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
+#    By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/12/02 17:39:31 by macos            ###   ########.fr        #
+#    Updated: 2022/12/03 02:17:16 by flazerak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ HEADER = minishell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -I /usr/local/Cellar/readline/8.2.1/include -Wall -Wextra -Werror -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 all :$(NAME) 
 
@@ -31,12 +31,13 @@ $(NAME) : $(OBJ)
 	@echo "\033[0;32mCompiling libft..."
 	@make -C libft/
 	@echo "\033[0;32mCompiling minishell..."
-	@$(CC) $(FLAGS) $(OBJ)  -L /usr/local/Cellar/readline/8.2.1/lib -lreadline -o $(NAME) $(LIB)
+	@$(CC) $(FLAGS) $(OBJ) -L $(shell brew --prefix readline)/lib -lreadline  $(LIB) -o $@ 
+	
 	@echo "\n\033[0mCompilation Done !"
 
 %.o : %.c  $(HEADER)
 	@printf "\033[0;33mcreating minishell objects... %-33.33s\r" $@
-	@$(CC) $(FLAGS) -c $< -o $@ 
+	$(CC) $(FLAGS) -I $(shell brew --prefix readline)/include -c $< -o $@
 clean :
 	@echo "\nDeleting minishell objects..."
 	@rm -f $(OBJ)
