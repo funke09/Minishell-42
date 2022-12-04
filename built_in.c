@@ -15,51 +15,51 @@ char	*get_cwd(void)
 	return (buff);
 }
 
-int	if_exist(t_env **env_list, char *var_name)
-{
-	t_env		*current;
-	int			len;
+// int	if_exist(t_env **env_list, char *var_name)
+// {
+// 	t_env		*current;
+// 	int			len;
 
-	if (var_name && *env_list)
-	{
-		current = *env_list;
-		while (current)
-		{
-			len = len_key(current->str);
-			if (ft_strncmp(current->str, var_name, len))
-				return (1);
-			current = current->next;
-		}
-		return (0);
-	}
-	return (-1);
-}
+// 	if (var_name && *env_list)
+// 	{
+// 		current = *env_list;
+// 		while (current)
+// 		{
+// 			len = len_key(current->str);
+// 			if (ft_strncmp(current->str, var_name, len))
+// 				return (1);
+// 			current = current->next;
+// 		}
+// 		return (0);
+// 	}
+// 	return (-1);
+// }
 
-int	check_name(char *cmd)
-{
-	int		i;
+// int	check_name(char *cmd)
+// {
+// 	int		i;
 
-	i = 0;
-	if (!cmd || !ft_isalpha(*cmd))
-		return (0);
-	while (cmd[i])
-	{
-		if (i && !ft_isalnum(cmd[i]))
-			return (0);
-		i++;
-	}
-	return (1);
-}
+// 	i = 0;
+// 	if (!cmd || !ft_isalpha(*cmd))
+// 		return (0);
+// 	while (cmd[i])
+// 	{
+// 		if (i && !ft_isalnum(cmd[i]))
+// 			return (0);
+// 		i++;
+// 	}
+// 	return (1);
+// }
 
-int	len_path(char **cmd)
-{
-	int			i;
+// int	len_path(char **cmd)
+// {
+// 	int			i;
 
-	i = 0;
-	while (cmd[i++] != NULL)
-		;
-	return (i - 1);
-}
+// 	i = 0;
+// 	while (cmd[i++] != NULL)
+// 		;
+// 	return (i - 1);
+// }
 
 int	ft_exit(char **args, t_env **env)
 {
@@ -151,9 +151,14 @@ int	echo(char **args)
 		n = check_arg(&i, args[1]);
 	while (args[i])
 	{
-		ft_putstr_fd(args[i++], 1);
-		if (args[i])
+		if (args[i][0] == '-' && args[i][1] == 'n' && !args[i][2])
+			i++;
+		else
+		{
+			ft_putstr_fd(args[i++], 1);
+			if (args[i])
 			ft_putchar_fd(' ', 1);
+		}
 	}
 	if (!n)
 		ft_putchar_fd('\n', 1);
