@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 void	sig_handler(int var)
 {
 	if (var == SIGINT && !g_glb._status)
@@ -38,12 +39,17 @@ void	init_global(t_global *global)
 void	ft_print_env(void)
 {
 	t_env	*env_list;
+	int		len;
 
 	env_list = *get_adress();
 	while (env_list)
 	{
-		ft_putstr_fd(env_list->str, 1);
-		ft_putchar_fd('\n', 1);
+		len = len_key(env_list->str);
+		if (env_list->str[len])
+		{
+			ft_putstr_fd(env_list->str, 1);
+			ft_putchar_fd('\n', 1);
+		}
 		if (!env_list->next)
 			break ;
 		env_list = env_list->next;

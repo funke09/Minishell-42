@@ -21,7 +21,7 @@ HEADER = minishell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -Wall -Wextra -Werror -fsanitize=address
+FLAGS = -Werror -Wall -Wextra  -fsanitize=address #-Werror
 
 all :$(NAME) 
 

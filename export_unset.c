@@ -1,6 +1,5 @@
 #include "minishell.h"
-
-void	ft_remove(t_env **env, char *var_name)
+void	ft_remove2(t_env **env, char *var_name)
 {
 	int		l;
 	t_env	*curr;
@@ -9,13 +8,6 @@ void	ft_remove(t_env **env, char *var_name)
 	l = ft_strlen (var_name);
 	if (!env || !*env)
 		return ;
-	while (*env && l == len_key((*env)->str)
-		&& !ft_strncmp(var_name, (*env)->str, l))
-	{
-		tmp = (*env)->next;
-		free(*env);
-		*env = tmp;
-	}
 	curr = *env;
 	while (curr && curr->next)
 	{
@@ -30,6 +22,26 @@ void	ft_remove(t_env **env, char *var_name)
 			curr = curr->next;
 	}
 }
+
+void	ft_remove(t_env **env, char *var_name)
+{
+	int		l;
+	t_env	*tmp;
+
+	l = ft_strlen (var_name);
+	if (!env || !*env)
+		return ;
+	while (*env && l == len_key((*env)->str)
+		&& !ft_strncmp(var_name, (*env)->str, l))
+	{
+		tmp = (*env)->next;
+		free(*env);
+		*env = tmp;
+	}
+	ft_remove2(env, var_name);
+}
+
+
 
 int	check_unset_arg_valid(char *str)
 {
@@ -179,7 +191,8 @@ void	ft_putstr2(char *s)
 		}
 		i++;
 	}
-	ft_putchar_fd('"', 1);
+	if (ch == 0)
+		ft_putchar_fd('"', 1);
 }
 
 void	ft_print_export(t_env **env)
@@ -204,21 +217,17 @@ int	ft_export(t_env **env, char **args)
 	int	i;
 	int	len;
 
-	i = 1;
+	i = 0;
 	len = -1;
 	if (!args[1])
 	{
 		ft_print_export(env);
 		return (0);
 	}
-	while (args[i])
+	while (args[++i])
 	{
 		if (!check_arg_valid(args[i], &len))
-		{
-			if (!args[i][len] || !(args[i][len + 1]))
-				return (0);
 			ft_handle_arg(env, args[i], len);
-		}
 		else
 		{
 			ft_putstr_fd("minishell: export: ", 2);
@@ -226,7 +235,6 @@ int	ft_export(t_env **env, char **args)
 			ft_putstr_fd(" : not a valid identifier\n", 2);
 			return (1);
 		}
-		i++;
 	}
 	return (0);
 }
