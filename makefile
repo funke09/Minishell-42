@@ -3,16 +3,20 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+         #
+#    By: macos <macos@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/12/03 02:17:16 by flazerak         ###   ########.fr        #
+#    Updated: 2022/12/05 23:55:36 by macos            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env.c printferror.c teest.c excution.c utils.c export_unset.c built_in.c redirections.c tokenz_utils.c toknezation.c tok_utils2.c
+SRC = main.c env.c printferror.c norm_file.c excution.c utils.c\
+ 		export_unset.c built_in.c redirections.c \
+		tokenz_utils.c toknezation.c tok_utils2.c \
+		built_in_utils.c exc.c expantion.c ft_execve.c\
+		utils_export.c ft_env.c analyse_line.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -21,7 +25,7 @@ HEADER = minishell.h
 
 CC = gcc
 LIB = libft/libft.a
-FLAGS = -Werror -Wall -Wextra  -fsanitize=address #-Werror
+FLAGS = -Werror -Wall -Wextra  -fsanitize=address 
 
 all :$(NAME) 
 

@@ -76,7 +76,7 @@ void	execute_redirection(t_tokens *red)
 	while (red != NULL)
 	{
 		if ((red->token && (red->type == REDIR_IN || red->type == REDIR_OUT
-						|| red->type == APPEND)))
+				|| red->type == APPEND)))
 			redirect_in_out(red);
 		else if (red->token && red->type == HEREDOC)
 			redir_here_doc(red, tty_name);

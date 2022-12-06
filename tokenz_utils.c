@@ -12,7 +12,7 @@ int	is_flag(t_global *global, int *i, int *no_space)
 		while (ft_isalpha(global->line[*i]))
 			(*i)++;
 		if (!is_blank(global->line[*i]) && global->line[*i] != '|'
-				&& global->line[*i] != '<' && global->line[*i] != '>')
+			&& global->line[*i] != '<' && global->line[*i] != '>')
 				*no_space = 1;
 		return (1);
 	}
@@ -98,7 +98,8 @@ int	is_dolar(t_global *global, int	*i, int *no_space)
 
 	start = *i;
 	if (global->line[*i] && global->line[*i] == '$'
-		&& (ft_isalnum(global->line[*i + 1]) || global->line[*i + 1] == '?'))
+		&& (ft_isalnum(global->line[*i + 1])
+		|| global->line[*i + 1] == '?') && !global->heredoc_activ)
 	{
 		(*i)++;
 		while (global->line[*i] && !is_blank(global->line[*i])

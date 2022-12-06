@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/16 00:18:37 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/02 17:49:55 by macos            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 void	ft_clean_envlist(t_env **env)
@@ -78,13 +66,6 @@ int	init_env(t_env **env_list)
 		return (42);
 	}
 	return (0);
-}
-
-t_env	**get_adress(void)
-{
-	static t_env	*new = NULL;
-
-	return (&new);
 }
 
 int	stock_env(char **env, t_global *global)

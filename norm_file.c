@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   teest.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/16 00:18:22 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/02 19:47:42 by macos            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 int	ft_strlen_key(char *str)
@@ -77,7 +65,6 @@ char	*expantion(char *token)
 	{
 		var = ft_substr(str, 1, len);
 		tmp = ft_getenv(var, len);
-		printf("tmp = %s\n", tmp);
 		free(var);
 		if (!tmp)
 			return (NULL);
@@ -85,4 +72,15 @@ char	*expantion(char *token)
 		tmp = ft_substr(tmp, 0, ft_strlen(tmp));
 	}
 	return (tmp);
+}
+
+int	is_there_pipe(t_tokens *head)
+{
+	while (head)
+	{
+		if (head->type == PIPE)
+			return (1);
+		head = head->next;
+	}
+	return (0);
 }

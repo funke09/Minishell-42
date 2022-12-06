@@ -1,17 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/16 00:18:33 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/03 17:51:36 by macos            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
-
 
 void	sig_handler(int var)
 {
@@ -36,47 +23,13 @@ void	init_global(t_global *global)
 	global->is_redir = 0;
 }
 
-void	ft_print_env(void)
-{
-	t_env	*env_list;
-	int		len;
-
-	env_list = *get_adress();
-	while (env_list)
-	{
-		len = len_key(env_list->str);
-		if (env_list->str[len])
-		{
-			ft_putstr_fd(env_list->str, 1);
-			ft_putchar_fd('\n', 1);
-		}
-		if (!env_list->next)
-			break ;
-		env_list = env_list->next;
-	}
-}
-
-void print_tokens(t_global *global) //just for tesst
-{
-    t_tokens *token;
-
-    token = global->tokens;
-    if (!token)
-        return;
-    while (token)
-    {
-        printf("token: %s, type: %d, no_space=%d\n ", token->token, token->type, token->no_space);
-        token = token->next;
-    }
-}
-
 void	ft_read_line(t_global *global)
 {
 	g_glb._status = 0;
-	global->line = readline("minishell$> ");
+	global->line = readline(BLUMG"minishell$> "END);
 	if (global->line == NULL)
 	{
-		write(1, "exitt\n", 6);
+		write(1, "exit\n", 6);
 		exit(1);
 	}
 	if (global->line[0])
@@ -109,7 +62,6 @@ int	main(int ac, char **av, char **env)
 		ft_read_line(&global);
 		tokenization(&global);
 		check_tokens(&global);
-		print_tokens(&global);
 		if (global.errnum != 0)
 			printferror(&global);
 		if (global.tokens)
@@ -118,4 +70,3 @@ int	main(int ac, char **av, char **env)
 	}
 	return (0);
 }
-

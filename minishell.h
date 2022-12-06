@@ -6,7 +6,7 @@
 /*   By: macos <macos@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/02 21:23:13 by macos            ###   ########.fr       */
+/*   Updated: 2022/12/06 01:51:31 by macos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <stdbool.h>
+
+# define BLUMG "\e[1;35m"
+# define END "\e[0m"
+# define RED "\e[31m"
+# define RESET "\e[0m"
 
 typedef enum s_error
 {
@@ -73,7 +78,7 @@ typedef struct s_var
 	int	_status;
 }	t_var;
 
-t_var	g_glb;  ////////////////////////////////////////////////////////////////////////
+t_var	g_glb;
 
 typedef struct s_env
 {
@@ -173,4 +178,27 @@ int			is_redir(t_global *global, int	*i, char c);
 int			is_blank(char c);
 int			is_charachter(char c);
 char		*go_to_herdoc(t_global *global, t_tokens *tokens);
+int			is_a_builtin_child(char *cmd);
+int			check_arg(int *i, char *str);
+int			len_of_cmd_sin_pipes(t_tokens *token);
+t_tokens	*join_expantion(t_tokens *token, char **cmd, int *i);
+int			is_valid_type(t_tokens *token);
+char		**get_cmd(t_tokens *token);
+t_tokens	*skip_to_pipe(t_tokens *token);
+int			is_valid_cmd(const char *cmd);
+void		ft_execve(const char *file_name, char **cmd, char **env);
+void		execute_direct(char **cmd, char **env);
+void		execute_undirect(char **cmd, char **tabs, t_env **env);
+int			ft_sizearray(char **args);
+int			is_there_pipe(t_tokens *head);
+int			push2(char *env, t_env **begin_lst);
+char		*ft_strdup2(char *str);
+int			check_unset_arg_valid(char *str);
+void		ft_remove(t_env **env, char *var_name);
+char		*generate_dolar(char *str);
+char		*inside_quote(char *tokens);
+void		ft_handle_arg(t_env **env, char *arg, int len);
+void		ft_free_arr(char **env);
+void		ft_wait(int *status);
+t_tokens	*skip_to_pipe(t_tokens *token);
 #endif

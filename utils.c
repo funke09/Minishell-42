@@ -28,20 +28,6 @@ char	**list_to_tabs(t_env **env_list)
 	return (tabs);
 }
 
-void	ft_memdel(void **ap)
-{
-	if (ap)
-	{
-		free(*ap);
-		*ap = NULL;
-	}
-}
-
-void	ft_strdel(char **as)
-{
-	ft_memdel((void **)as);
-}
-
 void	ft_free_arr(char **env)
 {
 	int		i;
