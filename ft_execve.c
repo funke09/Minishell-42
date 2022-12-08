@@ -6,7 +6,7 @@
 /*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 01:25:15 by flazerak          #+#    #+#             */
-/*   Updated: 2022/12/08 01:26:39 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/12/08 07:12:45 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	ft_execve(const char *file_name, char **cmd, char **env)
 void	ft_wait(int *status)
 {
 	wait(status);
-	if (WIFEXITED(status))
-		g_glb.exit_status = WEXITSTATUS(status);
+	if (WIFEXITED(*status))
+		g_glb.exit_status = WEXITSTATUS(*status);
 }
 
 void	execute_direct(char **cmd, char **env)
