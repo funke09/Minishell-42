@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_execve.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/08 01:25:15 by flazerak          #+#    #+#             */
+/*   Updated: 2022/12/08 01:26:39 by flazerak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_valid_cmd(const char *cmd)
@@ -91,4 +103,3 @@ void	execute_undirect(char **cmd, char **tabs, t_env **env)
 		ft_wait(&status);
 	ft_strdel(&bin_file);
 }
-

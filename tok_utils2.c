@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tok_utils2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/08 01:25:48 by flazerak          #+#    #+#             */
+/*   Updated: 2022/12/08 01:27:41 by flazerak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_charachter(char c)
@@ -58,7 +70,7 @@ int	is_heredoc_key(t_global *global, int	*i)
 	{
 			(*i)++;
 		if (is_blank(global->line[*i]) || !global->line[*i]
-				|| is_charachter(global->line[*i]))
+			|| is_charachter(global->line[*i]))
 		{
 			global->heredoc_activ = 0;
 			return (1);

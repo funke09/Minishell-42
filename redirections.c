@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/08 01:25:45 by flazerak          #+#    #+#             */
+/*   Updated: 2022/12/08 01:27:18 by flazerak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_tokens	*go_to_redir(t_tokens *head)
@@ -76,7 +88,7 @@ void	execute_redirection(t_tokens *red)
 	while (red != NULL)
 	{
 		if ((red->token && (red->type == REDIR_IN || red->type == REDIR_OUT
-				|| red->type == APPEND)))
+					|| red->type == APPEND)))
 			redirect_in_out(red);
 		else if (red->token && red->type == HEREDOC)
 			redir_here_doc(red, tty_name);

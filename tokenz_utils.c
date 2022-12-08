@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenz_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/08 01:25:50 by flazerak          #+#    #+#             */
+/*   Updated: 2022/12/08 01:28:03 by flazerak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_flag(t_global *global, int *i, int *no_space)
@@ -99,7 +111,7 @@ int	is_dolar(t_global *global, int	*i, int *no_space)
 	start = *i;
 	if (global->line[*i] && global->line[*i] == '$'
 		&& (ft_isalnum(global->line[*i + 1])
-		|| global->line[*i + 1] == '?') && !global->heredoc_activ)
+			|| global->line[*i + 1] == '?') && !global->heredoc_activ)
 	{
 		(*i)++;
 		while (global->line[*i] && !is_blank(global->line[*i])
