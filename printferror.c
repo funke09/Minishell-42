@@ -6,7 +6,7 @@
 /*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 01:25:41 by flazerak          #+#    #+#             */
-/*   Updated: 2022/12/08 01:25:42 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/12/08 06:21:50 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,7 @@ void	redirections_check(t_global *global, t_tokens *tmp)
 	}
 	else if (tmp->type == HEREDOC)
 	{
-		if (!tmp->next || tmp->next->type == HEREDOC
-			|| tmp->next->type == REDIR_IN || tmp->next->type == REDIR_OUT
-			|| tmp->next->type == APPEND || tmp->next->type == PIPE)
-			global->errnum = ERROR_HEREDOC;
+		is_here(tmp, global);
 	}
 	else if (tmp->type == ENV_VAR)
 	{

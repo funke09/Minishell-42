@@ -6,7 +6,7 @@
 /*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 00:18:27 by zcherrad          #+#    #+#             */
-/*   Updated: 2022/12/08 01:25:34 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/12/08 06:25:59 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <stdbool.h>
+# include <sys/ioctl.h>
 
 # define BLUMG "\e[1;35m"
 # define END "\e[0m"
@@ -74,8 +75,9 @@ typedef struct s_tokens
 
 typedef struct s_var
 {
-	int	exit_status;
-	int	_status;
+	int		exit_status;
+	int		_status;
+	char	*tty_name;
 }	t_var;
 
 t_var	g_glb;
@@ -177,7 +179,7 @@ int			is_heredoc_or_append(t_global *global, int	*i, char c);
 int			is_redir(t_global *global, int	*i, char c);
 int			is_blank(char c);
 int			is_charachter(char c);
-char		*go_to_herdoc(t_global *global, t_tokens *tokens);
+char		*go_to_herdoc(t_tokens *tokens);
 int			is_a_builtin_child(char *cmd);
 int			check_arg(int *i, char *str);
 int			len_of_cmd_sin_pipes(t_tokens *token);
@@ -201,4 +203,6 @@ void		ft_handle_arg(t_env **env, char *arg, int len);
 void		ft_free_arr(char **env);
 void		ft_wait(int *status);
 t_tokens	*skip_to_pipe(t_tokens *token);
+void		sig_hd(int i);
+void		is_here(t_tokens *tmp, t_global *global);
 #endif

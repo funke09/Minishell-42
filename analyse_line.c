@@ -6,7 +6,7 @@
 /*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 01:24:50 by flazerak          #+#    #+#             */
-/*   Updated: 2022/12/08 01:24:51 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/12/08 06:19:24 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,14 @@ char	*generate_dolar(char *str)
 	return (ft_strdup(var.res));
 }
 
-char	*go_to_herdoc(t_global *global, t_tokens *tokens)
+char	*go_to_herdoc(t_tokens *tokens)
 {
 	char	*str;
 	char	*tmp;
 
 	tokens->here_doc_txt = ft_strdup("");
-	(void)global;
+	signal(SIGINT, sig_hd);
+	rl_catch_signals = 0;
 	while (1)
 	{
 		str = readline(RED"heredoc> "RESET);

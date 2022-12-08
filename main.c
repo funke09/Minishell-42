@@ -6,7 +6,7 @@
 /*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 01:24:44 by flazerak          #+#    #+#             */
-/*   Updated: 2022/12/08 01:24:45 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/12/08 06:25:28 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ void	init_global(t_global *global)
 	global->heredoc_activ = 0;
 	global->errnum = 0;
 	global->is_redir = 0;
+	g_glb.tty_name = ttyname(0);
+	if (!g_glb.tty_name)
+		exit(0);
 }
 
 void	ft_read_line(t_global *global)

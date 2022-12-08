@@ -6,7 +6,7 @@
 /*   By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 01:25:45 by flazerak          #+#    #+#             */
-/*   Updated: 2022/12/08 01:27:18 by flazerak         ###   ########.fr       */
+/*   Updated: 2022/12/08 04:13:20 by flazerak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,14 @@ void	redirect_in_out(t_tokens *token)
 	close(fd);
 }
 
-void	redir_here_doc(t_tokens *txt, char *tty_name)
+void	redir_here_doc(t_tokens *txt)
 {
 	int	pip[2];
 	int	fd;
 	int	tmp;
 
 	tmp = 255;
-	fd = open(tty_name, O_RDWR);
+	fd = open(g_glb.tty_name, O_RDWR);
 	if (fd == -1)
 		return ;
 	dup2(fd, STDIN_FILENO);
@@ -70,7 +70,6 @@ void	redir_here_doc(t_tokens *txt, char *tty_name)
 	close(fd);
 	if ((pipe(pip)) == -1)
 		return ;
-	txt->here_doc_txt = go_to_herdoc(NULL, txt->next);
 	if (txt->here_doc_txt)
 		ft_putstr_fd(txt->here_doc_txt, pip[1]);
 	close(pip[1]);
@@ -82,16 +81,13 @@ void	redir_here_doc(t_tokens *txt, char *tty_name)
 
 void	execute_redirection(t_tokens *red)
 {
-	char	*tty_name;
-
-	tty_name = ttyname(0);
 	while (red != NULL)
 	{
 		if ((red->token && (red->type == REDIR_IN || red->type == REDIR_OUT
 					|| red->type == APPEND)))
 			redirect_in_out(red);
 		else if (red->token && red->type == HEREDOC)
-			redir_here_doc(red, tty_name);
+			redir_here_doc(red);
 		red = go_to_redir(red->next);
 	}
 }

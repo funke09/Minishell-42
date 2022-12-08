@@ -6,7 +6,7 @@
 #    By: flazerak <flazerak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/16 00:18:30 by zcherrad          #+#    #+#              #
-#    Updated: 2022/12/08 01:25:25 by flazerak         ###   ########.fr        #
+#    Updated: 2022/12/08 06:12:46 by flazerak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRC = main.c env.c printferror.c norm_file.c excution.c utils.c\
  		export_unset.c built_in.c redirections.c \
 		tokenz_utils.c toknezation.c tok_utils2.c \
 		built_in_utils.c exc.c expantion.c ft_execve.c\
-		utils_export.c ft_env.c analyse_line.c
+		utils_export.c ft_env.c analyse_line.c sigal_here.c
 
 OBJ = $(SRC:.c=.o)
 
